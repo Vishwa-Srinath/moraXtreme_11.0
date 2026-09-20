@@ -72,5 +72,11 @@ This will place the ui components in the `components` directory.
 To use the components in your app, import them as follows:
 
 ```tsx
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 ```
+
+## Documentation
+
+- [Forms](./docs/forms.md) — `Form`, `Form.Item`, `Form.CustomController`,
+  `FormListInput`, and the ready-made inputs.
+- [Modals](./docs/modals.md) — the registry-driven modal system and `useModal()`.
