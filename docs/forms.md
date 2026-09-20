@@ -62,6 +62,60 @@ export function ProfileForm() {
 }
 ```
 
+## Schema validation (zod)
+
+Validation is done with [`zod`](https://zod.dev) through
+[`@hookform/resolvers`](https://github.com/react-hook-form/resolvers). Define a
+schema, infer the form values from it, and pass `zodResolver(schema)` as the
+`resolver` to `useForm`:
+
+```tsx
+"use client"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+
+import Form from "@/components/form/Form"
+import { Input } from "@/components/ui/input"
+
+const profileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.email("Enter a valid email"),
+  age: z.coerce.number().int().min(18, "You must be 18 or older"),
+})
+
+type ProfileValues = z.infer<typeof profileSchema>
+
+export function ProfileForm() {
+  const form = useForm<ProfileValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: { name: "", email: "", age: 18 },
+  })
+
+  return (
+    <Form form={form} onFinish={(data) => console.log(data)}>
+      <Form.Item name="name" label="Name">
+        <Input placeholder="Jane Doe" />
+      </Form.Item>
+
+      <Form.Item name="email" label="Email">
+        <Input type="email" placeholder="jane@example.com" />
+      </Form.Item>
+
+      <Form.Item name="age" label="Age">
+        <Input type="number" />
+      </Form.Item>
+    </Form>
+  )
+}
+```
+
+Messages come from the schema's second argument (or its default message) and are
+rendered by `Form.Item` / `Form.CustomController` when the field is invalid. Note
+that `zod` v4 is installed — use the top-level string formats (`z.email()`,
+`z.url()`, …) rather than the deprecated `z.string().email()` form.
+
 ## `Form`
 
 `src/components/form/Form.tsx`
