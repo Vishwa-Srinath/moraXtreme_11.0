@@ -1,3 +1,4 @@
+import { ExportTeamsCsv } from "@/components/dashboard/export-teams-csv"
 import { TeamRowActions } from "@/components/dashboard/team-row-actions"
 import {
   Table,
@@ -34,11 +35,14 @@ export default async function RegisteredTeamsPage() {
             Review every team that completed registration.
           </p>
         </div>
-        <div className="rounded-lg border bg-muted/30 px-4 py-2 text-sm">
-          <span className="font-semibold">{teams.length}</span>{" "}
-          <span className="text-muted-foreground">
-            team{teams.length === 1 ? "" : "s"}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg border bg-muted/30 px-4 py-2 text-sm">
+            <span className="font-semibold">{teams.length}</span>{" "}
+            <span className="text-muted-foreground">
+              team{teams.length === 1 ? "" : "s"}
+            </span>
+          </div>
+          <ExportTeamsCsv teams={teams} />
         </div>
       </div>
 
