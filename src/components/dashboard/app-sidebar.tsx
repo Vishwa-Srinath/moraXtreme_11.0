@@ -2,7 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboardIcon, Settings2Icon, UsersIcon } from "lucide-react"
+import {
+  LayoutDashboardIcon,
+  Settings2Icon,
+  UserCogIcon,
+  UsersIcon,
+} from "lucide-react"
 
 import {
   Sidebar,
@@ -21,6 +26,7 @@ const navigation = [
   { title: "Overview", href: "/dashboard", icon: LayoutDashboardIcon },
   { title: "Settings", href: "/dashboard/settings", icon: Settings2Icon },
   { title: "Teams", href: "/dashboard/teams", icon: UsersIcon },
+  { title: "Users", href: "/dashboard/users", icon: UserCogIcon },
 ]
 
 export function AppSidebar() {

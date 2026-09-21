@@ -9,6 +9,7 @@ const titles: Record<string, string> = {
   "/dashboard": "Overview",
   "/dashboard/settings": "Registration settings",
   "/dashboard/teams": "Registered teams",
+  "/dashboard/users": "User management",
 }
 
 export function DashboardHeader() {

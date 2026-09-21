@@ -1,6 +1,10 @@
+import { BanUserModal } from "./ban-user-modal"
+import { CreateUserModal } from "./create-user-modal"
 import { TeamMembersModal } from "./team-members-modal"
 
 export const modalRegistry = {
+  banUser: BanUserModal,
+  createUser: CreateUserModal,
   teamMembers: TeamMembersModal,
 } as const
 
