@@ -28,7 +28,7 @@ export function TeamRowActions({ team }: { team: RegisteredTeam }) {
       >
         <MoreHorizontalIcon />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent className="w-48" align="end">
         <DropdownMenuItem onClick={() => openModal("teamMembers", { team })}>
           <UsersIcon />
           View members

@@ -35,11 +35,32 @@ export function UserRowActions({ user }: { user: ManagedUser }) {
   async function setRole(role: "user" | "admin") {
     if (user.role === role) return
     setIsUpdating(true)
-    const { error } = await authClient.admin.setRole({ userId: user.id, role })
-    setIsUpdating(false)
 
-    if (error) throw new Error(error.message)
-    startTransition(() => router.refresh())
+    try {
+      const { error } = await authClient.admin.setRole({
+        userId: user.id,
+        role,
+      })
+      if (error) throw new Error(error.message)
+
+      toast.success(
+        `${user.name} is now ${role === "admin" ? "an admin" : "a user"}`
+      )
+      startTransition(() => router.refresh())
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  function confirmRoleChange(role: "user" | "admin") {
+    if ((user.role ?? "user") === role) return
+
+    openModal("confirm", {
+      title: `Change ${user.name}'s role?`,
+      description: `This will change the account role from ${user.role ?? "user"} to ${role}.`,
+      confirmLabel: `Change to ${role}`,
+      onConfirm: () => setRole(role),
+    })
   }
 
   async function unbanUser() {
@@ -65,7 +86,7 @@ export function UserRowActions({ user }: { user: ManagedUser }) {
       >
         <MoreHorizontalIcon />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent className="w-48" align="end">
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
             <ShieldCheckIcon />
@@ -74,31 +95,15 @@ export function UserRowActions({ user }: { user: ManagedUser }) {
           <DropdownMenuSubContent>
             <DropdownMenuCheckboxItem
               checked={(user.role ?? "user") === "user"}
-              onClick={() =>
-                void toast.promise(setRole("user"), {
-                  loading: "Changing role...",
-                  success: "Role changed to user",
-                  error: (error) =>
-                    error instanceof Error
-                      ? error.message
-                      : "Could not change role",
-                })
-              }
+              disabled={(user.role ?? "user") === "user"}
+              onClick={() => confirmRoleChange("user")}
             >
               User
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={user.role === "admin"}
-              onClick={() =>
-                void toast.promise(setRole("admin"), {
-                  loading: "Changing role...",
-                  success: "Role changed to admin",
-                  error: (error) =>
-                    error instanceof Error
-                      ? error.message
-                      : "Could not change role",
-                })
-              }
+              disabled={user.role === "admin"}
+              onClick={() => confirmRoleChange("admin")}
             >
               Admin
             </DropdownMenuCheckboxItem>

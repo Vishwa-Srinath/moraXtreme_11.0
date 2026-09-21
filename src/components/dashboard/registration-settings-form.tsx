@@ -9,8 +9,8 @@ import { z } from "zod"
 
 import Form from "@/components/form/Form"
 import { CheckboxInput } from "@/components/form-inputs/Checkbox"
+import { DateTimePicker } from "@/components/form-inputs/DateTimePicker"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import type { RegistrationAvailability } from "@/lib/registration/settings"
 
@@ -87,20 +87,50 @@ export function RegistrationSettingsForm({
       }
     >
       <div className="grid gap-4 md:grid-cols-2">
-        <Form.Item
+        <Controller
+          control={form.control}
           name="openAt"
-          label="Registration opens"
-          helperText="Leave blank to allow registration immediately."
-        >
-          <Input type="datetime-local" />
-        </Form.Item>
-        <Form.Item
+          render={({ field, fieldState, formState }) => (
+            <Form.CustomController
+              field={field}
+              fieldState={fieldState}
+              formState={formState}
+              label="Registration opens"
+              helperText="Leave blank to allow registration immediately."
+            >
+              <DateTimePicker
+                id={field.name}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={field.disabled}
+                invalid={fieldState.invalid}
+              />
+            </Form.CustomController>
+          )}
+        />
+        <Controller
+          control={form.control}
           name="closeAt"
-          label="Registration closes"
-          helperText="Leave blank to keep registration open indefinitely."
-        >
-          <Input type="datetime-local" />
-        </Form.Item>
+          render={({ field, fieldState, formState }) => (
+            <Form.CustomController
+              field={field}
+              fieldState={fieldState}
+              formState={formState}
+              label="Registration closes"
+              helperText="Leave blank to keep registration open indefinitely."
+            >
+              <DateTimePicker
+                id={field.name}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={field.disabled}
+                invalid={fieldState.invalid}
+              />
+            </Form.CustomController>
+          )}
+        />
       </div>
 
       <Controller

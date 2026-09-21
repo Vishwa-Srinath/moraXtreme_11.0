@@ -1,17 +1,22 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   LayoutDashboardIcon,
+  LoaderCircleIcon,
+  LogOutIcon,
   Settings2Icon,
   UserCogIcon,
   UsersIcon,
 } from "lucide-react"
+import { toast } from "sonner"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -21,6 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { authClient } from "@/lib/auth-client"
 
 const navigation = [
   { title: "Overview", href: "/dashboard", icon: LayoutDashboardIcon },
@@ -31,6 +37,28 @@ const navigation = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  async function signOut() {
+    setIsSigningOut(true)
+
+    try {
+      const { error } = await authClient.signOut()
+
+      if (error) {
+        toast.error(error.message || "Unable to log out. Please try again.")
+        return
+      }
+
+      router.replace("/login")
+      router.refresh()
+    } catch {
+      toast.error("Unable to log out. Please try again.")
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
 
   return (
     <Sidebar collapsible="icon">
@@ -83,6 +111,24 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t border-sidebar-border p-3">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              disabled={isSigningOut}
+              tooltip="Log out"
+              onClick={() => void signOut()}
+            >
+              {isSigningOut ? (
+                <LoaderCircleIcon className="animate-spin" />
+              ) : (
+                <LogOutIcon />
+              )}
+              <span>{isSigningOut ? "Logging out..." : "Log out"}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
