@@ -6,9 +6,9 @@
 
 The registration workspace is a two-pane layout on desktop:
 
-- Main pane: one wizard card per step, constrained by the page container.
-- Side pane: sticky event facts, progress, and a minimal live summary.
-- Mobile: single-column flow with a horizontal progress strip above the form.
+- Left pane: sticky registration introduction and a single event-facts card.
+- Right pane: a segmented progress line followed by one wizard card per step.
+- Mobile: single-column flow with the title, progress line, and form. Event facts are hidden.
 
 ## Containers
 
@@ -20,7 +20,7 @@ Component interiors prefer container-query-ready wrappers through `@container`, 
 
 The registration page uses:
 
-- `lg:grid-cols-[minmax(0,1fr)_22rem]` for the focused desktop form plus side panel.
+- A narrower contextual column and a wider form column on desktop, with the form on the right.
 - Fluid gaps through arbitrary clamp values.
 - Single-column mobile stacking to preserve natural browser scroll and reliable sticky mobile actions.
 
@@ -40,14 +40,13 @@ Forward movement is validation-gated. Backward movement is allowed to completed 
 
 ## Scroll And Sticky Behavior
 
-The page uses full-page scroll with the global header sticky at the top. On desktop, the side panel is sticky below the header. On mobile, primary wizard actions are sticky at the bottom of the form card to reduce long-form navigation friction.
+The page uses full-page scroll with the global header sticky at the top. On desktop, the left introduction and event facts remain sticky below the header while the form scrolls naturally. On mobile, primary wizard actions are sticky at the bottom of the form card to reduce long-form navigation friction.
 
 ## Reusable Layout Components
 
 - `src/components/layout/AppShell.tsx` provides the route shell header.
 - `src/components/layout/PageContainer.tsx` provides max-width and fluid edge padding.
 - `src/components/layout/SectionWrapper.tsx` provides fluid vertical section rhythm.
-- `src/components/layout/BentoGrid.tsx` provides a container-query grid utility for future showcase sections.
 
 ## Data-Driven Availability
 
