@@ -1,7 +1,7 @@
-import { type FC } from "react"
+import { TeamMembersModal } from "./team-members-modal"
 
 export const modalRegistry = {
-  placeholder: (() => null) as FC<ModalComponentProps<Record<string, unknown>>>,
+  teamMembers: TeamMembersModal,
 } as const
 
 // Helper types

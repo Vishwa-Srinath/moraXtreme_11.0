@@ -1,8 +1,8 @@
+"use client"
+
 import Link from "next/link"
-import {
-  ClipboardPenLineIcon,
-  LayoutDashboardIcon,
-} from "lucide-react"
+import { usePathname } from "next/navigation"
+import { LayoutDashboardIcon, Settings2Icon, UsersIcon } from "lucide-react"
 
 import {
   Sidebar,
@@ -19,10 +19,13 @@ import {
 
 const navigation = [
   { title: "Overview", href: "/dashboard", icon: LayoutDashboardIcon },
-  { title: "Registration", href: "/register", icon: ClipboardPenLineIcon },
+  { title: "Settings", href: "/dashboard/settings", icon: Settings2Icon },
+  { title: "Teams", href: "/dashboard/teams", icon: UsersIcon },
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border p-3">
@@ -37,7 +40,9 @@ export function AppSidebar() {
                 <span className="font-mono text-xs font-bold">MX</span>
               </div>
               <div className="min-w-0 leading-tight">
-                <span className="block truncate font-semibold">MoraXtreme 11</span>
+                <span className="block truncate font-semibold">
+                  MoraXtreme 11
+                </span>
                 <span className="block truncate text-xs text-muted-foreground">
                   Command center
                 </span>
@@ -52,10 +57,14 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navigation.map((item, index) => (
+              {navigation.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    isActive={index === 0}
+                    isActive={
+                      pathname === item.href ||
+                      (item.href !== "/dashboard" &&
+                        pathname.startsWith(`${item.href}/`))
+                    }
                     tooltip={item.title}
                     render={<Link href={item.href} />}
                   >

@@ -1,4 +1,6 @@
-import { inArray } from "drizzle-orm"
+import { inArray, sql } from "drizzle-orm"
+import { connection } from "next/server"
+import { z } from "zod"
 
 import { db } from "@/lib/db"
 import { appSettings } from "@/lib/db/schema"
@@ -18,6 +20,24 @@ export type RegistrationAvailability = {
   message: string
 }
 
+export const registrationSettingsSchema = z
+  .object({
+    openAt: z.iso.datetime().nullable(),
+    closeAt: z.iso.datetime().nullable(),
+    forceClosed: z.boolean(),
+    closedMessage: z.string().trim().min(1).max(300),
+  })
+  .refine(
+    ({ openAt, closeAt }) =>
+      !openAt || !closeAt || Date.parse(closeAt) > Date.parse(openAt),
+    {
+      message: "Closing time must be after opening time.",
+      path: ["closeAt"],
+    }
+  )
+
+export type RegistrationSettings = z.infer<typeof registrationSettingsSchema>
+
 function readSettingValue(settings: Map<string, unknown>, key: string) {
   const value = settings.get(key)
   return typeof value === "string" ? value : null
@@ -36,6 +56,8 @@ function parseTimestamp(value: string | null) {
 }
 
 export async function getRegistrationAvailability(): Promise<RegistrationAvailability> {
+  await connection()
+
   const defaults: RegistrationAvailability = {
     isOpen: true,
     openAt: null,
@@ -80,4 +102,48 @@ export async function getRegistrationAvailability(): Promise<RegistrationAvailab
   } catch {
     return defaults
   }
+}
+
+export async function updateRegistrationSettings(input: unknown) {
+  const settings = registrationSettingsSchema.parse(input)
+
+  await db
+    .insert(appSettings)
+    .values([
+      {
+        key: REGISTRATION_SETTING_KEYS.openAt,
+        value: settings.openAt,
+        valueType: "timestamp" as const,
+        description: "UTC timestamp when registration opens.",
+      },
+      {
+        key: REGISTRATION_SETTING_KEYS.closeAt,
+        value: settings.closeAt,
+        valueType: "timestamp" as const,
+        description: "UTC timestamp when registration closes.",
+      },
+      {
+        key: REGISTRATION_SETTING_KEYS.forceClosed,
+        value: settings.forceClosed,
+        valueType: "boolean" as const,
+        description: "Manual override that closes registration immediately.",
+      },
+      {
+        key: REGISTRATION_SETTING_KEYS.closedMessage,
+        value: settings.closedMessage,
+        valueType: "string" as const,
+        description: "Message shown when registration is unavailable.",
+      },
+    ])
+    .onConflictDoUpdate({
+      target: appSettings.key,
+      set: {
+        value: sql`excluded.value`,
+        valueType: sql`excluded.value_type`,
+        description: sql`excluded.description`,
+        updatedAt: new Date(),
+      },
+    })
+
+  return settings
 }
