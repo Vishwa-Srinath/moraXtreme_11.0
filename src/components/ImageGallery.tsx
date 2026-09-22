@@ -169,19 +169,22 @@ function EndCard({ title }: { title: string }) {
 export default function ImageGallery({
   images,
   title,
+  subtitle,
+  columns = 3,
+  bgColor,
 }: ImageGalleryProps) {
   const [hero, ...rest] = images;
   if (!hero) return null;
 
   const gridItems = rest;
-  const remainder = gridItems.length % 3;
-  const showEndCard = remainder !== 0 ? 3 - remainder >= 1 : true;
+  const remainder = gridItems.length % columns;
+  const showEndCard = remainder !== 0 ? columns - remainder >= 1 : true;
 
   return (
     <>
       <style>{`
         .ig-wrapper {
-          background: #05080E;
+          background: ${bgColor ?? '#05080E'};
           font-family: var(--font-sans, 'Inter', 'Helvetica Neue', sans-serif);
           position: relative;
           overflow: hidden;
@@ -352,16 +355,23 @@ export default function ImageGallery({
         .ig-grid-section {
           padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.5rem);
         }
+        .ig-section-subtitle {
+          font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+          color: #9AA5B4;
+          line-height: 1.75;
+          margin: 0 0 clamp(1rem, 2vw, 1.75rem);
+          letter-spacing: 0.01em;
+        }
         .ig-grid {
           display: grid;
           grid-template-columns: 1fr;
           gap: 0.5rem;
         }
         @media (min-width: 640px) {
-          .ig-grid { grid-template-columns: repeat(2, 1fr); }
+          .ig-grid { grid-template-columns: repeat(${Math.min(2, columns)}, 1fr); }
         }
         @media (min-width: 900px) {
-          .ig-grid { grid-template-columns: repeat(3, 1fr); }
+          .ig-grid { grid-template-columns: repeat(${columns}, 1fr); }
         }
 
         /* ── Grid card ── */
@@ -511,6 +521,9 @@ export default function ImageGallery({
         <HeroSlot image={hero} />
         <StatsBar count={images.length} />
         <div className="ig-grid-section">
+          {subtitle && (
+            <p className="ig-section-subtitle">{subtitle}</p>
+          )}
           <div className="ig-grid">
             {gridItems.map((img, i) => (
               <GridCard key={i} image={img} index={i} />
