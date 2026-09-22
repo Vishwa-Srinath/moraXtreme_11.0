@@ -13,7 +13,7 @@ export default async function Page() {
     <main style={{ backgroundColor: "#000000", minHeight: "100vh" }}>
       <ImageGallery
         images={images}
-        title="MoraXtreme 11.0 Highlights"
+        title="MoraXtreme 10.0 Highlights"
         subtitle="A glimpse into the ideas, energy, and innovation that define the MoraXtreme experience."
         columns={3}
       />
