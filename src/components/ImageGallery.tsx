@@ -152,7 +152,7 @@ function EndCard({ title }: { title: string }) {
     <a href="https://www.facebook.com/media/set/?vanity=ieeesbuom&set=a.1293608876132086" target="_blank" rel="noopener noreferrer" className="ig-end-card">
       <div className="ig-end-bg">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/moraxtreme-10.0-1.jpg" alt="Facebook Album Background" />
+        <img src="/images/moraxtreme-10.0-1.webp" alt="Facebook Album Background" />
       </div>
       <div className="ig-end-content">
         <p className="ig-end-label">{title?.toUpperCase()}</p>

@@ -1,7 +1,5 @@
 import ImageGallery from "@/components/ImageGallery";
 import TeamSlider from "@/components/TeamSlider";
-import { getGalleryImages } from "@/lib/services/gallery.service";
-import { getTeamMembers } from "@/lib/services/team.service";
 
 export default async function Page() {
   const [images, teamMembers] = await Promise.all([
