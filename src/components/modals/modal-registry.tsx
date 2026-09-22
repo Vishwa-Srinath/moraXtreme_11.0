@@ -1,7 +1,13 @@
-import { type FC } from "react"
+import { BanUserModal } from "./ban-user-modal"
+import { ConfirmModal } from "./confirm-modal"
+import { CreateUserModal } from "./create-user-modal"
+import { TeamMembersModal } from "./team-members-modal"
 
 export const modalRegistry = {
-  placeholder: (() => null) as FC<ModalComponentProps<Record<string, unknown>>>,
+  banUser: BanUserModal,
+  confirm: ConfirmModal,
+  createUser: CreateUserModal,
+  teamMembers: TeamMembersModal,
 } as const
 
 // Helper types

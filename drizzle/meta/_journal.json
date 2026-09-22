@@ -8,6 +8,20 @@
       "when": 1789877678727,
       "tag": "0000_minor_wallflower",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789986759249,
+      "tag": "0001_luxuriant_thundra",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789990993842,
+      "tag": "0002_smart_komodo",
+      "breakpoints": true
     }
   ]
 }
