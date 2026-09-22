@@ -20,7 +20,7 @@ export default async function Page() {
       <TeamSlider
         members={teamMembers}
         title="Meet the Team"
-        subtitle="The people behind MoraXtreme 11.0 & IEEEXtreme 19.0."
+        subtitle="The people behind MoraXtreme 11.0"
         eyebrow="Leadership"
         autoInterval={4500}
       />

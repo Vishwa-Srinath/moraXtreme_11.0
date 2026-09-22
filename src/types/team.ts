@@ -10,6 +10,7 @@ export interface TeamMember {
   photo: string;
   alt?: string;
   bio?: string;
+  quote?: string;
   email?: string;
   phone?: string;
   linkedIn?: string;
