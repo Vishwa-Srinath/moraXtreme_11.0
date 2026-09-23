@@ -3,8 +3,8 @@ import Image from "next/image"
 import DynamicNavbar from "@/components/DynamicNavbar"
 
 export default async function Home() {
-  // Add a 5-second delay to show off the cool loading screen!
-  await new Promise((resolve) => setTimeout(resolve, 5000))
+  // Add a 2-second delay to show off the cool loading screen!
+  await new Promise((resolve) => setTimeout(resolve, 2000))
 
   return (
     <main className="relative flex flex-col items-center bg-[#000000]">
@@ -50,8 +50,30 @@ export default async function Home() {
           <h2 className="font-mono text-lg md:text-xl font-medium tracking-[0.3em] text-[#0074FF] uppercase drop-shadow-md">
             Welcome to
           </h2>
-          <h1 className="font-[family-name:var(--font-space)] text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-tighter text-white drop-shadow-2xl">
-            MoraXtreme <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#0074FF] to-[#163E70]">11.0</span>
+          {/* Custom keyframes for the cinematic text reveal */}
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes textReveal {
+              0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
+              100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            }
+          `}} />
+          <h1 className="font-[family-name:var(--font-space)] text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-tighter text-white drop-shadow-2xl flex flex-wrap justify-center gap-x-3 md:gap-x-5">
+            <span className="flex">
+              {"MoraXtreme".split("").map((letter, i) => (
+                <span 
+                  key={i} 
+                  className="opacity-0 animate-[textReveal_1s_cubic-bezier(0.16,1,0.3,1)_forwards]" 
+                  style={{ animationDelay: `${0.1 + i * 0.04}s` }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </span>
+            <span className="flex opacity-0 animate-[textReveal_1.2s_cubic-bezier(0.16,1,0.3,1)_forwards]" style={{ animationDelay: `0.6s` }}>
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#0074FF] to-[#163E70]">
+                11.0
+              </span>
+            </span>
           </h1>
         </div>
 
@@ -64,18 +86,16 @@ export default async function Home() {
         <div className="mt-14 flex flex-col sm:flex-row gap-6 z-20">
           
           {/* Primary Showstopper Button */}
-          <Button asChild size="lg" className="group relative px-10 py-7 text-sm font-[family-name:var(--font-space)] font-bold tracking-[0.2em] uppercase text-[#0074FF] hover:text-white bg-[#000000]/80 transition-all duration-500 rounded-full overflow-hidden shadow-[0_0_30px_rgba(0,116,255,0.2)] hover:shadow-[0_0_50px_rgba(0,116,255,0.5)] hover:-translate-y-1 border border-[#0074FF]/50 hover:border-[#0074FF] backdrop-blur-xl">
-            <a href="#register">
-              <span className="relative z-10 flex items-center gap-3 drop-shadow-[0_0_8px_rgba(0,116,255,0.8)] group-hover:drop-shadow-none transition-all duration-500">
-                Initiate Sequence
-                <svg className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </span>
-              {/* Solid Blue Fill that slides in on hover */}
-              <div className="absolute inset-0 bg-[#0074FF] -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-0 z-0"></div>
-            </a>
-          </Button>
+          <a href="/register" className="inline-block group relative px-10 py-5 text-sm font-[family-name:var(--font-space)] font-bold tracking-[0.2em] uppercase text-[#0074FF] hover:text-white bg-[#000000]/80 transition-all duration-500 rounded-full overflow-hidden shadow-[0_0_30px_rgba(0,116,255,0.2)] hover:shadow-[0_0_50px_rgba(0,116,255,0.5)] hover:-translate-y-1 border border-[#0074FF]/50 hover:border-[#0074FF] backdrop-blur-xl">
+            <span className="relative z-10 flex items-center gap-3 drop-shadow-[0_0_8px_rgba(0,116,255,0.8)] group-hover:drop-shadow-none transition-all duration-500">
+              Register Now
+              <svg className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
+            {/* Solid Blue Fill that slides in on hover */}
+            <div className="absolute inset-0 bg-[#0074FF] -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-0 z-0"></div>
+          </a>
 
           {/* Secondary Button */}
           <Button asChild size="lg" variant="outline" className="group px-10 py-7 text-sm font-[family-name:var(--font-space)] font-bold tracking-[0.2em] uppercase text-neutral-400 hover:text-white bg-transparent hover:bg-white/5 transition-all duration-300 rounded-full backdrop-blur-md border border-white/10 hover:border-white/30 hidden sm:flex">
@@ -420,18 +440,16 @@ export default async function Home() {
               </h3>
               
               {/* Massive CTA Button */}
-              <Button asChild size="lg" className="group relative px-12 py-8 text-lg font-[family-name:var(--font-space)] font-bold tracking-[0.25em] uppercase text-[#0074FF] hover:text-white bg-[#000000] transition-all duration-500 rounded-full overflow-hidden shadow-[0_0_40px_rgba(0,116,255,0.4)] hover:shadow-[0_0_60px_rgba(0,116,255,0.6)] hover:-translate-y-2 border border-[#0074FF]/50 hover:border-[#0074FF] backdrop-blur-xl">
-                <a href="#register">
-                  <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,116,255,0.8)] group-hover:drop-shadow-none transition-all duration-500">
-                    Register Now
-                    <svg className="w-6 h-6 transition-transform duration-500 group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </span>
-                  {/* Hover Fill */}
-                  <div className="absolute inset-0 bg-[#0074FF] -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-0 z-0"></div>
-                </a>
-              </Button>
+              <a href="/register" className="inline-block group/btn relative px-12 py-5 text-lg font-[family-name:var(--font-space)] font-bold tracking-[0.25em] uppercase text-[#0074FF] hover:text-white bg-[#000000] transition-all duration-500 rounded-full overflow-hidden shadow-[0_0_40px_rgba(0,116,255,0.4)] hover:shadow-[0_0_60px_rgba(0,116,255,0.6)] hover:-translate-y-2 border border-[#0074FF]/50 hover:border-[#0074FF] backdrop-blur-xl">
+                <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,116,255,0.8)] group-hover/btn:drop-shadow-none transition-all duration-500">
+                  Register Now
+                  <svg className="w-6 h-6 transition-transform duration-500 group-hover/btn:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+                {/* Hover Fill */}
+                <div className="absolute inset-0 bg-[#0074FF] -translate-x-full transition-transform duration-500 ease-out group-hover/btn:translate-x-0 z-0"></div>
+              </a>
             </div>
           </div>
         </section>
