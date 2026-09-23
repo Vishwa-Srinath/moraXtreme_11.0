@@ -42,7 +42,7 @@ export default function Loading() {
           {/* Progress Bar Container */}
           <div className="relative h-[2px] w-full bg-[#163E70]/40 overflow-hidden">
             {/* Animated Fill */}
-            <div className="absolute top-0 left-0 h-full bg-[#0074FF] shadow-[0_0_15px_#0074FF] w-[10%] animate-[fillBar_2s_ease-in-out_forwards]"></div>
+            <div className="absolute top-0 left-0 h-full bg-[#0074FF] shadow-[0_0_15px_#0074FF] w-[10%] animate-[fillBar_5s_ease-in-out_forwards]"></div>
           </div>
           
           {/* Bottom meta info */}
