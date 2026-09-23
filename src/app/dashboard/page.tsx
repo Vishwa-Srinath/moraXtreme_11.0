@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button"
+
 export default function DashboardPage() {
   return (
     <section className="space-y-2">
@@ -8,6 +10,9 @@ export default function DashboardPage() {
       <p className="max-w-2xl text-muted-foreground">
         Manage registration availability and review submitted teams.
       </p>
+      <div className="pt-4">
+        <Button>Click me</Button>
+      </div>
     </section>
   )
 }
