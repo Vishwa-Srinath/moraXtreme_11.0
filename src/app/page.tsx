@@ -1,9 +1,11 @@
-import ImageGallery from "@/components/ImageGallery"
 import TeamSlider from "@/components/TeamSlider"
-import { GALLERY_PLACEHOLDER_IMAGES } from "@/data/gallery.placeholder"
 import { TEAM_PLACEHOLDER } from "@/data/team.placeholder"
 import Image from "next/image"
 import DynamicNavbar from "@/components/DynamicNavbar"
+import WorldAsiaScene from "@/components/landing/WorldAsiaScene"
+import HighlightsTimeline from "@/components/landing/HighlightsTimeline"
+import ImageGallery from "@/components/ImageGallery"
+import { GALLERY_PLACEHOLDER_IMAGES } from "@/data/gallery.placeholder"
 
 export default async function Home() {
   // Add a 2-second delay to show off the cool loading screen!
@@ -12,134 +14,8 @@ export default async function Home() {
   return (
     <main className="relative flex flex-col items-center bg-[#000000]">
       <DynamicNavbar />
-
-      {/* Background Video (Fixed behind everything) */}
-      <div className="fixed inset-0 z-0 h-screen w-full">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="h-full w-full object-cover opacity-90"
-        >
-          <source src="/bg-video.mp4" type="video/mp4" />
-        </video>
-        {/* Overlay to fade out video nicely at the very bottom edge */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#000000]/40 to-[#000000]"></div>
-      </div>
-
-      {/* Hero Section */}
-      <section
-        id="home"
-        className="relative z-10 flex min-h-screen w-full scroll-mt-20 flex-col items-center justify-center p-6 pt-20 text-center md:p-24"
-      >
-        {/* The Animated GIF acting as a backdrop behind the text */}
-        <div className="pointer-events-none absolute top-[50%] left-1/2 -z-20 aspect-square w-[80vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 opacity-40 mix-blend-screen md:w-[50vw]">
-          <Image
-            src="/earth.gif"
-            alt="Spinning Earth"
-            fill
-            className="object-contain"
-            unoptimized
-          />
-        </div>
-
-        {/* Subtle dark gradient behind text for perfect readability */}
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[80%] w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.8)_0%,_transparent_70%)]"></div>
-
-        {/* Top Radar Badge */}
-        <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-[#163E70] bg-[#000000]/60 px-5 py-2 font-mono text-xs font-semibold tracking-widest text-[#0074FF] backdrop-blur-md">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#0074FF] opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#0074FF]"></span>
-          </span>
-          REGISTRATIONS OPEN
-        </div>
-
-        {/* Main Title */}
-        <div className="mb-8 flex flex-col items-center justify-center gap-4">
-          <h2 className="font-mono text-lg font-medium tracking-[0.3em] text-[#0074FF] uppercase drop-shadow-md md:text-xl">
-            Welcome to
-          </h2>
-          {/* Custom keyframes for the cinematic text reveal */}
-          <style
-            dangerouslySetInnerHTML={{
-              __html: `
-            @keyframes textReveal {
-              0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
-              100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-            }
-          `,
-            }}
-          />
-          <h1 className="flex flex-wrap justify-center gap-x-3 font-[family-name:var(--font-space)] text-6xl font-bold tracking-tighter text-white drop-shadow-2xl md:gap-x-5 md:text-8xl lg:text-[7rem]">
-            <span className="flex">
-              {"MoraXtreme".split("").map((letter, i) => (
-                <span
-                  key={i}
-                  className="animate-[textReveal_1s_cubic-bezier(0.16,1,0.3,1)_forwards] opacity-0"
-                  style={{ animationDelay: `${0.1 + i * 0.04}s` }}
-                >
-                  {letter}
-                </span>
-              ))}
-            </span>
-            <span
-              className="flex animate-[textReveal_1.2s_cubic-bezier(0.16,1,0.3,1)_forwards] opacity-0"
-              style={{ animationDelay: `0.6s` }}
-            >
-              <span className="bg-gradient-to-br from-[#0074FF] to-[#163E70] bg-clip-text text-transparent">
-                11.0
-              </span>
-            </span>
-          </h1>
-        </div>
-
-        <p className="max-w-2xl text-center font-[family-name:var(--font-space)] text-lg leading-relaxed font-light text-neutral-300 drop-shadow-lg md:text-xl">
-          The ultimate{" "}
-          <strong className="font-semibold text-white">12-hour</strong> online
-          algorithmic coding competition. <br className="hidden md:block" />
-          Step into the arena and run it all from one secure workspace.
-        </p>
-
-        {/* Sleek Modern Buttons */}
-        <div className="z-20 mt-14 flex flex-col gap-6 sm:flex-row">
-          {/* Primary Showstopper Button */}
-          <a
-            href="/register"
-            className="group relative inline-block overflow-hidden rounded-full border border-[#0074FF]/50 bg-[#000000]/80 px-10 py-5 font-[family-name:var(--font-space)] text-sm font-bold tracking-[0.2em] text-[#0074FF] uppercase shadow-[0_0_30px_rgba(0,116,255,0.2)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-[#0074FF] hover:text-white hover:shadow-[0_0_50px_rgba(0,116,255,0.5)]"
-          >
-            <span className="relative z-10 flex items-center gap-3 drop-shadow-[0_0_8px_rgba(0,116,255,0.8)] transition-all duration-500 group-hover:drop-shadow-none">
-              Register Now
-              <svg
-                className="h-5 w-5 transition-transform duration-500 group-hover:translate-x-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </span>
-            {/* Solid Blue Fill that slides in on hover */}
-            <div className="absolute inset-0 z-0 -translate-x-full bg-[#0074FF] transition-transform duration-500 ease-out group-hover:translate-x-0"></div>
-          </a>
-
-          {/* Secondary Button */}
-          <a
-            href="#about"
-            className="group hidden items-center gap-2 rounded-full border border-white/10 bg-transparent px-10 py-7 font-[family-name:var(--font-space)] text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white sm:flex"
-          >
-            Learn More
-          </a>
-        </div>
-      </section>
-
-      {/* New Content Sections */}
+      <WorldAsiaScene>
+        {/* New Content Sections */}
       <div className="relative z-10 flex w-full max-w-6xl flex-col gap-32 px-6 py-24 text-white">
         {/* About Section */}
         <section
@@ -231,151 +107,8 @@ export default async function Home() {
         </section>
 
         {/* Highlights */}
-        <section id="highlights" className="relative w-full scroll-mt-32 py-12">
-          <div className="grid items-start gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
-            {/* Sticky Header Column */}
-            <div className="z-10 flex flex-col items-start lg:sticky lg:top-40">
-              <h2 className="font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-xl md:text-5xl">
-                The Event <br className="hidden lg:block" />{" "}
-                <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
-                  Highlights
-                </span>
-              </h2>
-              <div className="mt-6 h-1 w-20 bg-gradient-to-r from-[#0074FF] to-transparent"></div>
-              <p className="mt-6 hidden max-w-sm text-lg leading-relaxed font-light text-neutral-400 lg:block">
-                Discover what makes MoraXtreme the ultimate algorithmic proving
-                ground in the South Asian region.
-              </p>
-            </div>
-
-            {/* Vertical Stack of Cards */}
-            <div className="flex w-full flex-col gap-8">
-              {/* Card 1: Organizers */}
-              <div className="group relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-[1px] shadow-2xl transition-colors duration-500 hover:from-[#0074FF]/50">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,116,255,0.2),_transparent_60%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100"></div>
-                <div className="relative flex h-full flex-col items-start gap-6 rounded-2xl border border-white/5 bg-[#000000]/90 p-8 backdrop-blur-xl md:flex-row">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-[#0074FF]/20 bg-[#163E70]/20 shadow-[inset_0_0_15px_rgba(0,116,255,0.1)] transition-all duration-500 group-hover:scale-110 group-hover:border-[#0074FF]/60 group-hover:bg-[#0074FF]/20">
-                    <svg
-                      className="h-7 w-7 text-[#0074FF]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="mb-3 font-[family-name:var(--font-space)] text-2xl font-bold text-white transition-colors duration-300 group-hover:text-[#0074FF]">
-                      Award-Winning Organizers
-                    </h4>
-                    <p className="leading-relaxed font-light text-neutral-400">
-                      Driven by the University of Moratuwa IEEE Student Branch -
-                      officially crowned the Best Student Branch in the IEEE
-                      Region 10 - Asia-Pacific (2025).
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2: Scale */}
-              <div className="group relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-[1px] shadow-2xl transition-colors duration-500 hover:from-[#0074FF]/50">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,116,255,0.2),_transparent_60%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100"></div>
-                <div className="relative flex h-full flex-col items-start gap-6 rounded-2xl border border-white/5 bg-[#000000]/90 p-8 backdrop-blur-xl md:flex-row">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-[#0074FF]/20 bg-[#163E70]/20 shadow-[inset_0_0_15px_rgba(0,116,255,0.1)] transition-all duration-500 group-hover:scale-110 group-hover:border-[#0074FF]/60 group-hover:bg-[#0074FF]/20">
-                    <svg
-                      className="h-7 w-7 text-[#0074FF]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="mb-3 font-[family-name:var(--font-space)] text-2xl font-bold text-white transition-colors duration-300 group-hover:text-[#0074FF]">
-                      Massive Scale
-                    </h4>
-                    <p className="leading-relaxed font-light text-neutral-400">
-                      Operating on a monumental scale, with previous iterations
-                      engaging over 450 teams and 1,500+ elite competitors.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3: Training */}
-              <div className="group relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-[1px] shadow-2xl transition-colors duration-500 hover:from-[#0074FF]/50">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,116,255,0.2),_transparent_60%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100"></div>
-                <div className="relative flex h-full flex-col items-start gap-6 rounded-2xl border border-white/5 bg-[#000000]/90 p-8 backdrop-blur-xl md:flex-row">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-[#0074FF]/20 bg-[#163E70]/20 shadow-[inset_0_0_15px_rgba(0,116,255,0.1)] transition-all duration-500 group-hover:scale-110 group-hover:border-[#0074FF]/60 group-hover:bg-[#0074FF]/20">
-                    <svg
-                      className="h-7 w-7 text-[#0074FF]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="mb-3 font-[family-name:var(--font-space)] text-2xl font-bold text-white transition-colors duration-300 group-hover:text-[#0074FF]">
-                      Comprehensive Training
-                    </h4>
-                    <p className="leading-relaxed font-light text-neutral-400">
-                      Equipping competitors through dedicated awareness sessions
-                      and rigorous skill-building workshops prior to the arena.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 4: Legacy */}
-              <div className="group relative w-full overflow-hidden rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-[1px] shadow-2xl transition-colors duration-500 hover:from-[#0074FF]/50">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,116,255,0.2),_transparent_60%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100"></div>
-                <div className="relative flex h-full flex-col items-start gap-6 rounded-2xl border border-white/5 bg-[#000000]/90 p-8 backdrop-blur-xl md:flex-row">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-[#0074FF]/20 bg-[#163E70]/20 shadow-[inset_0_0_15px_rgba(0,116,255,0.1)] transition-all duration-500 group-hover:scale-110 group-hover:border-[#0074FF]/60 group-hover:bg-[#0074FF]/20">
-                    <svg
-                      className="h-7 w-7 text-[#0074FF]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="mb-3 font-[family-name:var(--font-space)] text-2xl font-bold text-white transition-colors duration-300 group-hover:text-[#0074FF]">
-                      Proven Legacy
-                    </h4>
-                    <p className="leading-relaxed font-light text-neutral-400">
-                      Maintaining a dominant track record of elevating regional
-                      talent directly into the IEEEXtreme Global Top 500.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <section id="highlights-section" className="w-full">
+          <HighlightsTimeline />
         </section>
 
         {/* Stats / Legacy */}
@@ -694,6 +427,7 @@ export default async function Home() {
         </section>
       </div>
 
+
       <ImageGallery
         images={GALLERY_PLACEHOLDER_IMAGES}
         title="MoraXtreme 10.0 Highlights"
@@ -707,6 +441,7 @@ export default async function Home() {
         eyebrow="Leadership"
         autoInterval={4500}
       />
+      </WorldAsiaScene>
     </main>
   )
 }
