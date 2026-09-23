@@ -9,16 +9,15 @@ export default function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   
-  const requestRef = useRef<number>()
-  const previousTimeRef = useRef<number>()
+  const requestRef = useRef<number | undefined>(undefined)
+  const previousTimeRef = useRef<number | undefined>(undefined)
 
   // Keep track of positions independently for buttery smooth math (Lerp)
   const mouse = useRef({ x: -100, y: -100 })
   const circle = useRef({ x: -100, y: -100 })
 
   useEffect(() => {
-    // Hide default cursor completely across the site
-    document.documentElement.style.cursor = 'none'
+    // Removed cursor hiding logic to ensure pointer visibility
 
     const updatePosition = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY }
@@ -74,7 +73,6 @@ export default function CustomCursor() {
       window.removeEventListener("mouseover", updateHoverState)
       window.removeEventListener("mouseleave", handleMouseLeave)
       if (requestRef.current) cancelAnimationFrame(requestRef.current)
-      document.documentElement.style.cursor = 'auto'
     }
   }, [isVisible, isHovering])
 
@@ -83,10 +81,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      <style>{`
-        * { cursor: none !important; }
-      `}</style>
-
       {/* Center Solid Dot (Bright Blue) */}
       <div 
         ref={cursorDotRef}

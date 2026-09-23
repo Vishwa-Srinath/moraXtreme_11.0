@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export default function DynamicNavbar() {
@@ -77,14 +77,15 @@ export default function DynamicNavbar() {
         </ul>
         
         {/* Register Button */}
-        <Button asChild variant="outline" className={cn(
+        <a href="#register" className={cn(
+          buttonVariants({ variant: "outline" }),
           "font-mono uppercase tracking-[0.2em] transition-all duration-500",
           scrolled 
             ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
             : "border-white/50 text-white hover:bg-white hover:text-black hover:border-white bg-white/5 backdrop-blur-sm"
         )}>
-          <a href="#register">Register</a>
-        </Button>
+          Register
+        </a>
       </div>
     </nav>
   )
