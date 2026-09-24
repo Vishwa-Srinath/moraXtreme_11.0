@@ -48,7 +48,7 @@ export default function TeamSlider({
 
   const [rawIndex,    setRawIndex]    = useState(startIndex);
   const [isAnimating, setIsAnimating] = useState(true);
-  const isHovered  = useRef(false);
+  const [isHovered, setIsHovered] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const active = ((rawIndex - startIndex) % n + n) % n;
@@ -81,11 +81,12 @@ export default function TeamSlider({
     [startIndex],
   );
 
-  // Auto-advance
+  // Auto-advance (faster when hovered)
   useEffect(() => {
-    const id = setInterval(() => { if (!isHovered.current) goNext(); }, autoInterval);
+    const currentInterval = isHovered ? 800 : autoInterval;
+    const id = setInterval(() => { goNext(); }, currentInterval);
     return () => clearInterval(id);
-  }, [autoInterval, goNext]);
+  }, [autoInterval, goNext, isHovered]);
 
   // ── Key fix: track uses position:absolute + left:50% so "50%" refers to the
   //    VIEWPORT width (the nearest positioned ancestor), not the track itself.
@@ -433,8 +434,8 @@ export default function TeamSlider({
         id="team"
         aria-label="Organizing Committee"
         ref={sectionRef}
-        onMouseEnter={() => { isHovered.current = true; }}
-        onMouseLeave={() => { isHovered.current = false; }}
+        onMouseEnter={() => { setIsHovered(true); }}
+        onMouseLeave={() => { setIsHovered(false); }}
       >
         <div className="ts-card-bg">
           <div className="ts-inner">

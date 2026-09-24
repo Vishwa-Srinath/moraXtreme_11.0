@@ -71,10 +71,8 @@ export default async function Home() {
         </section>
 
         {/* Highlights */}
-        <section id="highlights" className="relative w-full h-[200vh]">
-          <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-            <HighlightsTimeline />
-          </div>
+        <section id="highlights" className="relative w-full py-24 min-h-[150vh] flex flex-col justify-center">
+          <HighlightsTimeline />
         </section>
 
         {/* Stats / Legacy */}
