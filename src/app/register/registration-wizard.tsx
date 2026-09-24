@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useRef, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
+import Image from "next/image"
 import Form from "@/components/form/Form"
 import { REGISTRATION_STORAGE_KEY } from "@/lib/registration/constants"
 import {
@@ -237,73 +238,89 @@ export function RegistrationWizard({
   }
 
   return (
-    <div className="grid gap-[clamp(2rem,5vw,5rem)] lg:grid-cols-[minmax(16rem,0.7fr)_minmax(0,1.3fr)] lg:items-start">
-      <aside className="lg:sticky lg:top-24">
-        <div className="space-y-4">
-          <p className="text-sm font-medium tracking-[0.2em] text-muted-foreground uppercase">
+    <div className="flex flex-col lg:flex-row min-h-[calc(100dvh-4rem)] w-full">
+      <aside className="relative flex flex-col justify-center w-full lg:w-[40%] xl:w-[45%] p-8 lg:p-16 overflow-hidden bg-[#000000] text-white shrink-0 border-r border-[#163E70]/30">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,116,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,116,255,0.03)_1px,transparent_1px)] bg-[size:3rem_3rem]"></div>
+          <div className="absolute top-[10%] left-[20%] w-96 h-96 bg-[#0074FF] rounded-full mix-blend-screen filter blur-[150px] opacity-10 z-10" />
+        </div>
+
+        <div className="relative z-30 space-y-6">
+          <p className="text-sm font-bold tracking-[0.25em] text-[#0074FF] uppercase drop-shadow-md">
             Register your team
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-            MoraXtreme 11 team registration
-          </h1>
-          <p className="max-w-xl text-base leading-7 text-muted-foreground">
+          <Image src="/logo.png" alt="MoraXtreme 11 Logo" width={280} height={100} className="mb-2" />
+          <p className="text-xl text-white/90 font-mono tracking-widest uppercase mt-4">
+            while seats are available !
+          </p>
+          <div className="h-[2px] w-24 bg-[#0074FF] my-8 shadow-[0_0_15px_#0074FF]"></div>
+          <p className="max-w-xl text-base leading-relaxed text-neutral-300 drop-shadow-sm">
             A focused registration flow for the 12-hour online competition. The
             group leader should complete this form for the full team.
           </p>
+          <div className="pt-6">
+            <EventFacts availability={availability} />
+          </div>
         </div>
-
-        <EventFacts availability={availability} />
       </aside>
 
-      <div className="min-w-0">
-        <ProgressLine
-          steps={steps}
-          currentStepIndex={currentStepIndex}
-          highestStepIndex={highestStepIndex}
-          onJump={jumpToStep}
-        />
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#000000] p-6 sm:p-10 lg:p-16 relative overflow-y-auto w-full dark">
+        <div className="max-w-4xl w-full mx-auto relative z-10">
+          <ProgressLine
+            steps={steps}
+            currentStepIndex={currentStepIndex}
+            highestStepIndex={highestStepIndex}
+            onJump={jumpToStep}
+          />
 
-        <Form form={form} className="@container" onFinish={() => undefined}>
-          <div className="rounded-2xl border bg-card text-card-foreground shadow-sm">
-            <div className="border-b p-[clamp(1rem,3vw,2rem)]">
-              <p className="text-sm text-muted-foreground">
-                Step {currentStepIndex + 1} of {steps.length}
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                {currentStep.title}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {currentStep.description}
-              </p>
-            </div>
-
-            <div className="p-[clamp(1rem,3vw,2rem)]">
-              {stepError && (
-                <div className="mb-5 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-                  {stepError}
+          <Form form={form} className="@container mt-12" onFinish={() => undefined}>
+            <div className="rounded-2xl border border-[#163E70]/40 bg-[#030710] text-white shadow-xl hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] overflow-hidden transition-all duration-500">
+              <div className="relative border-b border-[#163E70]/40 bg-[#060d1a] p-[clamp(1.5rem,3vw,2.5rem)] overflow-hidden">
+                <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#0074FF] rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+                <div className="relative z-10">
+                  <span className="inline-block bg-[#0074FF] text-white text-xs font-bold px-3 py-1 rounded mb-4 tracking-wider">
+                    STEP 0{currentStepIndex + 1} OF 0{steps.length}
+                  </span>
+                  <h2 className="text-3xl font-semibold tracking-tight text-white">
+                    {currentStep.title}
+                  </h2>
+                  <p className="mt-2 text-base text-neutral-400">
+                    {currentStep.description}
+                  </p>
                 </div>
-              )}
+              </div>
 
-              <RegistrationStepContent
-                step={currentStep}
-                form={form}
-                values={values}
-                steps={steps}
-                onEdit={editStep}
-              />
+              <div className="p-[clamp(1.5rem,3vw,2.5rem)] bg-[#030710]">
+                {stepError && (
+                  <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm font-medium text-destructive flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {stepError}
+                  </div>
+                )}
+
+                <RegistrationStepContent
+                  step={currentStep}
+                  form={form}
+                  values={values}
+                  steps={steps}
+                  onEdit={editStep}
+                />
+              </div>
+
+              <div className="bg-[#030710] border-t border-[#163E70]/40 p-[clamp(1rem,3vw,2rem)]">
+                <WizardFooter
+                  currentStepId={currentStep.id}
+                  currentStepIndex={currentStepIndex}
+                  saveStatus={saveStatus}
+                  isPending={isPending}
+                  onBack={goBack}
+                  onNext={goNext}
+                  onSubmit={submit}
+                />
+              </div>
             </div>
-
-            <WizardFooter
-              currentStepId={currentStep.id}
-              currentStepIndex={currentStepIndex}
-              saveStatus={saveStatus}
-              isPending={isPending}
-              onBack={goBack}
-              onNext={goNext}
-              onSubmit={submit}
-            />
-          </div>
-        </Form>
+          </Form>
+        </div>
       </div>
     </div>
   )
