@@ -1,3 +1,4 @@
+import AnimatedCounter from "@/components/AnimatedCounter"
 import TeamSlider from "@/components/TeamSlider"
 import { TEAM_PLACEHOLDER } from "@/data/team.placeholder"
 import Image from "next/image"
@@ -78,11 +79,7 @@ export default async function Home() {
         {/* Stats / Legacy */}
         <section id="legacy" className="relative w-full h-[200vh]">
           <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-            <div className="group relative w-full overflow-hidden rounded-[2.5rem] border border-[#163E70]/50 bg-[#000000]/70 shadow-[0_0_50px_rgba(0,116,255,0.15)] backdrop-blur-xl">
-            {/* Background effects */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,116,255,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,116,255,0.07)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,#000_70%,transparent_100%)] bg-[size:3rem_3rem]"></div>
-            <div className="absolute top-0 left-1/2 h-[2px] w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent opacity-50 shadow-[0_0_20px_#0074FF] transition-opacity duration-1000 group-hover:opacity-100"></div>
-
+            <div className="group relative w-full">
             <div className="relative z-10 flex flex-col items-center p-12 md:p-24">
               <div className="mb-16 inline-flex items-center gap-4">
                 <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
@@ -95,8 +92,8 @@ export default async function Home() {
               <div className="flex w-full flex-col items-center justify-around gap-16 divide-y divide-[#163E70]/50 md:flex-row md:gap-8 md:divide-x md:divide-y-0">
                 {/* Stat 1 */}
                 <div className="group/stat flex w-full flex-col items-center px-4 text-center md:px-8">
-                  <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-6xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-8xl">
-                    1,500
+                  <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                    <AnimatedCounter value={1500} />
                     <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
                       +
                     </span>
@@ -108,8 +105,8 @@ export default async function Home() {
 
                 {/* Stat 2 */}
                 <div className="group/stat flex w-full flex-col items-center px-4 pt-16 text-center md:px-8 md:pt-0">
-                  <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-6xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-8xl">
-                    450
+                  <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                    <AnimatedCounter value={450} />
                     <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
                       +
                     </span>
@@ -121,8 +118,8 @@ export default async function Home() {
 
                 {/* Stat 3 */}
                 <div className="group/stat flex w-full flex-col items-center px-4 pt-16 text-center md:px-8 md:pt-0">
-                  <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-6xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-8xl">
-                    150
+                  <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                    <AnimatedCounter value={150} />
                     <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
                       +
                     </span>

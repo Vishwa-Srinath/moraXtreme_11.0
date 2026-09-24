@@ -159,6 +159,7 @@ export default function Timeline({
   const distantTopSprocketRef = useRef<HTMLDivElement | null>(null)
   const distantBottomSprocketRef = useRef<HTMLDivElement | null>(null)
   const progressBarRef = useRef<HTMLDivElement | null>(null)
+  const roadBgRef = useRef<HTMLDivElement | null>(null)
   const cardRefs = useRef<Array<HTMLElement | null>>([])
   const scrollerRef = useRef<HTMLElement | Window | null>(null)
   const rafId = useRef<number | null>(null)
@@ -291,6 +292,12 @@ export default function Timeline({
         progressBarRef.current.style.width = `${shownProgress.current * 100}%`
       }
 
+      // Road background fade-in: 0→full opacity in first 25% of scroll, then hold
+      if (roadBgRef.current) {
+        const roadOpacity = clamp(shownProgress.current / 0.25, 0, 1)
+        roadBgRef.current.style.opacity = String(roadOpacity * 0.55)
+      }
+
       // ── 3D Cylindrical Spool Curvature with Center Focus Deadzone ─────────
       const viewportCenter = window.innerWidth / 2
       cardRefs.current.forEach((card) => {
@@ -349,6 +356,79 @@ export default function Timeline({
               "backdrop-blur-sm"
         }
       >
+        {/* ── WINDING ROAD BACKGROUND ────────────────────────────────────── */}
+        {!reducedMotion && (
+          <div
+            ref={roadBgRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-0"
+            style={{ opacity: 0, transition: "opacity 0.1s linear" }}
+          >
+            <svg
+              viewBox="0 0 1200 600"
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-full"
+              preserveAspectRatio="xMidYMid slice"
+            >
+              <defs>
+                <filter id="road-glow">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+              </defs>
+              {/* Main winding road path */}
+              <path
+                d="M -100 480 C 80 470, 150 380, 300 340 S 480 200, 600 220 S 750 320, 900 260 S 1080 100, 1300 120"
+                fill="none"
+                stroke="rgba(0,116,255,0.35)"
+                strokeWidth="28"
+                strokeLinecap="round"
+                filter="url(#road-glow)"
+              />
+              {/* Road center dashed line */}
+              <path
+                d="M -100 480 C 80 470, 150 380, 300 340 S 480 200, 600 220 S 750 320, 900 260 S 1080 100, 1300 120"
+                fill="none"
+                stroke="rgba(255,255,255,0.18)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeDasharray="30 22"
+              />
+              {/* Road edge highlight */}
+              <path
+                d="M -100 480 C 80 470, 150 380, 300 340 S 480 200, 600 220 S 750 320, 900 260 S 1080 100, 1300 120"
+                fill="none"
+                stroke="rgba(111,211,255,0.2)"
+                strokeWidth="32"
+                strokeLinecap="round"
+              />
+              {/* Milestone dots along path */}
+              <circle cx="140" cy="412" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="140" cy="412" r="3" fill="rgba(0,116,255,0.6)" />
+              <circle cx="300" cy="340" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="300" cy="340" r="3" fill="rgba(0,116,255,0.6)" />
+              <circle cx="480" cy="218" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="480" cy="218" r="3" fill="rgba(0,116,255,0.6)" />
+              <circle cx="600" cy="220" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="600" cy="220" r="3" fill="rgba(0,116,255,0.6)" />
+              <circle cx="760" cy="290" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="760" cy="290" r="3" fill="rgba(0,116,255,0.6)" />
+              <circle cx="900" cy="260" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="900" cy="260" r="3" fill="rgba(0,116,255,0.6)" />
+              <circle cx="1060" cy="118" r="8" fill="none" stroke="rgba(0,116,255,0.5)" strokeWidth="2" />
+              <circle cx="1060" cy="118" r="3" fill="rgba(0,116,255,0.6)" />
+              {/* Stem lines from dots upward */}
+              <line x1="140" y1="404" x2="140" y2="340" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="300" y1="332" x2="300" y2="268" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="480" y1="210" x2="480" y2="146" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="600" y1="212" x2="600" y2="148" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="760" y1="282" x2="760" y2="218" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="900" y1="252" x2="900" y2="188" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="1060" y1="110" x2="1060" y2="46" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="4 3" />
+            </svg>
+          </div>
+        )}
+
         {/* Ambient light leak */}
         {!reducedMotion && (
           <div
@@ -489,16 +569,16 @@ export default function Timeline({
                 ref={(el) => {
                   cardRefs.current[i] = el
                 }}
-                className="group relative aspect-[4/5] w-[180px] flex-none snap-start rounded-lg bg-[#070b13] p-2 sm:p-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.85)] ring-1 ring-[#6fd3ff]/25 will-change-transform [backface-visibility:hidden] sm:w-[220px] lg:w-[260px]"
+                className="group relative w-[220px] sm:w-[280px] flex-none snap-start rounded-lg bg-[#070b13] p-2 sm:p-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.85)] ring-1 ring-[#6fd3ff]/25 will-change-transform [backface-visibility:hidden]"
               >
                 {/* Genially-style Red Date Pin */}
-                <div className="absolute -top-14 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center drop-shadow-[0_6px_16px_rgba(220,38,38,0.6)]">
-                  <div className="flex items-center justify-center rounded-full bg-[#cc1a1a] px-5 py-2 shadow-[inset_0_0_10px_rgba(0,0,0,0.3)] ring-1 ring-[#ff4d4d]/30">
-                    <span className="whitespace-nowrap text-sm font-bold tracking-wider text-white">
+                <div className="absolute -top-16 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center drop-shadow-[0_8px_20px_rgba(220,38,38,0.7)]">
+                  <div className="flex items-center justify-center rounded-full bg-[#cc1a1a] px-6 py-2.5 sm:px-8 sm:py-3 shadow-[inset_0_0_15px_rgba(0,0,0,0.4)] ring-1 ring-[#ff4d4d]/30">
+                    <span className="whitespace-nowrap text-base sm:text-lg font-black tracking-widest text-white">
                       {m.date.toUpperCase()}
                     </span>
                   </div>
-                  <div className="h-4 w-4 -translate-y-2.5 rotate-45 bg-[#cc1a1a]" />
+                  <div className="h-5 w-5 -translate-y-3.5 rotate-45 bg-[#cc1a1a]" />
                 </div>
 
                 {/* Film frame cell number stamp */}
@@ -509,49 +589,22 @@ export default function Timeline({
                   </span>
                 </div>
 
-                {/* Inner Cell / Photograph */}
-                <div className="relative flex h-[calc(100%-24px)] w-full flex-col overflow-hidden rounded border border-white/10 bg-[#0c1220] shadow-inner">
-                  {/* Photo area */}
-                  <div className="relative h-3/5 w-full overflow-hidden bg-black">
-                    {m.image ? (
-                      <img
-                        src={m.image}
-                        alt={m.title}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(160deg,_#0f1a2e,_#0b1120)]">
-                        <span className="font-mono text-[10px] tracking-[0.2em] text-[#6fd3ff]/40">
-                          NO SIGNAL
-                        </span>
-                      </div>
-                    )}
-                    {/* Cinematic overlay grades */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0c1220] via-transparent to-transparent opacity-90" />
-                    <div className="absolute inset-0 bg-[#1f8fff] opacity-15 mix-blend-color" />
-                    <span className="absolute top-2.5 left-2.5 rounded border border-white/10 bg-black/60 px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider text-[#6fd3ff] backdrop-blur-md">
-                      ROLL {m.reel ?? String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-
+                {/* Inner Cell / Content */}
+                <div className="relative flex w-full flex-col overflow-hidden rounded border border-white/10 bg-[#0c1220] shadow-inner">
                   {/* Caption area */}
-                  <div className="flex flex-1 flex-col justify-between bg-[#0c1220] p-4">
+                  <div className="flex flex-col justify-between p-4 sm:p-5">
                     <div>
-                      <h3 className="text-base font-black tracking-tight text-[#f5f8ff] sm:text-lg leading-tight">
+                      <h3 className="text-lg font-black tracking-tight text-[#f5f8ff] sm:text-xl leading-tight">
                         {m.title}
                       </h3>
-                      <span className="mt-0.5 inline-block font-mono text-[10px] sm:text-xs font-medium text-[#6fd3ff]">
-                        {m.date}
-                      </span>
                       {m.desc && (
-                        <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-[#94a3b8]">
+                        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-[#94a3b8]">
                           {m.desc}
                         </p>
                       )}
                     </div>
                     {/* Frame alignment tick */}
-                    <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-2 font-mono text-[9px] text-[#475569]">
+                    <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3 font-mono text-[10px] text-[#475569]">
                       <span>EXP. 2026</span>
                       <span>SEC. 0{i + 1}</span>
                     </div>
