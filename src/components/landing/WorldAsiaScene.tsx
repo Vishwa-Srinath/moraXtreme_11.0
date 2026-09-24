@@ -48,10 +48,10 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
       const highlightsEl = document.getElementById('highlights')
       if (highlightsEl) {
         const hRect = highlightsEl.getBoundingClientRect()
-        // Start earlier and spread over a larger distance to make the transition slower
-        // Start earlier and spread over a larger distance to make the transition slower
-        const startOffset = window.innerHeight * 3.0
-        const distance = window.innerHeight * 3.0
+        // Start animation when highlights section is just about to enter the viewport (1.2vh)
+        // and complete it over 1.5vh of scrolling
+        const startOffset = window.innerHeight * 1.2
+        const distance = window.innerHeight * 1.5
         sriLankaZoom = smoothstep(clamp((startOffset - hRect.top) / distance))
       }
 
@@ -60,8 +60,8 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
       const timelineEl = document.getElementById('timeline')
       if (timelineEl) {
         const tRect = timelineEl.getBoundingClientRect()
-        const startOffset = window.innerHeight * 1.5
-        const distance = window.innerHeight * 2.0
+        const startOffset = window.innerHeight * 1.2
+        const distance = window.innerHeight * 1.5
         timelineZoom = smoothstep(clamp((startOffset - tRect.top) / distance))
       }
 
@@ -70,10 +70,9 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
       const whyJoinEl = document.getElementById('why-join')
       if (whyJoinEl) {
         const wRect = whyJoinEl.getBoundingClientRect()
-        // Increase startOffset and distance drastically to make the transition very slow and smooth
-        // Increase startOffset and distance drastically to make the transition very slow and smooth
-        const startOffset = window.innerHeight * 4.5
-        const distance = window.innerHeight * 3.5
+        // Start transitioning as Why Participate comes into view
+        const startOffset = window.innerHeight * 1.2
+        const distance = window.innerHeight * 2.0
         worldZoomOut = smoothstep(clamp((startOffset - wRect.top) / distance))
       }
 
@@ -83,9 +82,8 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
       if (crewEl) {
         const cRect = crewEl.getBoundingClientRect()
         // Start as crew section approaches
-        // Start as crew section approaches, spread over long distance
-        const startOffset = window.innerHeight * 2.5
-        const distance = window.innerHeight * 2.5
+        const startOffset = window.innerHeight * 1.2
+        const distance = window.innerHeight * 1.5
         deepZoom = smoothstep(clamp((startOffset - cRect.top) / distance))
       }
 

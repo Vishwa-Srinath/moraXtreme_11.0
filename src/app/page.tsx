@@ -21,9 +21,10 @@ export default async function Home() {
         {/* About Section */}
         <section
           id="about"
-          className="grid scroll-mt-32 items-center gap-16 lg:grid-cols-2"
+          className="relative w-full h-[200vh]"
         >
-          {/* Left Column: Content */}
+          <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
+            <div className="grid items-center gap-16 lg:grid-cols-2">
           <div className="z-10 flex flex-col gap-12">
             <div>
               <div className="mb-6 inline-flex items-center gap-3">
@@ -64,17 +65,22 @@ export default async function Home() {
                 South Asian region.
               </p>
             </div>
+            </div>
+          </div>
           </div>
         </section>
 
         {/* Highlights */}
-        <section id="highlights" className="w-full">
-          <HighlightsTimeline />
+        <section id="highlights" className="relative w-full h-[200vh]">
+          <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
+            <HighlightsTimeline />
+          </div>
         </section>
 
         {/* Stats / Legacy */}
-        <section id="legacy" className="relative w-full scroll-mt-32 py-16">
-          <div className="group relative w-full overflow-hidden rounded-[2.5rem] border border-[#163E70]/50 bg-[#000000]/70 shadow-[0_0_50px_rgba(0,116,255,0.15)] backdrop-blur-xl">
+        <section id="legacy" className="relative w-full h-[200vh]">
+          <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
+            <div className="group relative w-full overflow-hidden rounded-[2.5rem] border border-[#163E70]/50 bg-[#000000]/70 shadow-[0_0_50px_rgba(0,116,255,0.15)] backdrop-blur-xl">
             {/* Background effects */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,116,255,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,116,255,0.07)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,#000_70%,transparent_100%)] bg-[size:3rem_3rem]"></div>
             <div className="absolute top-0 left-1/2 h-[2px] w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent opacity-50 shadow-[0_0_20px_#0074FF] transition-opacity duration-1000 group-hover:opacity-100"></div>
@@ -130,6 +136,7 @@ export default async function Home() {
               </div>
             </div>
           </div>
+          </div>
         </section>
 
         <Timeline />
@@ -137,10 +144,11 @@ export default async function Home() {
         {/* Why Participate - Centered Layout */}
         <section
           id="why-join"
-          className="relative flex w-full min-h-[120vh] scroll-mt-32 flex-col items-center justify-center gap-12 py-48"
+          className="relative w-full h-[200vh]"
         >
-          {/* Centered Text Content */}
-          <div className="z-10 flex w-full max-w-6xl flex-col gap-12 px-6 sm:px-10">
+          <div className="sticky top-0 flex h-screen w-full flex-col justify-center items-center">
+            {/* Centered Text Content */}
+            <div className="z-10 flex w-full max-w-6xl flex-col gap-12 px-6 sm:px-10">
             <div className="flex flex-col items-center text-center gap-6">
               <h2 className="font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-md md:text-5xl">
                 Why <span className="text-[#0074FF]">Participate?</span>
@@ -177,6 +185,7 @@ export default async function Home() {
                   experience for the 24-hour global IEEEXtreme competition.
                 </p>
               </div>
+            </div>
             </div>
           </div>
         </section>
