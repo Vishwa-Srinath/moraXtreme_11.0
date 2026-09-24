@@ -8,6 +8,13 @@ import Form from "@/components/form/Form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   COUNTRY_OPTIONS,
   OTHER_UNIVERSITY_ID,
   TEAM_SIZE_OPTIONS,
@@ -73,17 +80,28 @@ function TeamDetailsStep({ form }: { form: RegistrationForm }) {
         name="country"
         render={(controller) => (
           <Form.CustomController {...controller} label="Country">
-            <select
-              {...controller.field}
-              className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:bg-input/30"
-              aria-invalid={controller.fieldState.invalid}
+            <Select
+              value={controller.field.value}
+              onValueChange={controller.field.onChange}
             >
-              {COUNTRY_OPTIONS.map((country) => (
-                <option key={country} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger
+                aria-invalid={controller.fieldState.invalid}
+                className={
+                  controller.fieldState.invalid
+                    ? "border-destructive ring-destructive/20"
+                    : ""
+                }
+              >
+                <SelectValue placeholder="Select a country" />
+              </SelectTrigger>
+              <SelectContent>
+                {COUNTRY_OPTIONS.map((country) => (
+                  <SelectItem key={country} value={country}>
+                    {country}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Form.CustomController>
         )}
       />
