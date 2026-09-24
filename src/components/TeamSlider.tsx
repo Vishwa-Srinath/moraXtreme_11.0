@@ -81,9 +81,9 @@ export default function TeamSlider({
     [startIndex],
   );
 
-  // Auto-advance (faster when hovered)
+  // Auto-advance (slower when hovered or fast, adjusted to be readable)
   useEffect(() => {
-    const currentInterval = isHovered ? 800 : autoInterval;
+    const currentInterval = isHovered ? 2500 : autoInterval;
     const id = setInterval(() => { goNext(); }, currentInterval);
     return () => clearInterval(id);
   }, [autoInterval, goNext, isHovered]);
