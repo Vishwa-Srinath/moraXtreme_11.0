@@ -54,14 +54,14 @@ export default function DynamicNavbar() {
         </div>
         
         {/* Navigation Links - desktop */}
-        <ul className="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-mono tracking-[0.2em] uppercase text-neutral-400">
+        <ul className="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-[family-name:var(--font-space)] font-bold tracking-widest uppercase text-neutral-400">
           {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
             <li key={item}>
               <a 
                 href={`#${item}`} 
                 className={cn(
                   "transition-colors duration-300 relative",
-                  activeSection === item ? "text-white font-bold" : "hover:text-[#0074FF]"
+                  activeSection === item ? "text-white" : "font-bold hover:text-[#0074FF]"
                 )}
               >
                 {item}
@@ -81,7 +81,7 @@ export default function DynamicNavbar() {
         <div className="flex items-center gap-3">
           <a href="/register" className={cn(
             buttonVariants({ variant: "outline" }),
-            "font-mono uppercase tracking-[0.2em] transition-all duration-500 text-xs px-3 sm:px-4",
+            "font-[family-name:var(--font-space)] font-extrabold uppercase tracking-widest transition-all duration-500 text-xs px-3 sm:px-4",
             scrolled 
               ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
               : "border-white/50 text-white hover:bg-white hover:text-black hover:border-white bg-white/5 backdrop-blur-sm"
@@ -105,7 +105,7 @@ export default function DynamicNavbar() {
       {/* Mobile menu dropdown */}
       {mobileOpen && (
         <div className="md:hidden border-t border-[#163E70]/50 bg-black/90 backdrop-blur-xl px-4 py-4">
-          <ul className="flex flex-col gap-4 font-mono text-xs tracking-[0.2em] uppercase">
+          <ul className="flex flex-col gap-4 font-[family-name:var(--font-space)] font-bold text-xs tracking-widest uppercase">
             {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
               <li key={item}>
                 <a

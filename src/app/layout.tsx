@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Geist_Mono, Inter, Orbitron, Space_Grotesk } from "next/font/google"
+import { Bebas_Neue, Geist_Mono, Inter, Montserrat, Orbitron, Space_Grotesk } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -22,6 +22,18 @@ const orbitron = Orbitron({
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space",
+})
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bebas",
+})
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-montserrat",
 })
 
 export const viewport: Viewport = {
@@ -71,7 +83,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased scroll-smooth", fontMono.variable, orbitron.variable, spaceGrotesk.variable, "font-sans", inter.variable)}
+      className={cn("antialiased scroll-smooth", fontMono.variable, orbitron.variable, spaceGrotesk.variable, bebasNeue.variable, montserrat.variable, "font-sans", inter.variable)}
     >
       <body>
         <CustomCursor />
