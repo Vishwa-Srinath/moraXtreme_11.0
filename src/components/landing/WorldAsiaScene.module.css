@@ -128,20 +128,32 @@
 
 @media (max-width: 700px) {
   .scene {
-    height: 280vh;
+    /* Give enough scroll distance for the full animation to play on mobile */
+    min-height: 380vh;
   }
   .world {
     width: 180vw;
+    /* mix-blend-mode:screen makes the globe invisible on many Android browsers —
+       fall back to normal so it always shows */
+    mix-blend-mode: normal;
+    filter: brightness(0.9) saturate(1.1);
   }
   .asia {
     width: 220vw;
+    /* Same fix for Asia map */
+    mix-blend-mode: normal;
   }
   .sriLanka {
     width: 120vw;
+    mix-blend-mode: normal;
   }
   .heroContent {
     padding: 1rem;
     padding-top: 5rem;
+  }
+  /* Reduce vignette on mobile so maps are more visible */
+  .vignette {
+    background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 20%, rgba(0,0,0,0.65) 100%);
   }
 }
 

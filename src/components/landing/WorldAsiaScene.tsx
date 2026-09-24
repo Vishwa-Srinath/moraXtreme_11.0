@@ -345,7 +345,8 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
       </div>
 
       {/* Spacer to allow the scroll animation to play before content comes up */}
-      <div style={{ height: '250vh' }} />
+      {/* Mobile gets more height so the animation isn't rushed */}
+      <div className="h-[250vh] sm:h-[250vh]" style={{ minHeight: '250vh' }} />
 
       {/* Content wrapper that will scroll up over the sticky background */}
       <div className="relative z-10 flex w-full flex-col items-center">
