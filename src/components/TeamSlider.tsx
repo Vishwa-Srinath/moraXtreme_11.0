@@ -43,9 +43,9 @@ function getCardTransform(offset: number): CardTransform {
 
   const sign = Math.sign(offset) || 1;
   return {
-    translateX: offset * 290,
+    translateX: offset * 420, // Spread across the screen
     scale:      abs === 0 ? 1 : abs === 1 ? 0.8 : 0.62,
-    rotateY:    abs === 0 ? 0 : sign * -(abs === 1 ? 20 : 32),
+    rotateY:    abs === 0 ? 0 : sign * -(abs === 1 ? 15 : 25), // Reduced rotation so they look wider
     translateZ: abs === 0 ? 0 : abs === 1 ? -60 : -160,
     opacity:    abs === 0 ? 1 : abs === 1 ? 0.75 : 0.45,
     zIndex:     10 - abs * 3,
@@ -60,7 +60,7 @@ export default function TeamSlider({
   members,
   title,
   subtitle,
-  autoInterval = 4500,
+  autoInterval = 2500,
 }: TeamSliderProps) {
   const n            = members.length;
   const [active, setActive] = useState(0);
@@ -79,21 +79,45 @@ export default function TeamSlider({
     return () => clearInterval(id);
   }, [autoInterval, goNext]);
 
-  // Non-passive wheel listener (scroll hijack)
+  // Smart Scroll Handling
   useEffect(() => {
     const el = viewportRef.current;
     if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (!isHovered.current) return;
-      e.preventDefault();
-      if (scrollGuard.current) return;
-      scrollGuard.current = true;
-      setTimeout(() => { scrollGuard.current = false; }, 700);
-      if (e.deltaY > 0) goNext(); else goPrev();
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 15) return; // ignore tiny movements
+
+      if (scrollGuard.current) {
+        // If we are currently animating a scroll, prevent the page from moving
+        // UNLESS we are at the very beginning (trying to scroll up) or the very end (trying to scroll down)
+        if ((e.deltaY > 0 && active < n - 1) || (e.deltaY < 0 && active > 0)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      if (e.deltaY > 0) {
+        // Scrolling Down
+        if (active < n - 1) {
+          e.preventDefault(); // Stop page from scrolling
+          goNext();
+          scrollGuard.current = true;
+          setTimeout(() => (scrollGuard.current = false), 800);
+        }
+      } else {
+        // Scrolling Up
+        if (active > 0) {
+          e.preventDefault(); // Stop page from scrolling
+          goPrev();
+          scrollGuard.current = true;
+          setTimeout(() => (scrollGuard.current = false), 800);
+        }
+      }
     };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [goNext, goPrev]);
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, [active, n, goNext, goPrev]);
 
   const activeMember = members[active];
 
@@ -184,10 +208,10 @@ export default function TeamSlider({
           z-index: 1;
           flex: 1;
           display: grid;
-          grid-template-columns: 320px 1fr;
+          grid-template-columns: 250px 1fr;
           align-items: center;
-          padding: 3rem 2.5rem 2rem;
-          gap: 2rem;
+          padding: 3rem 2rem 2rem;
+          gap: 4rem;
         }
         @media (max-width: 900px) {
           .ts-body {
@@ -229,7 +253,7 @@ export default function TeamSlider({
         /* ── Carousel viewport ── */
         .ts-viewport {
           position: relative;
-          height: 520px;
+          height: 440px;
           perspective: 1100px;
           perspective-origin: center center;
         }
@@ -239,8 +263,8 @@ export default function TeamSlider({
           position: absolute;
           left: 50%;
           top: 50%;
-          width: 260px;
-          height: 400px;
+          width: 380px;
+          height: 380px;
           border-radius: 8px;
           overflow: hidden;
           border: 1px solid ${C.border};
@@ -273,12 +297,13 @@ export default function TeamSlider({
         .ts-card-photo img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
+          object-position: bottom;
           display: block;
           transition: transform 0.5s ease;
         }
         .ts-card--active .ts-card-photo img {
-          transform: scale(1.03);
+          /* Removed scale(1.03) zoom effect to keep original size */
         }
         .ts-card-photo-placeholder {
           width: 100%;
@@ -466,6 +491,7 @@ export default function TeamSlider({
 
       <section
         className="ts-section"
+        id="crew"
         aria-label="Team section"
         ref={viewportRef}
         onMouseEnter={() => { isHovered.current = true; }}

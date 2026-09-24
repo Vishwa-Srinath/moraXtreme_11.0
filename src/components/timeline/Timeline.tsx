@@ -24,7 +24,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "01",
     title: "Registrations Open",
-    date: "22 September",
+    date: "24 September",
     desc: "Sign-ups go live for MoraXtreme 11.0.",
     image:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=900&q=80",
@@ -39,19 +39,19 @@ const DEFAULT_MILESTONES: Milestone[] = [
   },
   {
     reel: "03",
-    title: "Workshop 01",
-    date: "First week of October",
-    desc: "Foundations — algorithmic problem solving.",
-    image:
-      "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=900&q=80",
-  },
-  {
-    reel: "04",
     title: "Registrations Close",
     date: "30 September",
     desc: "Last call — team sign-ups lock.",
     image:
       "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80",
+  },
+  {
+    reel: "04",
+    title: "Workshop 01",
+    date: "First week of October",
+    desc: "Foundations — algorithmic problem solving.",
+    image:
+      "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=900&q=80",
   },
   {
     reel: "05",
@@ -63,6 +63,14 @@ const DEFAULT_MILESTONES: Milestone[] = [
   },
   {
     reel: "06",
+    title: "IEEEXtreme 20.0",
+    date: "31 October",
+    desc: "The 24-hour global main event.",
+    image:
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=900&q=80",
+  },
+  {
+    reel: "07",
     title: "Workshop 02",
     date: "First week of November",
     desc: "Advanced techniques ahead of the final stretch.",
@@ -70,20 +78,12 @@ const DEFAULT_MILESTONES: Milestone[] = [
       "https://images.unsplash.com/photo-1550439062-609e1531270e?w=900&q=80",
   },
   {
-    reel: "07",
+    reel: "08",
     title: "Final Round",
     date: "Second week of November",
     desc: "The top teams face off for the title.",
     image:
       "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&q=80",
-  },
-  {
-    reel: "08",
-    title: "IEEEXtreme 20.0",
-    date: "31 October",
-    desc: "The 24-hour global main event.",
-    image:
-      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=900&q=80",
   },
 ]
 
@@ -130,7 +130,10 @@ function getScrollInfo(
   scroller: HTMLElement | Window
 ): { scrollTop: number; sectionOffset: number } {
   if (scroller instanceof Window) {
-    return { scrollTop: window.scrollY, sectionOffset: section.offsetTop }
+    return {
+      scrollTop: window.scrollY,
+      sectionOffset: section.getBoundingClientRect().top + window.scrollY,
+    }
   }
   const scrollerRect = scroller.getBoundingClientRect()
   const sectionRect = section.getBoundingClientRect()
@@ -153,8 +156,10 @@ export default function Timeline({
   const sprocketBottomHolesRef = useRef<HTMLDivElement | null>(null)
   const edgeTopTextRef = useRef<HTMLDivElement | null>(null)
   const edgeBottomTextRef = useRef<HTMLDivElement | null>(null)
+  const distantTopSprocketRef = useRef<HTMLDivElement | null>(null)
+  const distantBottomSprocketRef = useRef<HTMLDivElement | null>(null)
   const progressBarRef = useRef<HTMLDivElement | null>(null)
-  const cardRefs = useRef<Array<HTMLDivElement | null>>([])
+  const cardRefs = useRef<Array<HTMLElement | null>>([])
   const scrollerRef = useRef<HTMLElement | Window | null>(null)
   const rafId = useRef<number | null>(null)
 
@@ -186,7 +191,8 @@ export default function Timeline({
 
     // Total travel required from first card centered to last card centered
     const totalShift = lastCenter - firstCenter
-    setMaxShift(totalShift)
+    // Add 400px of extra padding so the final card scrolls fully into view and stays there briefly
+    setMaxShift(totalShift + 400)
 
     // Offset needed so card 1 starts directly at viewport center
     setInitialOffset(window.innerWidth / 2 - firstCenter)
@@ -247,7 +253,7 @@ export default function Timeline({
       shownProgress.current = lerp(
         shownProgress.current,
         targetProgress.current,
-        0.08
+        0.035
       )
 
       // Exact scroll translation: from 1st card centered to last card centered
@@ -271,6 +277,14 @@ export default function Timeline({
       }
       if (edgeBottomTextRef.current) {
         edgeBottomTextRef.current.style.transform = `translate3d(${translateX}px, 0, 0)`
+      }
+
+      // Distant background parallax
+      if (distantTopSprocketRef.current) {
+        distantTopSprocketRef.current.style.backgroundPosition = `${translateX * -0.4}px center`
+      }
+      if (distantBottomSprocketRef.current) {
+        distantBottomSprocketRef.current.style.backgroundPosition = `${translateX * -0.4}px center`
       }
 
       if (progressBarRef.current) {
@@ -314,12 +328,14 @@ export default function Timeline({
     }
   }, [reducedMotion, maxShift, initialOffset])
 
-  const pinHeight = 120 + Math.max(160, milestones.length * 36)
+  // Increased pinHeight to stretch out the scroll and make it slower/smoother
+  const pinHeight = 200 + Math.max(160, milestones.length * 45)
 
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#04060c]"
+      id="timeline"
+      className="relative w-full"
       style={!reducedMotion ? { height: `${pinHeight}vh` } : undefined}
       aria-label="Event Timeline"
     >
@@ -330,7 +346,7 @@ export default function Timeline({
             : "sticky top-0 flex h-screen flex-col overflow-hidden " +
               "bg-[radial-gradient(ellipse_at_20%_15%,_rgba(31,143,255,0.18),_transparent_55%)," +
               "radial-gradient(ellipse_at_80%_85%,_rgba(111,211,255,0.12),_transparent_50%)] " +
-              "bg-[#04060c]"
+              "backdrop-blur-sm"
         }
       >
         {/* Ambient light leak */}
@@ -378,14 +394,31 @@ export default function Timeline({
 
         {/* ── FILM REEL STRIP CONTAINER ─────────────────────────────────── */}
         <div
-          className="relative flex flex-1 flex-col justify-center overflow-hidden border-y border-[#6fd3ff]/20 bg-[#080c14] shadow-[inset_0_0_60px_rgba(0,0,0,0.85)]"
+          className="relative flex flex-1 flex-col justify-center overflow-hidden border-y border-[#6fd3ff]/20 bg-black/40 shadow-[inset_0_0_60px_rgba(0,0,0,0.85)]"
           style={{ perspective: "1400px" }}
         >
+          {/* ── DISTANT BACKGROUND FILM ROLL ──────────────────────────────── */}
+          <div
+            className="pointer-events-none absolute inset-x-[-100%] top-1/2 h-[400px] -translate-y-1/2 border-y border-[#6fd3ff]/10 bg-[#02040a]/40 opacity-30 blur-[6px] mix-blend-screen"
+            style={{ transform: "translateZ(-800px) rotateY(-15deg) rotateZ(-4deg)" }}
+          >
+            <div
+              ref={distantTopSprocketRef}
+              className="absolute inset-x-0 top-0 h-[30px]"
+              style={{ backgroundImage: `url('${SPROCKET_PATTERN_URI}')`, backgroundRepeat: "repeat-x" }}
+            />
+            <div
+              ref={distantBottomSprocketRef}
+              className="absolute inset-x-0 bottom-0 h-[30px]"
+              style={{ backgroundImage: `url('${SPROCKET_PATTERN_URI}')`, backgroundRepeat: "repeat-x" }}
+            />
+          </div>
+
           {/* Subtle glossy film sheen across the track */}
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1/2 bg-gradient-to-b from-white/[0.035] to-transparent" />
 
           {/* ── TOP SPROCKET & EDGE CODE TRACK (FULL-WIDTH & CONTINUOUS) ── */}
-          <div className="relative z-10 w-full overflow-hidden border-b border-[#6fd3ff]/20 bg-[#090e18] shadow-sm select-none">
+          <div className="relative z-10 w-full overflow-hidden border-b border-[#6fd3ff]/20 bg-black/50 shadow-sm select-none">
             {/* Edge code markings */}
             <div
               ref={edgeTopTextRef}
@@ -444,7 +477,7 @@ export default function Timeline({
             ref={stripRef}
             style={{ transformStyle: "preserve-3d" }}
             className={
-              "flex gap-6 py-6 will-change-transform sm:gap-10 sm:py-8 " +
+              "relative z-[15] flex gap-6 py-6 will-change-transform sm:gap-10 sm:py-8 " +
               (reducedMotion
                 ? "snap-x snap-proximity overflow-x-auto px-8"
                 : "")
@@ -456,8 +489,18 @@ export default function Timeline({
                 ref={(el) => {
                   cardRefs.current[i] = el
                 }}
-                className="group relative aspect-[4/5] w-[260px] flex-none snap-start rounded-lg bg-[#070b13] p-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.85)] ring-1 ring-[#6fd3ff]/25 will-change-transform [backface-visibility:hidden] sm:w-[320px] lg:w-[360px]"
+                className="group relative aspect-[4/5] w-[180px] flex-none snap-start rounded-lg bg-[#070b13] p-2 sm:p-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.85)] ring-1 ring-[#6fd3ff]/25 will-change-transform [backface-visibility:hidden] sm:w-[220px] lg:w-[260px]"
               >
+                {/* Genially-style Red Date Pin */}
+                <div className="absolute -top-14 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center drop-shadow-[0_6px_16px_rgba(220,38,38,0.6)]">
+                  <div className="flex items-center justify-center rounded-full bg-[#cc1a1a] px-5 py-2 shadow-[inset_0_0_10px_rgba(0,0,0,0.3)] ring-1 ring-[#ff4d4d]/30">
+                    <span className="whitespace-nowrap text-sm font-bold tracking-wider text-white">
+                      {m.date.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="h-4 w-4 -translate-y-2.5 rotate-45 bg-[#cc1a1a]" />
+                </div>
+
                 {/* Film frame cell number stamp */}
                 <div className="mb-2 flex items-center justify-between font-mono text-[10px] font-bold tracking-widest text-[#6fd3ff]/70 uppercase">
                   <span>FRAME #{m.reel ?? String(i + 1).padStart(2, "0")}</span>
@@ -495,10 +538,10 @@ export default function Timeline({
                   {/* Caption area */}
                   <div className="flex flex-1 flex-col justify-between bg-[#0c1220] p-4">
                     <div>
-                      <h3 className="text-lg font-black tracking-tight text-[#f5f8ff] sm:text-xl">
+                      <h3 className="text-base font-black tracking-tight text-[#f5f8ff] sm:text-lg leading-tight">
                         {m.title}
                       </h3>
-                      <span className="mt-0.5 inline-block font-mono text-xs font-medium text-[#6fd3ff]">
+                      <span className="mt-0.5 inline-block font-mono text-[10px] sm:text-xs font-medium text-[#6fd3ff]">
                         {m.date}
                       </span>
                       {m.desc && (
@@ -519,7 +562,7 @@ export default function Timeline({
           </div>
 
           {/* ── BOTTOM SPROCKET & AUDIO / BARCODE TRACK (FULL-WIDTH & CONTINUOUS) ── */}
-          <div className="relative z-10 w-full overflow-hidden border-t border-[#6fd3ff]/20 bg-[#090e18] shadow-sm select-none">
+          <div className="relative z-10 w-full overflow-hidden border-t border-[#6fd3ff]/20 bg-black/50 shadow-sm select-none">
             {/* Seamless Sprocket Perforations */}
             <div
               ref={sprocketBottomHolesRef}
