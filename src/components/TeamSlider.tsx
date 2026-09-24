@@ -12,66 +12,74 @@ import type { TeamSliderProps } from "@/types/team";
 // COLOUR TOKENS
 // ─────────────────────────────────────────────────────────────────────────────
 const C = {
-  bg:         "#04080F",
-  bgCard:     "#070D16",
-  border:     "rgba(13,37,67,0.7)",
+  border:     "rgba(13,37,67,0.5)",
   borderAct:  "#0074FF",
-  blueDeep:   "#163E70",
   blueBright: "#0074FF",
+  blueDeep:   "#163E70",
   textHead:   "#FFFFFF",
-  textBody:   "#E8ECF1",
   textMuted:  "#6B7B8D",
-  textRole:   "#0074FF",
 } as const;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Coverflow math
-// ─────────────────────────────────────────────────────────────────────────────
-interface CardTransform {
-  translateX: number; // px offset from centre
-  scale: number;
-  rotateY: number;   // deg
-  translateZ: number; // px
-  opacity: number;
-  zIndex: number;
-  visible: boolean;
-}
+// ── Card dimensions ──────────────────────────────────────────────────────────
+const CARD_W      = 250;  // px — DOM width (same for all cards)
+const CARD_GAP    = 20;   // px gap between cards
+const SCALE_ACTIVE = 1.13;
+const SCALE_NEAR   = 0.87;
 
-function getCardTransform(offset: number): CardTransform {
-  const abs = Math.abs(offset);
-  if (abs > 2) return { translateX: 0, scale: 0, rotateY: 0, translateZ: 0, opacity: 0, zIndex: 0, visible: false };
-
-  const sign = Math.sign(offset) || 1;
-  return {
-    translateX: offset * 420, // Spread across the screen
-    scale:      abs === 0 ? 1 : abs === 1 ? 0.8 : 0.62,
-    rotateY:    abs === 0 ? 0 : sign * -(abs === 1 ? 15 : 25), // Reduced rotation so they look wider
-    translateZ: abs === 0 ? 0 : abs === 1 ? -60 : -160,
-    opacity:    abs === 0 ? 1 : abs === 1 ? 0.75 : 0.45,
-    zIndex:     10 - abs * 3,
-    visible:    true,
-  };
-}
+// Nav button dimensions — button is 40 px wide / tall
+// We want each button centred in the gap between the side card and the centre card.
+// Gap runs from:  (viewport_centre - CARD_W/2 - CARD_GAP)  to  (viewport_centre - CARD_W/2)
+// Gap centre:     viewport_centre - CARD_W/2 - CARD_GAP/2
+// Button left edge (using left: calc(50% - X)):
+//   X = CARD_W/2 + CARD_GAP/2 + BTN_HALF  = 125 + 10 + 20 = 155 px
+const NAV_OFFSET = CARD_W / 2 + CARD_GAP / 2 + 20; // 155 px from 50 %
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Main component
+// Component
 // ─────────────────────────────────────────────────────────────────────────────
 export default function TeamSlider({
   members,
-  title,
   subtitle,
-  autoInterval = 2500,
+  autoInterval = 4500,
 }: TeamSliderProps) {
-  const n            = members.length;
-  const [active, setActive] = useState(0);
-  const isHovered    = useRef(false);
-  const scrollGuard  = useRef(false);
-  const viewportRef  = useRef<HTMLDivElement>(null);
+  const n          = members.length;
+  const tripled    = [...members, ...members, ...members];
+  const startIndex = n;
 
-  const mod    = useCallback((i: number) => ((i % n) + n) % n, [n]);
-  const goNext = useCallback(() => setActive((a) => mod(a + 1)), [mod]);
-  const goPrev = useCallback(() => setActive((a) => mod(a - 1)), [mod]);
-  const goTo   = useCallback((i: number) => setActive(mod(i)), [mod]);
+  const [rawIndex,    setRawIndex]    = useState(startIndex);
+  const [isAnimating, setIsAnimating] = useState(true);
+  const isHovered  = useRef(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const active = ((rawIndex - startIndex) % n + n) % n;
+
+  // Silent jump back to middle copy when near edge
+  useEffect(() => {
+    if (rawIndex < n / 2 || rawIndex > n * 2 + n / 2) {
+      const id = setTimeout(() => {
+        setIsAnimating(false);
+        setRawIndex((prev) => ((prev - startIndex + n * 1000) % n) + startIndex);
+      }, 650);
+      return () => clearTimeout(id);
+    }
+  }, [rawIndex, n, startIndex]);
+
+  // Re-enable animation after silent jump
+  useEffect(() => {
+    if (!isAnimating) {
+      const id = requestAnimationFrame(() =>
+        requestAnimationFrame(() => setIsAnimating(true))
+      );
+      return () => cancelAnimationFrame(id);
+    }
+  }, [isAnimating]);
+
+  const goNext = useCallback(() => setRawIndex((i) => i + 1), []);
+  const goPrev = useCallback(() => setRawIndex((i) => i - 1), []);
+  const goTo   = useCallback(
+    (t: number) => setRawIndex(startIndex + t),
+    [startIndex],
+  );
 
   // Auto-advance
   useEffect(() => {
@@ -79,235 +87,301 @@ export default function TeamSlider({
     return () => clearInterval(id);
   }, [autoInterval, goNext]);
 
-  // Smart Scroll Handling
-  useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < 15) return; // ignore tiny movements
-
-      if (scrollGuard.current) {
-        // If we are currently animating a scroll, prevent the page from moving
-        // UNLESS we are at the very beginning (trying to scroll up) or the very end (trying to scroll down)
-        if ((e.deltaY > 0 && active < n - 1) || (e.deltaY < 0 && active > 0)) {
-          e.preventDefault();
-        }
-        return;
-      }
-
-      if (e.deltaY > 0) {
-        // Scrolling Down
-        if (active < n - 1) {
-          e.preventDefault(); // Stop page from scrolling
-          goNext();
-          scrollGuard.current = true;
-          setTimeout(() => (scrollGuard.current = false), 800);
-        }
-      } else {
-        // Scrolling Up
-        if (active > 0) {
-          e.preventDefault(); // Stop page from scrolling
-          goPrev();
-          scrollGuard.current = true;
-          setTimeout(() => (scrollGuard.current = false), 800);
-        }
-      }
-    };
-
-    el.addEventListener("wheel", handleWheel, { passive: false });
-    return () => el.removeEventListener("wheel", handleWheel);
-  }, [active, n, goNext, goPrev]);
-
-  const activeMember = members[active];
+  // ── Key fix: track uses position:absolute + left:50% so "50%" refers to the
+  //    VIEWPORT width (the nearest positioned ancestor), not the track itself.
+  //    We then translate left by the active card's centre offset from the
+  //    track's origin (which is now sitting at viewport centre).
+  //
+  //    result: active card centre == viewport centre  ✓
+  const trackX = rawIndex * (CARD_W + CARD_GAP) + CARD_W / 2;
 
   return (
     <>
       <style>{`
-        /* ── Section wrapper ── */
+        /* ── Section ── */
         .ts-section {
           position: relative;
-          background: ${C.bg};
-          overflow: hidden;
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
+          z-index: 10;
+          width: 100%;
+          padding: 4rem 2.5rem;
           font-family: var(--font-sans, 'Inter', 'Helvetica Neue', sans-serif);
+          background: transparent;
+          scroll-margin-top: 6rem;
         }
 
-        /* Background radial glow */
-        .ts-section::before {
+        /* ── Glassmorphism container ── */
+        .ts-card-bg {
+          position: relative;
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
+          border-radius: 3rem;
+          border: 1px solid rgba(255,255,255,0.05);
+          background: rgba(0,0,0,0.60);
+          box-shadow: 0 0 80px rgba(0,116,255,0.15);
+          backdrop-filter: blur(28px);
+          -webkit-backdrop-filter: blur(28px);
+          overflow: hidden;
+          padding: 4rem 3.5rem;
+        }
+        .ts-card-bg::before {
           content: '';
           position: absolute;
-          top: 20%;
-          left: 50%;
+          top: 0; left: 50%;
           transform: translateX(-50%);
-          width: 80%;
-          height: 70%;
-          background: radial-gradient(ellipse at center,
-            rgba(0, 116, 255, 0.12) 0%,
-            rgba(22, 62, 112, 0.06) 40%,
-            transparent 75%);
+          width: 100%; height: 100%;
+          background: radial-gradient(ellipse at top, rgba(0,116,255,0.25) 0%, transparent 60%);
           pointer-events: none;
           z-index: 0;
         }
+        .ts-card-bg::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 75%; height: 2px;
+          background: linear-gradient(to right, transparent, #0074FF, transparent);
+          opacity: 0.55;
+          box-shadow: 0 0 20px #0074FF;
+          pointer-events: none;
+          z-index: 1;
+        }
 
-        /* ── Top meta bar ── */
-        .ts-topbar {
+        /* ── Inner two-column grid ── */
+        .ts-inner {
           position: relative;
           z-index: 2;
+          display: grid;
+          grid-template-columns: 280px 1fr;
+          gap: 3rem;
+          align-items: center;
+        }
+        @media (max-width: 1024px) {
+          .ts-inner   { grid-template-columns: 1fr; gap: 2.5rem; }
+          .ts-card-bg { padding: 3rem 2rem; }
+        }
+
+        /* ── Left editorial panel ── */
+        .ts-left {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+        .ts-eyebrow {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          padding: 1.4rem 2.5rem;
-          border-bottom: 1px solid ${C.border};
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
         }
-        .ts-topbar-left {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          font-size: 0.6rem;
-          font-weight: 700;
-          letter-spacing: 0.2em;
-          color: ${C.textMuted};
-          text-transform: uppercase;
-        }
-        .ts-topbar-dot {
-          width: 5px;
-          height: 5px;
+        .ts-eyebrow-dot {
+          width: 6px; height: 6px;
           border-radius: 50%;
           background: ${C.blueBright};
           flex-shrink: 0;
         }
-        .ts-topbar-line {
-          width: 3rem;
-          height: 1px;
-          background: ${C.border};
-        }
-        .ts-topbar-count {
-          color: ${C.textHead};
-          border: 1px solid ${C.border};
-          padding: 0.15rem 0.6rem;
-          border-radius: 3px;
-          font-size: 0.58rem;
-          letter-spacing: 0.14em;
-        }
-        .ts-topbar-right {
-          font-size: 0.58rem;
-          font-weight: 600;
-          letter-spacing: 0.18em;
-          color: ${C.textMuted};
-          text-align: right;
-          line-height: 1.7;
-          text-transform: uppercase;
-        }
-
-        /* ── Body: left headline + carousel ── */
-        .ts-body {
-          position: relative;
-          z-index: 1;
-          flex: 1;
-          display: grid;
-          grid-template-columns: 250px 1fr;
-          align-items: center;
-          padding: 3rem 2rem 2rem;
-          gap: 4rem;
-        }
-        @media (max-width: 900px) {
-          .ts-body {
-            grid-template-columns: 1fr;
-            padding: 2rem 1.5rem 1.5rem;
-          }
-          .ts-headline { text-align: center; margin-bottom: 2rem; }
-        }
-
-        /* ── Left headline block ── */
-        .ts-headline {
-          padding-right: 0;
-        }
-        .ts-eyebrow {
-          font-size: 0.62rem;
+        .ts-eyebrow-text {
+          font-size: 0.6rem;
           font-weight: 700;
-          letter-spacing: 0.28em;
-          color: ${C.blueBright};
+          letter-spacing: 0.22em;
+          color: ${C.textMuted};
           text-transform: uppercase;
-          margin-bottom: 0.6rem;
         }
-        .ts-title {
-          font-size: clamp(2.8rem, 5vw, 4.5rem);
+        .ts-eyebrow-sep { font-size: 0.6rem; color: ${C.textMuted}; opacity: 0.5; }
+
+        .ts-headline {
+          font-size: clamp(3rem, 5vw, 5rem);
           font-weight: 900;
-          line-height: 0.9;
-          letter-spacing: -0.02em;
-          margin: 0 0 1.25rem;
+          line-height: 0.88;
+          letter-spacing: -0.03em;
+          margin: 0 0 1.5rem;
         }
-        .ts-title-white { color: ${C.textHead}; display: block; }
-        .ts-title-blue  { color: ${C.blueBright}; display: block; }
+        .ts-headline-white { display: block; color: ${C.textHead}; }
+        .ts-headline-blue  { display: block; color: ${C.blueBright}; }
+
         .ts-subtitle {
           font-size: 0.82rem;
           color: ${C.textMuted};
-          line-height: 1.7;
-          max-width: 220px;
-          margin: 0;
+          line-height: 1.8;
+          margin: 0 0 2.5rem;
+          max-width: 240px;
         }
 
-        /* ── Carousel viewport ── */
+        /* Dot indicators */
+        .ts-controls { display: flex; align-items: center; }
+        .ts-dots     { display: flex; gap: 0.35rem; align-items: center; }
+        .ts-dot {
+          height: 2px;
+          border-radius: 2px;
+          background: rgba(255,255,255,0.18);
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          transition: background 0.3s ease, width 0.3s ease;
+          width: 16px;
+        }
+        .ts-dot[data-active="true"] {
+          background: ${C.blueBright};
+          width: 30px;
+        }
+
+        /* ── Viewport wrapper (relative so nav buttons can anchor to it) ── */
+        .ts-viewport-wrap {
+          position: relative;
+          /* Vertical padding gives breathing room for the scaled-up centre card */
+          padding: 2rem 0;
+        }
+
+        /* ── Nav < > buttons ── */
+        .ts-nav-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.22);
+          background: rgba(5,12,28,0.80);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          color: ${C.textHead};
+          font-size: 1.05rem;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition:
+            border-color 0.2s ease,
+            background   0.2s ease,
+            color        0.2s ease,
+            box-shadow   0.2s ease;
+        }
+        /* Left button: centred in the gap on the left of the active card */
+        .ts-nav-btn--prev { left:  calc(50% - ${NAV_OFFSET}px); }
+        /* Right button: centred in the gap on the right of the active card */
+        .ts-nav-btn--next { right: calc(50% - ${NAV_OFFSET}px); }
+        .ts-nav-btn:hover {
+          border-color: ${C.blueBright};
+          background: rgba(0,116,255,0.18);
+          color: ${C.blueBright};
+          box-shadow: 0 0 16px rgba(0,116,255,0.45);
+        }
+
+        /* ── Viewport ── */
         .ts-viewport {
           position: relative;
-          height: 440px;
-          perspective: 1100px;
-          perspective-origin: center center;
+          overflow: hidden;
+          /*
+           * Explicit height so the absolutely-positioned track has a containing
+           * block to anchor to. Height must comfortably contain the scaled-up
+           * active card (estimated DOM height ≈ 415 px × 1.13 ≈ 469 px visual).
+           */
+          height: 500px;
+        }
+
+        /* ── Track: absolute + left:50% so the left edge starts at the
+               viewport's horizontal centre.  The inline translateX then
+               shifts it left by the active card's centre offset, making
+               that card sit exactly at the centre of the viewport.         ── */
+        .ts-track {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          display: flex;
+          gap: ${CARD_GAP}px;
+          align-items: center;
+          will-change: transform;
+        }
+        .ts-track--animated {
+          transition: transform 0.65s cubic-bezier(0.32, 0.72, 0, 1);
         }
 
         /* ── Individual card ── */
         .ts-card {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          width: 380px;
-          height: 380px;
-          border-radius: 8px;
+          position: relative;
+          flex-shrink: 0;
+          width: ${CARD_W}px;
+          border-radius: 10px;
           overflow: hidden;
           border: 1px solid ${C.border};
-          background: ${C.bgCard};
-          transition:
-            transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-            opacity 0.45s ease,
-            border-color 0.3s ease;
-          cursor: pointer;
-          will-change: transform;
+          background: rgba(4,8,15,0.7);
+          backdrop-filter: blur(6px);
           display: flex;
           flex-direction: column;
+          transition:
+            transform     0.55s cubic-bezier(0.32, 0.72, 0, 1),
+            opacity       0.45s ease,
+            border-color  0.4s  ease,
+            box-shadow    0.4s  ease,
+            filter        0.4s  ease;
         }
+
+        /* Centre card — larger, fully lit, blue border + glow */
         .ts-card--active {
+          transform: scale(${SCALE_ACTIVE});
+          opacity: 1;
+          filter: brightness(1);
           border-color: ${C.borderAct};
           box-shadow:
-            0 0 0 1px rgba(0,116,255,0.3),
-            0 0 40px rgba(0,116,255,0.2),
-            0 20px 60px rgba(0,0,0,0.6);
+            0 0 0 1px rgba(0,116,255,0.25),
+            0 0 45px rgba(0,116,255,0.25),
+            0 24px 56px rgba(0,0,0,0.65);
           cursor: default;
+          z-index: 3;
         }
+
+        /* Adjacent neighbours — smaller, dimmed */
+        .ts-card--near {
+          transform: scale(${SCALE_NEAR});
+          opacity: 0.58;
+          filter: brightness(0.70);
+          cursor: pointer;
+          z-index: 2;
+        }
+        .ts-card--near:hover {
+          opacity: 0.78;
+          filter: brightness(0.88);
+        }
+
+        /* Everything else — invisible (still in DOM for seamless looping) */
+        .ts-card--far {
+          transform: scale(0.72);
+          opacity: 0;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        /* Blue top bar (active only) */
+        .ts-card-topbar {
+          position: absolute;
+          top: 0; left: 0;
+          height: 2px;
+          background: ${C.blueBright};
+          z-index: 3;
+          width: 0;
+          transition: width 0.5s ease 0.2s;
+        }
+        .ts-card--active .ts-card-topbar { width: 100%; }
 
         /* Photo */
         .ts-card-photo {
-          flex: 1;
           position: relative;
+          aspect-ratio: 3 / 4;
           overflow: hidden;
           background: ${C.blueDeep};
+          flex-shrink: 0;
         }
         .ts-card-photo img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          object-position: bottom;
+          width: 100%; height: 100%;
+          object-fit: cover;
+          object-position: top center;
           display: block;
-          transition: transform 0.5s ease;
+          transition: transform 0.6s ease;
         }
-        .ts-card--active .ts-card-photo img {
-          /* Removed scale(1.03) zoom effect to keep original size */
-        }
+        .ts-card--active .ts-card-photo img { transform: scale(1.04); }
         .ts-card-photo-placeholder {
-          width: 100%;
-          height: 100%;
+          width: 100%; height: 100%;
           background: linear-gradient(160deg, ${C.blueDeep} 0%, #020509 100%);
           display: flex;
           align-items: center;
@@ -315,322 +389,188 @@ export default function TeamSlider({
           font-size: 2.5rem;
           color: rgba(0,116,255,0.3);
           font-weight: 900;
-          letter-spacing: -0.04em;
         }
-
-        /* Card number badge */
-        .ts-card-num {
-          position: absolute;
-          top: 0.7rem;
-          left: 0.8rem;
-          font-size: 0.6rem;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          color: rgba(255,255,255,0.5);
-          z-index: 2;
-        }
-        .ts-card--active .ts-card-num {
-          color: ${C.blueBright};
-        }
-
-        /* Photo gradient */
         .ts-card-photo::after {
           content: '';
           position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 55%;
+          bottom: 0; left: 0; right: 0;
+          height: 45%;
           background: linear-gradient(to top, rgba(4,8,15,0.98) 0%, transparent 100%);
           pointer-events: none;
         }
 
-        /* Card info block */
+        /* Card info */
         .ts-card-info {
-          padding: 0.85rem 1rem 1rem;
+          padding: 0.85rem 1rem 1.1rem;
           flex-shrink: 0;
         }
         .ts-card-role {
-          font-size: 0.6rem;
+          font-size: 0.58rem;
           font-weight: 700;
-          letter-spacing: 0.18em;
+          letter-spacing: 0.2em;
           color: ${C.blueBright};
           text-transform: uppercase;
-          margin-bottom: 0.2rem;
+          margin-bottom: 0.25rem;
         }
         .ts-card-name {
-          font-size: 1rem;
+          font-size: 1.05rem;
           font-weight: 800;
           color: ${C.textHead};
-          line-height: 1.2;
+          line-height: 1.15;
           margin: 0 0 0.2rem;
           letter-spacing: -0.01em;
-        }
-        .ts-card--active .ts-card-name {
-          font-size: 1.25rem;
         }
         .ts-card-org {
           font-size: 0.62rem;
           color: ${C.textMuted};
           line-height: 1.4;
-          margin: 0 0 0.5rem;
-        }
-        .ts-card-quote {
-          font-size: 0.65rem;
-          color: ${C.textMuted};
-          font-style: italic;
-          line-height: 1.5;
-          margin: 0.4rem 0 0;
-          opacity: 0;
-          transition: opacity 0.3s ease 0.1s;
-        }
-        .ts-card--active .ts-card-quote {
-          opacity: 1;
-        }
-
-        /* ── Blue bar at top of active card ── */
-        .ts-card-topbar {
-          width: 0;
-          height: 2px;
-          background: ${C.blueBright};
-          position: absolute;
-          top: 0;
-          left: 0;
-          transition: width 0.4s ease 0.15s;
-          z-index: 3;
-        }
-        .ts-card--active .ts-card-topbar {
-          width: 100%;
-        }
-
-        /* Arrow on active card */
-        .ts-card-arrow {
-          position: absolute;
-          bottom: 0.9rem;
-          right: 0.9rem;
-          font-size: 0.9rem;
-          color: ${C.blueBright};
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          pointer-events: none;
-          z-index: 2;
-        }
-        .ts-card--active .ts-card-arrow {
-          opacity: 1;
-        }
-
-        /* ── Bottom control bar ── */
-        .ts-bottom {
-          position: relative;
-          z-index: 2;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1.2rem 2.5rem 1.4rem;
-          border-top: 1px solid ${C.border};
-        }
-        .ts-bottom-brand {
-          font-size: 0.58rem;
-          font-weight: 700;
-          letter-spacing: 0.22em;
-          color: ${C.blueBright};
-          text-transform: uppercase;
-        }
-        .ts-controls {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        .ts-arrow-btn {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          border: 1px solid ${C.border};
-          background: transparent;
-          color: ${C.textHead};
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.9rem;
-          transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
-        }
-        .ts-arrow-btn:hover {
-          border-color: ${C.blueBright};
-          background: rgba(0,116,255,0.12);
-          color: ${C.blueBright};
-        }
-        .ts-dots {
-          display: flex;
-          gap: 0.4rem;
-          align-items: center;
-        }
-        .ts-dot {
-          width: 20px;
-          height: 2px;
-          border-radius: 2px;
-          background: ${C.border};
-          border: none;
-          padding: 0;
-          cursor: pointer;
-          transition: background 0.25s ease, width 0.25s ease;
-        }
-        .ts-dot[data-active="true"] {
-          background: ${C.blueBright};
-          width: 32px;
-        }
-        .ts-bottom-right {
-          font-size: 0.55rem;
-          font-weight: 600;
-          letter-spacing: 0.16em;
-          color: ${C.textMuted};
-          text-transform: uppercase;
-          text-align: right;
+          margin: 0;
         }
       `}</style>
 
       <section
         className="ts-section"
-        id="crew"
-        aria-label="Team section"
-        ref={viewportRef}
+        id="team"
+        aria-label="Organizing Committee"
+        ref={sectionRef}
         onMouseEnter={() => { isHovered.current = true; }}
         onMouseLeave={() => { isHovered.current = false; }}
       >
-        {/* ── Top meta bar ── */}
-        <div className="ts-topbar">
-          <div className="ts-topbar-left">
-            <span className="ts-topbar-dot" />
-            <span>MoraXtreme 11.0</span>
-            <span>/</span>
-            <span>Organizing Committee</span>
-            <span className="ts-topbar-line" />
-          </div>
-          <div className="ts-topbar-right">
-            Same Vision.<br />
-            Different Roles.<br />
-            One Team.
-          </div>
-        </div>
+        <div className="ts-card-bg">
+          <div className="ts-inner">
 
-        {/* ── Body ── */}
-        <div className="ts-body">
-          {/* Left headline */}
-          <div className="ts-headline">
-            <h2 className="ts-title">
-              <span className="ts-title-white">THE</span>
-              <span className="ts-title-blue">CREW</span>
-            </h2>
-            <p className="ts-subtitle">
-              {subtitle ?? "The minds, hands and hearts that make MoraXtreme possible."}
-            </p>
-          </div>
+            {/* ── Left: editorial panel ── */}
+            <div className="ts-left">
+              <div className="ts-eyebrow">
+                <span className="ts-eyebrow-dot" />
+                <span className="ts-eyebrow-text">MoraXtreme 11.0</span>
+                <span className="ts-eyebrow-sep">/</span>
+                <span className="ts-eyebrow-text">Organizing Committee</span>
+              </div>
 
-          {/* Carousel */}
-          <div
-            className="ts-viewport"
-            role="region"
-            aria-label="Team member carousel"
-            aria-live="polite"
-          >
-            {members.map((member, idx) => {
-              const rawOffset = idx - active;
-              // Circular offset: bring to [-n/2, n/2]
-              const offset = ((rawOffset + Math.round(n / 2)) % n) - Math.round(n / 2);
-              const t = getCardTransform(offset);
-              if (!t.visible) return null;
+              <h2 className="ts-headline">
+                <span className="ts-headline-white">THE</span>
+                <span className="ts-headline-blue">CREW</span>
+              </h2>
 
-              const isActive = offset === 0;
-              const initials = member.name.split(" ").map((w) => w[0]).join("").slice(0, 2);
+              <p className="ts-subtitle">
+                {subtitle ??
+                  "The people behind MoraXtreme 11.0. Different roles. Same vision. One team."}
+              </p>
 
-              return (
-                <div
-                  key={idx}
-                  className={`ts-card${isActive ? " ts-card--active" : ""}`}
-                  style={{
-                    transform: [
-                      `translateX(calc(-50% + ${t.translateX}px))`,
-                      `translateY(-50%)`,
-                      `scale(${t.scale})`,
-                      `rotateY(${t.rotateY}deg)`,
-                      `translateZ(${t.translateZ}px)`,
-                    ].join(" "),
-                    opacity: t.opacity,
-                    zIndex:  t.zIndex,
-                  }}
-                  onClick={() => !isActive && goTo(idx)}
-                  aria-label={member.name}
-                  tabIndex={isActive ? 0 : -1}
-                >
-                  {/* Top active bar */}
-                  <div className="ts-card-topbar" />
-
-                  {/* Photo */}
-                  <div className="ts-card-photo">
-                    {member.photo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={member.photo} alt={member.alt ?? member.name} />
-                    ) : (
-                      <div className="ts-card-photo-placeholder">{initials}</div>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="ts-card-info">
-                    <p className="ts-card-role">{member.role}</p>
-                    <p className="ts-card-name">{member.name}</p>
-                    {member.organisation && (
-                      <p className="ts-card-org">{member.organisation}</p>
-                    )}
-                  </div>
-
-                  {/* Arrow hint (active only) */}
-                  <span className="ts-card-arrow" aria-hidden="true">→</span>
+              {/* Dot indicators */}
+              <div className="ts-controls">
+                <div className="ts-dots" role="tablist" aria-label="Select team member">
+                  {members.map((_, i) => (
+                    <button
+                      key={i}
+                      className="ts-dot"
+                      data-active={(i === active).toString()}
+                      role="tab"
+                      aria-selected={i === active}
+                      aria-label={`Go to ${members[i].name}`}
+                      onClick={() => goTo(i)}
+                    />
+                  ))}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ── Bottom bar ── */}
-        <div className="ts-bottom">
-          <span className="ts-bottom-brand">MoraXtreme 11.0</span>
-
-          <div className="ts-controls">
-            <button
-              className="ts-arrow-btn"
-              onClick={goPrev}
-              aria-label="Previous member"
-            >
-              ←
-            </button>
-
-            <div className="ts-dots" role="tablist" aria-label="Select team member">
-              {members.map((_, i) => (
-                <button
-                  key={i}
-                  className="ts-dot"
-                  data-active={(i === active).toString()}
-                  role="tab"
-                  aria-selected={i === active}
-                  aria-label={`Go to ${members[i].name}`}
-                  onClick={() => goTo(i)}
-                />
-              ))}
+              </div>
             </div>
 
-            <button
-              className="ts-arrow-btn"
-              onClick={goNext}
-              aria-label="Next member"
-            >
-              →
-            </button>
-          </div>
+            {/* ── Right: coverflow slider ── */}
+            <div className="ts-viewport-wrap">
 
-          <span className="ts-bottom-right">
-            University of Moratuwa
-          </span>
+              {/* < — sits in the gap between the left side card and the centre card */}
+              <button
+                className="ts-nav-btn ts-nav-btn--prev"
+                onClick={goPrev}
+                aria-label="Previous member"
+              >
+                {"<"}
+              </button>
+
+              <div
+                className="ts-viewport"
+                role="region"
+                aria-label="Team member carousel"
+                aria-live="polite"
+              >
+                {/*
+                 * Track sits at left:50%, top:50% of the viewport (its nearest
+                 * positioned ancestor).  The translateX then pulls it left by
+                 * the active card's centre offset so that card lands exactly
+                 * at the viewport's horizontal centre.
+                 */}
+                <div
+                  className={`ts-track${isAnimating ? " ts-track--animated" : ""}`}
+                  style={{
+                    transform: `translate(-${trackX}px, -50%)`,
+                  }}
+                >
+                  {tripled.map((member, idx) => {
+                    const dist     = idx - rawIndex;
+                    const isActive = dist === 0;
+                    const isNear   = Math.abs(dist) === 1;
+                    const cardClass = isActive
+                      ? "ts-card--active"
+                      : isNear
+                      ? "ts-card--near"
+                      : "ts-card--far";
+
+                    const initials = member.name
+                      .split(" ")
+                      .map((w) => w[0])
+                      .join("")
+                      .slice(0, 2);
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`ts-card ${cardClass}`}
+                        onClick={() => {
+                          if (!isActive) setRawIndex((prev) => prev + dist);
+                        }}
+                        aria-label={member.name}
+                        tabIndex={isActive || isNear ? 0 : -1}
+                      >
+                        {/* Blue top bar */}
+                        <div className="ts-card-topbar" />
+
+                        {/* Photo */}
+                        <div className="ts-card-photo">
+                          {member.photo ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={member.photo} alt={member.alt ?? member.name} />
+                          ) : (
+                            <div className="ts-card-photo-placeholder">{initials}</div>
+                          )}
+                        </div>
+
+                        {/* Info */}
+                        <div className="ts-card-info">
+                          <p className="ts-card-role">{member.role}</p>
+                          <p className="ts-card-name">{member.name}</p>
+                          {member.organisation && (
+                            <p className="ts-card-org">{member.organisation}</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* > — sits in the gap between the centre card and the right side card */}
+              <button
+                className="ts-nav-btn ts-nav-btn--next"
+                onClick={goNext}
+                aria-label="Next member"
+              >
+                {">"}
+              </button>
+
+            </div>
+
+          </div>
         </div>
       </section>
     </>
