@@ -25,7 +25,7 @@ export default async function Home() {
           className="relative w-full h-[200vh]"
         >
           <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-            <div className="grid items-center gap-16 lg:grid-cols-2">
+            <div className="grid items-center gap-8 lg:gap-16 lg:grid-cols-2">
           <div className="z-10 flex flex-col gap-12">
             <div>
               <div className="mb-6 inline-flex items-center gap-3">

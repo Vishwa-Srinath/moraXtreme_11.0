@@ -131,11 +131,24 @@
     height: 280vh;
   }
   .world {
-    width: 160vw;
-  }
-  .asia {
     width: 180vw;
   }
+  .asia {
+    width: 220vw;
+  }
+  .sriLanka {
+    width: 120vw;
+  }
+  .heroContent {
+    padding: 1rem;
+    padding-top: 5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .world { width: 200vw; }
+  .asia { width: 260vw; }
+  .sriLanka { width: 150vw; }
 }
 
 @media (prefers-reduced-motion: reduce) {

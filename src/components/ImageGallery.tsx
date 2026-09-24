@@ -143,6 +143,9 @@ export default function ImageGallery({
           background: transparent;
           scroll-margin-top: 6rem;
         }
+        @media (max-width: 640px) {
+          .ig-section { padding: 3rem 1rem; }
+        }
 
         /* ── Inner layout: fixed left column + right bento ── */
         .ig-inner {

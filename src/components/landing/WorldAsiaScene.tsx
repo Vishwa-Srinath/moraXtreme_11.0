@@ -276,7 +276,7 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
                 Welcome to
               </p>
               <h1
-                className="flex flex-wrap justify-center gap-x-2 font-[family-name:var(--font-space)] text-6xl font-bold tracking-tighter text-white drop-shadow-2xl md:gap-x-4 md:text-8xl lg:text-[7rem]"
+                className="flex flex-wrap justify-center gap-x-1 sm:gap-x-2 font-[family-name:var(--font-space)] text-5xl font-bold tracking-tighter text-white drop-shadow-2xl sm:text-6xl md:gap-x-4 md:text-8xl lg:text-[7rem]"
               >
                 <span className="flex">
                   {['M','o','r','a','X','t','r','e','m','e'].map((letter, i) => (
@@ -315,7 +315,7 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
                 
                 <a
                   href="/register"
-                  className="relative inline-flex overflow-hidden rounded-full border border-white/60 bg-[#0074FF]/20 px-12 py-6 font-[family-name:var(--font-space)] text-base font-black tracking-[0.25em] text-white uppercase shadow-[0_0_20px_rgba(255,255,255,0.4),inset_0_0_20px_rgba(255,255,255,0.3)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white group-hover:bg-[#0074FF]/40 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.8),inset_0_0_30px_rgba(255,255,255,0.6)] items-center md:text-lg"
+                  className="relative inline-flex overflow-hidden rounded-full border border-white/60 bg-[#0074FF]/20 px-8 sm:px-12 py-4 sm:py-6 font-[family-name:var(--font-space)] text-sm sm:text-base font-black tracking-[0.25em] text-white uppercase shadow-[0_0_20px_rgba(255,255,255,0.4),inset_0_0_20px_rgba(255,255,255,0.3)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white group-hover:bg-[#0074FF]/40 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.8),inset_0_0_30px_rgba(255,255,255,0.6)] items-center md:text-lg"
                 >
                   <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_15px_rgba(255,255,255,1)] transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]">
                     Register Now

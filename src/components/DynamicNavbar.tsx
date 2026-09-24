@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 export default function DynamicNavbar() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,15 +46,15 @@ export default function DynamicNavbar() {
           : "bg-transparent py-6"
       )}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between transition-all duration-300">
         
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <Image src="/logo.png" alt="Logo" width={100} height={40} className="object-contain" unoptimized />
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <Image src="/logo.png" alt="Logo" width={90} height={36} className="object-contain" unoptimized />
         </div>
         
-        {/* Navigation Links */}
-        <ul className="hidden md:flex items-center gap-10 text-xs font-mono tracking-[0.2em] uppercase text-neutral-400">
+        {/* Navigation Links - desktop */}
+        <ul className="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-mono tracking-[0.2em] uppercase text-neutral-400">
           {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
             <li key={item}>
               <a 
@@ -76,17 +77,52 @@ export default function DynamicNavbar() {
           ))}
         </ul>
         
-        {/* Register Button */}
-        <a href="#register" className={cn(
-          buttonVariants({ variant: "outline" }),
-          "font-mono uppercase tracking-[0.2em] transition-all duration-500",
-          scrolled 
-            ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
-            : "border-white/50 text-white hover:bg-white hover:text-black hover:border-white bg-white/5 backdrop-blur-sm"
-        )}>
-          Register
-        </a>
+        {/* Right side: Register + Hamburger */}
+        <div className="flex items-center gap-3">
+          <a href="/register" className={cn(
+            buttonVariants({ variant: "outline" }),
+            "font-mono uppercase tracking-[0.2em] transition-all duration-500 text-xs px-3 sm:px-4",
+            scrolled 
+              ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
+              : "border-white/50 text-white hover:bg-white hover:text-black hover:border-white bg-white/5 backdrop-blur-sm"
+          )}>
+            Register
+          </a>
+
+          {/* Mobile hamburger */}
+          <button
+            className="flex md:hidden flex-col gap-1.5 p-2 rounded-md border border-white/10 bg-black/30 backdrop-blur-sm"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <span className={cn("block h-0.5 w-5 bg-white transition-all duration-300", mobileOpen && "rotate-45 translate-y-2")} />
+            <span className={cn("block h-0.5 w-5 bg-white transition-all duration-300", mobileOpen && "opacity-0")} />
+            <span className={cn("block h-0.5 w-5 bg-white transition-all duration-300", mobileOpen && "-rotate-45 -translate-y-2")} />
+          </button>
+        </div>
       </div>
+
+      {/* Mobile menu dropdown */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-[#163E70]/50 bg-black/90 backdrop-blur-xl px-4 py-4">
+          <ul className="flex flex-col gap-4 font-mono text-xs tracking-[0.2em] uppercase">
+            {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
+              <li key={item}>
+                <a
+                  href={`#${item}`}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "block py-2 transition-colors duration-200",
+                    activeSection === item ? "text-[#0074FF] font-bold" : "text-neutral-300 hover:text-white"
+                  )}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </nav>
   )
 }

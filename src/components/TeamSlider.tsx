@@ -161,6 +161,10 @@ export default function TeamSlider({
           .ts-inner   { grid-template-columns: 1fr; gap: 2.5rem; }
           .ts-card-bg { padding: 3rem 2rem; }
         }
+        @media (max-width: 640px) {
+          .ts-card-bg { padding: 2rem 1rem; border-radius: 1.5rem; }
+          .ts-section { padding: 2rem 1rem; }
+        }
 
         /* ── Left editorial panel ── */
         .ts-left {
@@ -273,12 +277,12 @@ export default function TeamSlider({
         .ts-viewport {
           position: relative;
           overflow: hidden;
-          /*
-           * Explicit height so the absolutely-positioned track has a containing
-           * block to anchor to. Height must comfortably contain the scaled-up
-           * active card (estimated DOM height ≈ 415 px × 1.13 ≈ 469 px visual).
-           */
           height: 500px;
+        }
+        @media (max-width: 480px) {
+          .ts-viewport {
+            height: 420px;
+          }
         }
 
         /* ── Track: absolute + left:50% so the left edge starts at the

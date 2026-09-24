@@ -94,7 +94,7 @@ export default function HighlightsTimeline() {
         <div className="absolute left-[3rem] md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-[#0074FF]/30 to-transparent transform md:-translate-x-1/2"></div>
 
         {/* The Timeline Items */}
-        <div className="flex flex-col gap-24 md:gap-32">
+        <div className="flex flex-col gap-16 md:gap-32">
           {HIGHLIGHTS.map((highlight, index) => {
             const isEven = index % 2 === 0
             return (
