@@ -306,7 +306,7 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
               </h1>
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - Row 1: Register + Delegate Booklet */}
             <div className="mt-8 flex flex-col gap-5 sm:flex-row">
               {/* Register Button with Dynamic Pulsing Aura */}
               <div className="group relative">
@@ -327,13 +327,39 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
                 </a>
               </div>
 
+              {/* Delegate Booklet Button — same premium weight as Register Now */}
+              <div className="group relative">
+                {/* Glowing pulsing aura behind the button */}
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#0074FF]/40 via-white/30 to-[#0074FF]/40 opacity-60 blur-xl animate-pulse group-hover:opacity-90 group-hover:blur-2xl transition duration-500"></div>
+
+                <a
+                  href="https://drive.google.com/drive/folders/12C4BZjrvIeEN1qFP5moPpWSYtvLVuVwf?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative inline-flex overflow-hidden rounded-full border border-white/40 bg-white/5 px-8 sm:px-12 py-4 sm:py-6 font-[family-name:var(--font-space)] text-sm sm:text-base font-black tracking-[0.25em] text-white uppercase shadow-[0_0_20px_rgba(255,255,255,0.2),inset_0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/70 group-hover:bg-white/15 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.5),inset_0_0_30px_rgba(255,255,255,0.3)] items-center md:text-lg"
+                >
+                  <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] transition-all duration-500 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,1)]">
+                    {/* Book / Document icon */}
+                    <svg className="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Delegate Booklet
+                  </span>
+                  <div className="absolute inset-0 z-0 -translate-x-full bg-white/10 transition-transform duration-500 ease-out group-hover:translate-x-0" />
+                </a>
+              </div>
+            </div>
+
+            {/* CTA Buttons - Row 2: Learn More */}
+            <div className="mt-3 flex justify-start">
               <a
                 href="#about"
-                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/10 bg-transparent px-10 py-5 font-[family-name:var(--font-space)] text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-transparent px-8 py-3 font-[family-name:var(--font-space)] text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white"
               >
                 Learn More
               </a>
             </div>
+
           </div>
         </div>
 
