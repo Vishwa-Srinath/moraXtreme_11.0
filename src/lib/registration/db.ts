@@ -104,6 +104,7 @@ async function upsertDraftTeam(
     await tx
       .update(teams)
       .set({
+        country: values.country,
         teamName: values.teamName.trim(),
         teamSize: values.teamSize,
         ...universityFields,
@@ -118,6 +119,7 @@ async function upsertDraftTeam(
 
   await tx.insert(teams).values({
     id: teamId,
+    country: values.country,
     teamName: values.teamName.trim(),
     teamSize: values.teamSize,
     status: "draft",
@@ -202,6 +204,7 @@ export async function getDraftByLeaderEmail(leaderEmailInput: string) {
   const rows = await db
     .select({
       teamId: teams.id,
+      country: teams.country,
       teamName: teams.teamName,
       universityId: teams.universityId,
       customUniversityName: teams.customUniversityName,
@@ -235,6 +238,7 @@ export async function getDraftByLeaderEmail(leaderEmailInput: string) {
   const member2 = allRows.find((row) => row.memberOrder === 2)
 
   return {
+    country: leaderRow.country ?? "Sri Lanka",
     teamName: leaderRow.teamName,
     universityId: leaderRow.universityId ?? OTHER_UNIVERSITY_ID,
     otherUniversityName: leaderRow.customUniversityName ?? "",

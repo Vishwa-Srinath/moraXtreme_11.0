@@ -1,5 +1,15 @@
 export const OTHER_UNIVERSITY_ID = "other" as const
 
+export const COUNTRY_OPTIONS = [
+  "Sri Lanka",
+  "India",
+  "Bangladesh",
+  "Pakistan",
+  "Nepal",
+  "Bhutan",
+  "Maldives",
+] as const
+
 export const KNOWN_UNIVERSITIES = [
   { id: "university-of-moratuwa", name: "University of Moratuwa" },
   { id: "university-of-colombo", name: "University of Colombo" },

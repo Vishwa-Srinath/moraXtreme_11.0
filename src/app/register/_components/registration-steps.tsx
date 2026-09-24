@@ -8,6 +8,7 @@ import Form from "@/components/form/Form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
+  COUNTRY_OPTIONS,
   OTHER_UNIVERSITY_ID,
   TEAM_SIZE_OPTIONS,
   UNIVERSITY_OPTIONS,
@@ -49,7 +50,17 @@ export function RegistrationStepContent({
 }
 
 function TeamDetailsStep({ form }: { form: RegistrationForm }) {
+  const country = form.watch("country")
   const universityId = form.watch("universityId")
+  const isSriLanka = country === "Sri Lanka"
+
+  useEffect(() => {
+    if (!isSriLanka && universityId !== OTHER_UNIVERSITY_ID) {
+      form.setValue("universityId", OTHER_UNIVERSITY_ID, {
+        shouldValidate: true,
+      })
+    }
+  }, [form, isSriLanka, universityId])
 
   return (
     <div className="grid gap-4 @2xl:grid-cols-2">
@@ -59,16 +70,40 @@ function TeamDetailsStep({ form }: { form: RegistrationForm }) {
 
       <Controller
         control={form.control}
+        name="country"
+        render={(controller) => (
+          <Form.CustomController {...controller} label="Country">
+            <select
+              {...controller.field}
+              className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:bg-input/30"
+              aria-invalid={controller.fieldState.invalid}
+            >
+              {COUNTRY_OPTIONS.map((country) => (
+                <option key={country} value={country}>
+                  {country}
+                </option>
+              ))}
+            </select>
+          </Form.CustomController>
+        )}
+      />
+
+      <Controller
+        control={form.control}
         name="universityId"
         render={(controller) => (
           <Form.CustomController
             {...controller}
             label="University"
-            helperText="Search the list or choose Other."
-            className="@2xl:col-span-2"
+            helperText={
+              isSriLanka
+                ? "Search the list or choose Other."
+                : "Universities outside Sri Lanka are entered as Other."
+            }
           >
             <UniversityCombobox
               value={controller.field.value}
+              disabled={!isSriLanka}
               onChange={controller.field.onChange}
             />
           </Form.CustomController>
@@ -154,9 +189,11 @@ function ParticipantStep({
 
 function UniversityCombobox({
   value,
+  disabled = false,
   onChange,
 }: {
   value: string
+  disabled?: boolean
   onChange: (value: string) => void
 }) {
   const [query, setQuery] = useState("")
@@ -174,14 +211,15 @@ function UniversityCombobox({
     <div className="relative">
       <Input
         value={query}
+        disabled={disabled}
         placeholder="Search university"
         onChange={(event) => {
           setQuery(event.target.value)
           setIsOpen(true)
         }}
-        onFocus={() => setIsOpen(true)}
+        onFocus={() => !disabled && setIsOpen(true)}
       />
-      {isOpen && (
+      {isOpen && !disabled && (
         <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg">
           {filtered.length > 0 ? (
             filtered.map((option) => (
@@ -227,6 +265,7 @@ function ReviewStep({
       id: "team" as const,
       title: "Team Details",
       rows: [
+        ["Country", values.country],
         ["Team Name", values.teamName],
         ["University", getUniversityLabel(values)],
         ["Team Size", `${values.teamSize} member(s)`],

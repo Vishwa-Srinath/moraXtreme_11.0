@@ -1,6 +1,10 @@
 import { z } from "zod"
 
-import { KNOWN_UNIVERSITIES, OTHER_UNIVERSITY_ID } from "./constants"
+import {
+  COUNTRY_OPTIONS,
+  KNOWN_UNIVERSITIES,
+  OTHER_UNIVERSITY_ID,
+} from "./constants"
 
 const knownUniversityIds = new Set(KNOWN_UNIVERSITIES.map((item) => item.id))
 
@@ -48,6 +52,7 @@ const looseParticipantSchema = z.object({
 })
 
 const baseRegistrationSchema = z.object({
+  country: z.enum(COUNTRY_OPTIONS, "Select a country"),
   teamName: z.string().trim().min(2, "Team name is required"),
   universityId: z.string().min(1, "Select a university"),
   otherUniversityName: z.string().trim().optional(),
@@ -111,6 +116,17 @@ function addDuplicateIssues(
 
 export const registrationSchema = baseRegistrationSchema.superRefine(
   (values, ctx) => {
+    if (
+      values.country !== "Sri Lanka" &&
+      values.universityId !== OTHER_UNIVERSITY_ID
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Universities outside Sri Lanka must be entered as Other",
+        path: ["universityId"],
+      })
+    }
+
     if (
       values.universityId !== OTHER_UNIVERSITY_ID &&
       !knownUniversityIds.has(
@@ -189,6 +205,7 @@ export function getParticipants(values: RegistrationValues) {
 }
 
 export const defaultRegistrationValues = {
+  country: "Sri Lanka",
   teamName: "",
   universityId: "",
   otherUniversityName: "",

@@ -16,6 +16,7 @@ export type RegisteredTeamMember = {
 export type RegisteredTeam = {
   id: string
   teamName: string
+  country: string
   universityName: string
   teamSize: number
   registrationCode: string | null
@@ -30,6 +31,7 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
     .select({
       id: teams.id,
       teamName: teams.teamName,
+      country: teams.country,
       universityName: universities.name,
       customUniversityName: teams.customUniversityName,
       teamSize: teams.teamSize,
@@ -54,6 +56,7 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
     const team = registeredTeams.get(row.id) ?? {
       id: row.id,
       teamName: row.teamName,
+      country: row.country ?? "Not specified",
       universityName:
         row.universityName ?? row.customUniversityName ?? "Not specified",
       teamSize: row.teamSize,

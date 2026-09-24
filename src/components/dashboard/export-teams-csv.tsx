@@ -12,6 +12,7 @@ import type {
 const columns = [
   "team_id",
   "team_name",
+  "country",
   "university",
   "team_size",
   "registration_code",
@@ -46,6 +47,7 @@ export function ExportTeamsCsv({ teams }: { teams: RegisteredTeam[] }) {
       return [
         team.id,
         team.teamName,
+        team.country,
         team.universityName,
         team.teamSize,
         team.registrationCode,
