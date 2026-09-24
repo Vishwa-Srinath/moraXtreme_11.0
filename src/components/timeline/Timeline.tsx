@@ -8,6 +8,8 @@ import {
   useCallback,
 } from "react"
 
+const MOBILE_BREAKPOINT = 768 // px — below this, switch to vertical layout
+
 export interface Milestone {
   reel?: string
   title: string
@@ -170,6 +172,15 @@ export default function Timeline({
   const [maxShift, setMaxShift] = useState(0)
   const [initialOffset, setInitialOffset] = useState(0)
   const [reducedMotion, setReducedMotion] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detect mobile on mount and on resize
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
+  }, [])
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -246,7 +257,8 @@ export default function Timeline({
 
   // ── Continuous 60/120fps rAF Loop ────────────────────────────────────────
   useEffect(() => {
-    if (reducedMotion) return
+    // On mobile, don't run the horizontal rAF loop at all
+    if (reducedMotion || isMobile) return
 
     const tick = () => {
       rafId.current = requestAnimationFrame(tick)
@@ -333,7 +345,7 @@ export default function Timeline({
     return () => {
       if (rafId.current !== null) cancelAnimationFrame(rafId.current)
     }
-  }, [reducedMotion, maxShift, initialOffset])
+  }, [reducedMotion, maxShift, initialOffset, isMobile])
 
   // Increased pinHeight to stretch out the scroll and make it slower/smoother
   const pinHeight = 200 + Math.max(160, milestones.length * 45)
@@ -343,19 +355,76 @@ export default function Timeline({
       ref={sectionRef}
       id="timeline"
       className="relative w-full"
-      style={!reducedMotion ? { height: `${pinHeight}vh` } : undefined}
+      style={!reducedMotion && !isMobile ? { height: `${pinHeight}vh` } : undefined}
       aria-label="Event Timeline"
     >
-      <div
-        className={
-          reducedMotion
-            ? "relative py-24"
-            : "sticky top-0 flex h-screen flex-col overflow-hidden " +
-              "bg-[radial-gradient(ellipse_at_20%_15%,_rgba(31,143,255,0.18),_transparent_55%)," +
-              "radial-gradient(ellipse_at_80%_85%,_rgba(111,211,255,0.12),_transparent_50%)] " +
-              "backdrop-blur-sm"
-        }
-      >
+      {/* ── MOBILE VERTICAL LAYOUT (<768px) ──────────────────────────── */}
+      {isMobile && (
+        <div className="relative w-full px-4 py-16">
+          {/* Header */}
+          <div className="mb-10 px-2">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#3d8dff]" />
+              <span className="font-mono text-xs tracking-[0.25em] text-[#6fd3ff]/80 uppercase">35mm Film Archive</span>
+            </div>
+            <div className="flex items-baseline gap-3">
+              <span className="text-4xl font-black tracking-tight text-white">EVENT</span>
+              <span className="text-4xl font-black tracking-tight text-[#3d8dff]">TIMELINE</span>
+            </div>
+          </div>
+
+          {/* Vertical line */}
+          <div className="absolute left-[2.15rem] top-[9rem] bottom-8 w-[2px] bg-gradient-to-b from-[#0074FF]/80 via-[#6fd3ff]/40 to-transparent" />
+
+          {/* Cards stacked vertically */}
+          <div className="flex flex-col gap-10 pl-10">
+            {milestones.map((m, i) => (
+              <div key={m.title + i} className="relative">
+                {/* Timeline dot */}
+                <div className="absolute -left-[2.65rem] top-6 flex h-5 w-5 items-center justify-center">
+                  <div className="h-3 w-3 rounded-full bg-[#0074FF] shadow-[0_0_10px_rgba(0,116,255,0.8)] ring-2 ring-[#0074FF]/30" />
+                </div>
+
+                {/* Date badge */}
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#cc1a1a] px-4 py-1.5 shadow-[0_4px_15px_rgba(220,38,38,0.5)]">
+                  <span className="font-mono text-xs font-black tracking-widest text-white uppercase">{m.date.toUpperCase()}</span>
+                </div>
+
+                {/* Card */}
+                <div className="rounded-lg border border-[#6fd3ff]/20 bg-[#070b13] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.6)] ring-1 ring-[#6fd3ff]/15">
+                  <div className="mb-2 flex items-center justify-between font-mono text-[9px] font-bold tracking-widest text-[#6fd3ff]/60 uppercase">
+                    <span>FRAME #{m.reel ?? String(i + 1).padStart(2, "0")}</span>
+                    <span className="text-[#3d8dff]">▶▶ 24 FPS</span>
+                  </div>
+                  <div className="rounded border border-white/10 bg-[#0c1220] p-3">
+                    <h3 className="text-base font-black tracking-tight text-[#f5f8ff] leading-tight">{m.title}</h3>
+                    {m.desc && (
+                      <p className="mt-1.5 text-sm leading-relaxed text-[#94a3b8]">{m.desc}</p>
+                    )}
+                    <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2 font-mono text-[9px] text-[#475569]">
+                      <span>EXP. 2026</span>
+                      <span>SEC. 0{i + 1}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── DESKTOP HORIZONTAL FILM REEL (≥768px) — unchanged ─────────── */}
+      {!isMobile && (
+        <div
+          className={
+            reducedMotion
+              ? "relative py-24"
+              : "sticky top-0 flex h-screen flex-col overflow-hidden " +
+                "bg-[radial-gradient(ellipse_at_20%_15%,_rgba(31,143,255,0.18),_transparent_55%)," +
+                "radial-gradient(ellipse_at_80%_85%,_rgba(111,211,255,0.12),_transparent_50%)] " +
+                "backdrop-blur-sm"
+          }
+        >
         {/* ── WINDING ROAD BACKGROUND ────────────────────────────────────── */}
         {!reducedMotion && (
           <div
@@ -665,6 +734,8 @@ export default function Timeline({
           </div>
         )}
       </div>
+
+      )} {/* end !isMobile desktop block */}
 
       <style>{`
         @keyframes leak {
