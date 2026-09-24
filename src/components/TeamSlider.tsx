@@ -12,19 +12,19 @@ import type { TeamSliderProps } from "@/types/team";
 // COLOUR TOKENS
 // ─────────────────────────────────────────────────────────────────────────────
 const C = {
-  border:     "rgba(13,37,67,0.5)",
-  borderAct:  "#0074FF",
+  border: "rgba(13,37,67,0.5)",
+  borderAct: "#0074FF",
   blueBright: "#0074FF",
-  blueDeep:   "#163E70",
-  textHead:   "#FFFFFF",
-  textMuted:  "#6B7B8D",
+  blueDeep: "#163E70",
+  textHead: "#FFFFFF",
+  textMuted: "#6B7B8D",
 } as const;
 
 // ── Card dimensions ──────────────────────────────────────────────────────────
-const CARD_W      = 250;  // px — DOM width (same for all cards)
-const CARD_GAP    = 20;   // px gap between cards
+const CARD_W = 250;  // px — DOM width (same for all cards)
+const CARD_GAP = 20;   // px gap between cards
 const SCALE_ACTIVE = 1.13;
-const SCALE_NEAR   = 0.87;
+const SCALE_NEAR = 0.87;
 
 // Nav button dimensions — button is 40 px wide / tall
 // We want each button centred in the gap between the side card and the centre card.
@@ -42,11 +42,11 @@ export default function TeamSlider({
   subtitle,
   autoInterval = 7000,
 }: TeamSliderProps) {
-  const n          = members.length;
-  const tripled    = [...members, ...members, ...members];
+  const n = members.length;
+  const tripled = [...members, ...members, ...members];
   const startIndex = n;
 
-  const [rawIndex,    setRawIndex]    = useState(startIndex);
+  const [rawIndex, setRawIndex] = useState(startIndex);
   const [isAnimating, setIsAnimating] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -76,7 +76,7 @@ export default function TeamSlider({
 
   const goNext = useCallback(() => setRawIndex((i) => i + 1), []);
   const goPrev = useCallback(() => setRawIndex((i) => i - 1), []);
-  const goTo   = useCallback(
+  const goTo = useCallback(
     (t: number) => setRawIndex(startIndex + t),
     [startIndex],
   );
@@ -181,17 +181,23 @@ export default function TeamSlider({
         .ts-eyebrow-dot {
           width: 6px; height: 6px;
           border-radius: 50%;
-          background: ${C.blueBright};
+          background: #ffffff;
+          box-shadow: 0 0 8px rgba(0, 116, 255, 0.8);
           flex-shrink: 0;
         }
         .ts-eyebrow-text {
           font-size: 0.6rem;
           font-weight: 700;
           letter-spacing: 0.22em;
-          color: ${C.textMuted};
+          color: #ffffff;
+          text-shadow: 0 0 10px rgba(0, 116, 255, 0.8);
           text-transform: uppercase;
         }
-        .ts-eyebrow-sep { font-size: 0.6rem; color: ${C.textMuted}; opacity: 0.5; }
+        .ts-eyebrow-sep { 
+          font-size: 0.6rem; 
+          color: #ffffff; 
+          text-shadow: 0 0 10px rgba(0, 116, 255, 0.8);
+        }
 
         .ts-headline {
           font-size: clamp(3rem, 5vw, 5rem);
@@ -200,12 +206,21 @@ export default function TeamSlider({
           letter-spacing: -0.03em;
           margin: 0 0 1.5rem;
         }
-        .ts-headline-white { display: block; color: ${C.textHead}; }
-        .ts-headline-blue  { display: block; color: ${C.blueBright}; }
+        .ts-headline-white { 
+          display: block; 
+          color: #ffffff;
+          text-shadow: 0 0 20px rgba(0, 116, 255, 0.8);
+        }
+        .ts-headline-blue  { 
+          display: block; 
+          color: #ffffff;
+          text-shadow: 0 0 20px rgba(0, 116, 255, 0.8);
+        }
 
         .ts-subtitle {
           font-size: 0.82rem;
-          color: ${C.textMuted};
+          color: #ffffff;
+          text-shadow: 0 0 10px rgba(0, 116, 255, 0.8);
           line-height: 1.8;
           margin: 0 0 2.5rem;
           max-width: 240px;
@@ -454,8 +469,8 @@ export default function TeamSlider({
               </div>
 
               <h2 className="ts-headline">
-                <span className="ts-headline-white">THE</span>
-                <span className="ts-headline-blue">CREW</span>
+                <span className="ts-headline-white">CONTACT</span>
+                <span className="ts-headline-blue">US</span>
               </h2>
 
               <p className="ts-subtitle">
@@ -512,14 +527,14 @@ export default function TeamSlider({
                   }}
                 >
                   {tripled.map((member, idx) => {
-                    const dist     = idx - rawIndex;
+                    const dist = idx - rawIndex;
                     const isActive = dist === 0;
-                    const isNear   = Math.abs(dist) === 1;
+                    const isNear = Math.abs(dist) === 1;
                     const cardClass = isActive
                       ? "ts-card--active"
                       : isNear
-                      ? "ts-card--near"
-                      : "ts-card--far";
+                        ? "ts-card--near"
+                        : "ts-card--far";
 
                     const initials = member.name
                       .split(" ")

@@ -81,12 +81,17 @@ export default async function Home() {
           <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
             <div className="group relative w-full">
             <div className="relative z-10 flex flex-col items-center p-12 md:p-24">
-              <div className="mb-16 inline-flex items-center gap-4">
-                <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
-                <h2 className="font-mono text-sm font-bold tracking-[0.4em] text-[#0074FF] uppercase">
-                  Our Legacy
-                </h2>
-                <div className="h-[2px] w-12 bg-gradient-to-l from-transparent to-[#0074FF]"></div>
+              <div className="mb-16 flex flex-col items-center gap-3">
+                <div className="inline-flex items-center gap-4">
+                  <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
+                  <h2 className="font-mono text-sm font-bold tracking-[0.4em] text-[#0074FF] uppercase">
+                    Our Legacy
+                  </h2>
+                  <div className="h-[2px] w-12 bg-gradient-to-l from-transparent to-[#0074FF]"></div>
+                </div>
+                <span className="font-[family-name:var(--font-space)] text-2xl font-black tracking-widest text-white uppercase drop-shadow-[0_0_15px_rgba(0,116,255,0.8)] sm:text-3xl">
+                  MoraXtreme 10.0
+                </span>
               </div>
 
               <div className="flex w-full flex-col items-center justify-around gap-16 divide-y divide-[#163E70]/50 md:flex-row md:gap-8 md:divide-x md:divide-y-0">
@@ -209,15 +214,13 @@ export default async function Home() {
               <h2 className="mb-12 font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] md:text-6xl">
                 The Gateway to <br className="md:hidden" />
                 <span className="bg-gradient-to-r from-[#0074FF] to-white bg-clip-text text-transparent">
-                  IEEEXtreme 20.0
+                  MoraXtreme 11.0
                 </span>
               </h2>
 
               {/* Massive CTA Button */}
               <a
-                href="https://ieeextreme.org/"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/register"
                 className="group/btn relative inline-block overflow-hidden rounded-full border border-[#0074FF]/50 bg-[#000000] px-12 py-5 font-[family-name:var(--font-space)] text-lg font-bold tracking-[0.25em] text-[#0074FF] uppercase shadow-[0_0_40px_rgba(0,116,255,0.4)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-[#0074FF] hover:text-white hover:shadow-[0_0_60px_rgba(0,116,255,0.6)]"
               >
                 <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,116,255,0.8)] transition-all duration-500 group-hover/btn:drop-shadow-none">
