@@ -40,7 +40,7 @@ const NAV_OFFSET = CARD_W / 2 + CARD_GAP / 2 + 20; // 155 px from 50 %
 export default function TeamSlider({
   members,
   subtitle,
-  autoInterval = 4500,
+  autoInterval = 7000,
 }: TeamSliderProps) {
   const n          = members.length;
   const tripled    = [...members, ...members, ...members];
