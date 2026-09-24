@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { KeyRound, LoaderCircle, LogIn } from "lucide-react"
+import { LoaderCircle, LogIn } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import { authClient } from "@/lib/auth-client"
 
 const loginSchema = z.object({
@@ -26,7 +25,6 @@ type LoginValues = z.infer<typeof loginSchema>
 export function LoginForm() {
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [isPasskeyPending, setIsPasskeyPending] = useState(false)
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -37,7 +35,6 @@ export function LoginForm() {
   })
 
   const isPasswordPending = form.formState.isSubmitting
-  const isPending = isPasswordPending || isPasskeyPending
 
   function finishSignIn() {
     router.replace("/dashboard")
@@ -61,122 +58,83 @@ export function LoginForm() {
     finishSignIn()
   }
 
-  async function signInWithPasskey() {
-    setErrorMessage(null)
-    setIsPasskeyPending(true)
-
-    try {
-      const { error } = await authClient.signIn.passkey({ autoFill: false })
-
-      if (error) {
-        setErrorMessage(
-          error.message || "Passkey authentication was not completed."
-        )
-        return
-      }
-
-      finishSignIn()
-    } catch {
-      setErrorMessage("Passkey authentication was not completed.")
-    } finally {
-      setIsPasskeyPending(false)
-    }
-  }
-
   return (
-    <div className="space-y-6">
-      <Form
-        form={form}
-        onFinish={(values) => signInWithPassword(values as LoginValues)}
-        className="space-y-1"
+    <Form
+      form={form}
+      onFinish={(values) => signInWithPassword(values as LoginValues)}
+      className="space-y-1"
+    >
+      <Form.Item
+        name="email"
+        label="Email address"
+        className="[&_[data-slot=label]]:font-mono [&_[data-slot=label]]:text-xs [&_[data-slot=label]]:font-bold [&_[data-slot=label]]:tracking-[0.12em] [&_[data-slot=label]]:text-neutral-300 [&_[data-slot=label]]:uppercase [&>p]:text-neutral-500"
       >
-        <Form.Item name="email" label="Email address">
-          <Input
-            type="email"
-            autoComplete="username webauthn"
-            placeholder="admin@example.com"
-            className="h-11"
-          />
-        </Form.Item>
-
-        <Form.Item name="password" label="Password">
-          <Input
-            type="password"
-            autoComplete="current-password webauthn"
-            placeholder="Enter your password"
-            className="h-11"
-          />
-        </Form.Item>
-
-        <Controller
-          control={form.control}
-          name="rememberMe"
-          render={({ field }) => (
-            <div className="flex items-center gap-2.5 pb-5">
-              <Checkbox
-                id="remember-me"
-                checked={field.value}
-                onCheckedChange={(checked) => field.onChange(checked === true)}
-                onBlur={field.onBlur}
-                ref={field.ref}
-              />
-              <Label
-                htmlFor="remember-me"
-                className="text-sm font-normal text-muted-foreground"
-              >
-                Keep me signed in
-              </Label>
-            </div>
-          )}
+        <Input
+          type="email"
+          autoComplete="username"
+          placeholder="admin@example.com"
+          className="h-12 rounded-xl border-[#163E70]/70 bg-black/40 px-4 text-white shadow-none placeholder:text-neutral-600 focus-visible:border-[#0074FF] focus-visible:shadow-[0_0_18px_rgba(0,116,255,0.18)] focus-visible:ring-[#0074FF]/20"
         />
+      </Form.Item>
 
-        {errorMessage ? (
-          <p
-            role="alert"
-            className="mb-4 rounded-lg border border-destructive/25 bg-destructive/10 px-3 py-2.5 text-sm text-destructive"
-          >
-            {errorMessage}
-          </p>
-        ) : null}
+      <Form.Item
+        name="password"
+        label="Password"
+        className="[&_[data-slot=label]]:font-mono [&_[data-slot=label]]:text-xs [&_[data-slot=label]]:font-bold [&_[data-slot=label]]:tracking-[0.12em] [&_[data-slot=label]]:text-neutral-300 [&_[data-slot=label]]:uppercase [&>p]:text-neutral-500"
+      >
+        <Input
+          type="password"
+          autoComplete="current-password"
+          placeholder="Enter your password"
+          className="h-12 rounded-xl border-[#163E70]/70 bg-black/40 px-4 text-white shadow-none placeholder:text-neutral-600 focus-visible:border-[#0074FF] focus-visible:shadow-[0_0_18px_rgba(0,116,255,0.18)] focus-visible:ring-[#0074FF]/20"
+        />
+      </Form.Item>
 
-        <Button
-          type="submit"
-          size="lg"
-          className="h-11 w-full"
-          disabled={isPending}
+      <Controller
+        control={form.control}
+        name="rememberMe"
+        render={({ field }) => (
+          <div className="flex items-center gap-2.5 pb-5">
+            <Checkbox
+              id="remember-me"
+              checked={field.value}
+              onCheckedChange={(checked) => field.onChange(checked === true)}
+              onBlur={field.onBlur}
+              ref={field.ref}
+              className="border-[#163E70] bg-black/50 text-white focus-visible:border-[#0074FF] focus-visible:ring-[#0074FF]/20 data-checked:border-[#0074FF] data-checked:bg-[#0074FF]"
+            />
+            <Label
+              htmlFor="remember-me"
+              className="text-xs font-normal text-neutral-400"
+            >
+              Keep me signed in
+            </Label>
+          </div>
+        )}
+      />
+
+      {errorMessage ? (
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2.5 text-sm text-red-300"
         >
-          {isPasswordPending ? (
-            <LoaderCircle className="animate-spin" />
-          ) : (
-            <LogIn />
-          )}
-          {isPasswordPending ? "Signing in..." : "Sign in"}
-        </Button>
-      </Form>
-
-      <div className="flex items-center gap-4">
-        <Separator className="flex-1" />
-        <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-          or
-        </span>
-        <Separator className="flex-1" />
-      </div>
+          {errorMessage}
+        </p>
+      ) : null}
 
       <Button
-        type="button"
-        variant="outline"
+        type="submit"
         size="lg"
-        className="h-11 w-full"
-        disabled={isPending}
-        onClick={signInWithPasskey}
+        className="h-12 w-full rounded-xl bg-[#0074FF] font-[family-name:var(--font-space)] font-bold tracking-[0.08em] text-white shadow-[0_0_24px_rgba(0,116,255,0.28)] hover:bg-[#2488ff] hover:shadow-[0_0_32px_rgba(0,116,255,0.42)]"
+        disabled={isPasswordPending}
       >
-        {isPasskeyPending ? (
+        {isPasswordPending ? (
           <LoaderCircle className="animate-spin" />
         ) : (
-          <KeyRound />
+          <LogIn />
         )}
-        {isPasskeyPending ? "Waiting for passkey..." : "Sign in with a passkey"}
+        {isPasswordPending ? "Signing in..." : "Sign in"}
       </Button>
-    </div>
+    </Form>
   )
 }

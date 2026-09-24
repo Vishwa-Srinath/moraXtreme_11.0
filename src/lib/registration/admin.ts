@@ -1,4 +1,4 @@
-import { asc, desc, eq } from "drizzle-orm"
+import { and, asc, desc, eq } from "drizzle-orm"
 import { connection } from "next/server"
 
 import { db } from "@/lib/db"
@@ -74,4 +74,13 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
   }
 
   return Array.from(registeredTeams.values())
+}
+
+export async function deleteRegisteredTeam(teamId: string) {
+  const [deletedTeam] = await db
+    .delete(teams)
+    .where(and(eq(teams.id, teamId), eq(teams.status, "submitted")))
+    .returning({ id: teams.id })
+
+  return Boolean(deletedTeam)
 }
