@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
 import Image from "next/image"
+import Link from "next/link"
 import Form from "@/components/form/Form"
 import { REGISTRATION_STORAGE_KEY } from "@/lib/registration/constants"
 import {
@@ -238,8 +239,13 @@ export function RegistrationWizard({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-[calc(100dvh-4rem)] w-full">
+    <div className="flex flex-col lg:flex-row min-h-dvh w-full">
       <aside className="relative flex flex-col justify-center w-full lg:w-[40%] xl:w-[45%] p-8 lg:p-16 overflow-hidden bg-[#000000] text-white shrink-0 border-r border-[#163E70]/30">
+        <div className="absolute top-6 left-6 z-40">
+          <Link href="/" className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-white/20 bg-transparent hover:bg-white/10 text-white h-9 px-4 py-2 backdrop-blur-sm">
+            Home
+          </Link>
+        </div>
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,116,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,116,255,0.03)_1px,transparent_1px)] bg-[size:3rem_3rem]"></div>
           <div className="absolute top-[10%] left-[20%] w-96 h-96 bg-[#0074FF] rounded-full mix-blend-screen filter blur-[150px] opacity-10 z-10" />
@@ -249,18 +255,15 @@ export function RegistrationWizard({
           <p className="text-sm font-bold tracking-[0.25em] text-[#0074FF] uppercase drop-shadow-md">
             Register your team
           </p>
-          <Image src="/logo.png" alt="MoraXtreme 11 Logo" width={280} height={100} className="mb-2" />
+          <Image src="/logo.png" alt="MoraXtreme 11 Logo" width={420} height={150} className="mb-4" />
           <p className="text-xl text-white/90 font-mono tracking-widest uppercase mt-4">
             while seats are available !
           </p>
-          <div className="h-[2px] w-24 bg-[#0074FF] my-8 shadow-[0_0_15px_#0074FF]"></div>
-          <p className="max-w-xl text-base leading-relaxed text-neutral-300 drop-shadow-sm">
+          <div className="h-[2px] w-24 bg-[#0074FF] my-10 shadow-[0_0_15px_#0074FF]"></div>
+          <p className="max-w-xl text-lg leading-relaxed text-neutral-300 drop-shadow-sm">
             A focused registration flow for the 12-hour online competition. The
             group leader should complete this form for the full team.
           </p>
-          <div className="pt-6">
-            <EventFacts availability={availability} />
-          </div>
         </div>
       </aside>
 
@@ -275,18 +278,20 @@ export function RegistrationWizard({
 
           <Form form={form} className="@container mt-12" onFinish={() => undefined}>
             <div className="rounded-2xl border border-[#163E70]/40 bg-[#030710] text-white shadow-xl hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] overflow-hidden transition-all duration-500">
-              <div className="relative border-b border-[#163E70]/40 bg-[#060d1a] p-[clamp(1.5rem,3vw,2.5rem)] overflow-hidden">
+              <div className="relative border-b border-[#163E70]/40 bg-[#060d1a] px-[clamp(1.5rem,3vw,2.5rem)] py-4 overflow-hidden">
                 <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#0074FF] rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
-                <div className="relative z-10">
-                  <span className="inline-block bg-[#0074FF] text-white text-xs font-bold px-3 py-1 rounded mb-4 tracking-wider">
+                <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                      {currentStep.title}
+                    </h2>
+                    <p className="mt-1 text-sm text-neutral-400">
+                      {currentStep.description}
+                    </p>
+                  </div>
+                  <span className="inline-block bg-[#0074FF] text-white text-xs font-bold px-3 py-1 rounded tracking-wider self-start sm:self-auto shrink-0">
                     STEP 0{currentStepIndex + 1} OF 0{steps.length}
                   </span>
-                  <h2 className="text-3xl font-semibold tracking-tight text-white">
-                    {currentStep.title}
-                  </h2>
-                  <p className="mt-2 text-base text-neutral-400">
-                    {currentStep.description}
-                  </p>
                 </div>
               </div>
 
