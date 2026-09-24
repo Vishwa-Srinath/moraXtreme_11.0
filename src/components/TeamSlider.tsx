@@ -106,6 +106,7 @@ export default function TeamSlider({
           padding: 4rem 2.5rem;
           font-family: var(--font-sans, 'Inter', 'Helvetica Neue', sans-serif);
           background: transparent;
+          scroll-margin-top: 6rem;
         }
 
         /* ── Glassmorphism container ── */

@@ -141,6 +141,7 @@ export default function ImageGallery({
           padding: 5rem 3rem;
           font-family: var(--font-sans, 'Inter', 'Helvetica Neue', sans-serif);
           background: transparent;
+          scroll-margin-top: 6rem;
         }
 
         /* ── Inner layout: fixed left column + right bento ── */
