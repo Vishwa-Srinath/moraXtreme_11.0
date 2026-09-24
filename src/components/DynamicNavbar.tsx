@@ -15,7 +15,7 @@ export default function DynamicNavbar() {
       setScrolled(window.scrollY > 50)
       
       // 2. Scroll Spy logic
-      const sections = ["home", "about", "highlights", "legacy", "rules", "gallery", "team", "register"]
+      const sections = ["home", "about", "highlights", "legacy", "timeline", "why-join", "rules","gallery", "team", "register"]
       
       // Check from bottom to top to find the first section that is actively in view
       for (const section of sections.reverse()) {
@@ -54,7 +54,7 @@ export default function DynamicNavbar() {
         
         {/* Navigation Links */}
         <ul className="hidden md:flex items-center gap-10 text-xs font-mono tracking-[0.2em] uppercase text-neutral-400">
-          {["home", "about", "highlights", "legacy", "rules", "gallery", "team"].map((item) => (
+          {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
             <li key={item}>
               <a 
                 href={`#${item}`} 
