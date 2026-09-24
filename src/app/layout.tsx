@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     siteName: "MoraXtreme 11.0",
     images: [
       {
-        url: "/logo.png",
+        url: "https://www.moraxtreme.lk/logo.png",
         width: 1200,
         height: 630,
         alt: "MoraXtreme 11.0 Logo",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MoraXtreme 11.0",
     description: "Sri Lanka's premier annual algorithmic coding competition.",
-    images: ["/logo.png"],
+    images: ["https://www.moraxtreme.lk/logo.png"],
   },
   icons: {
     icon: "/icon.png",
