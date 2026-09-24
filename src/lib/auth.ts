@@ -1,4 +1,3 @@
-import { passkey } from "@better-auth/passkey"
 import { drizzleAdapter } from "@better-auth/drizzle-adapter"
 import { betterAuth } from "better-auth"
 import { nextCookies } from "better-auth/next-js"
@@ -17,11 +16,5 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  plugins: [
-    admin(),
-    passkey({
-      rpName: "moraXtreme",
-    }),
-    nextCookies(),
-  ],
+  plugins: [admin(), nextCookies()],
 })

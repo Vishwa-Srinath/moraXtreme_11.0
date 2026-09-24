@@ -61,6 +61,7 @@ export default async function RegisteredTeamsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="pl-4">Team</TableHead>
+                <TableHead>Country</TableHead>
                 <TableHead>University</TableHead>
                 <TableHead>Code</TableHead>
                 <TableHead>Members</TableHead>
@@ -76,6 +77,7 @@ export default async function RegisteredTeamsPage() {
                   <TableCell className="pl-4 font-medium">
                     {team.teamName}
                   </TableCell>
+                  <TableCell>{team.country}</TableCell>
                   <TableCell>{team.universityName}</TableCell>
                   <TableCell className="font-mono text-xs">
                     {team.registrationCode ?? "Pending"}

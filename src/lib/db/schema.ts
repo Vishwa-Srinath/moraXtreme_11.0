@@ -164,6 +164,7 @@ export const teams = pgTable(
   {
     id: text("id").primaryKey(),
     teamName: text("team_name").notNull(),
+    country: text("country"),
     universityId: text("university_id").references(() => universities.id, {
       onDelete: "set null",
     }),

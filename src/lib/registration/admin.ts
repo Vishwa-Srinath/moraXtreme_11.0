@@ -1,4 +1,4 @@
-import { asc, desc, eq } from "drizzle-orm"
+import { and, asc, desc, eq } from "drizzle-orm"
 import { connection } from "next/server"
 
 import { db } from "@/lib/db"
@@ -16,6 +16,7 @@ export type RegisteredTeamMember = {
 export type RegisteredTeam = {
   id: string
   teamName: string
+  country: string
   universityName: string
   teamSize: number
   registrationCode: string | null
@@ -30,6 +31,7 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
     .select({
       id: teams.id,
       teamName: teams.teamName,
+      country: teams.country,
       universityName: universities.name,
       customUniversityName: teams.customUniversityName,
       teamSize: teams.teamSize,
@@ -54,6 +56,7 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
     const team = registeredTeams.get(row.id) ?? {
       id: row.id,
       teamName: row.teamName,
+      country: row.country ?? "Not specified",
       universityName:
         row.universityName ?? row.customUniversityName ?? "Not specified",
       teamSize: row.teamSize,
@@ -74,4 +77,13 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
   }
 
   return Array.from(registeredTeams.values())
+}
+
+export async function deleteRegisteredTeam(teamId: string) {
+  const [deletedTeam] = await db
+    .delete(teams)
+    .where(and(eq(teams.id, teamId), eq(teams.status, "submitted")))
+    .returning({ id: teams.id })
+
+  return Boolean(deletedTeam)
 }

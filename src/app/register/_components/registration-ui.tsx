@@ -1,18 +1,8 @@
 "use client"
 
-import { CheckCircle2, Loader2 } from "lucide-react"
-import Link from "next/link"
+import { Loader2 } from "lucide-react"
 
-import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import type { SubmittedRegistration } from "@/lib/registration/schema"
+import { Button } from "@/components/ui/button"
 import type { RegistrationAvailability } from "@/lib/registration/settings"
 import { cn } from "@/lib/utils"
 
@@ -147,77 +137,6 @@ export function WizardFooter({
         )}
       </div>
     </div>
-  )
-}
-
-export function SubmittedState({
-  registration,
-}: {
-  registration: SubmittedRegistration
-}) {
-  return (
-    <div className="mx-auto max-w-2xl rounded-2xl border bg-card p-[clamp(1.5rem,4vw,3rem)] text-card-foreground shadow-sm">
-      <CheckCircle2 className="size-10 text-primary" />
-      <h1 className="mt-4 text-3xl font-semibold tracking-tight">
-        Registration confirmed
-      </h1>
-      <p className="mt-3 text-muted-foreground">
-        {registration.teamName} has been registered for MoraXtreme 11.
-      </p>
-      <div className="mt-6 rounded-xl border bg-muted/35 p-4">
-        <p className="text-xs text-muted-foreground">Registration code</p>
-        <p className="mt-1 font-mono text-2xl font-semibold">
-          {registration.registrationCode}
-        </p>
-      </div>
-      <Link href="/" className={buttonVariants({ className: "mt-8" })}>
-        Back to home
-      </Link>
-    </div>
-  )
-}
-
-export function SuccessDialog({
-  open,
-  onOpenChange,
-  registration,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  registration: SubmittedRegistration
-}) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Registration successful</DialogTitle>
-          <DialogDescription>
-            {registration.teamName} is confirmed for MoraXtreme 11.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="rounded-lg border bg-muted/35 p-4">
-            <p className="text-xs text-muted-foreground">Registration code</p>
-            <p className="mt-1 font-mono text-xl font-semibold">
-              {registration.registrationCode}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm font-medium">Submitted members</p>
-            <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-              {registration.members.map((member) => (
-                <li key={member}>{member}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <DialogFooter>
-          <Link href="/" className={buttonVariants()}>
-            Back to home
-          </Link>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   )
 }
 

@@ -32,7 +32,7 @@ const BASE_STEPS: RegistrationStep[] = [
   {
     id: "team",
     title: "Team Details",
-    description: "Name your team and select the university.",
+    description: "Enter your team, country, and university details.",
   },
   {
     id: "leader",
@@ -42,7 +42,8 @@ const BASE_STEPS: RegistrationStep[] = [
   {
     id: "member1",
     title: "Team Member 1",
-    description: "Add the second participant when your team has 2 or 3 members.",
+    description:
+      "Add the second participant when your team has 2 or 3 members.",
   },
   {
     id: "member2",
@@ -60,7 +61,13 @@ export const STEP_FIELDS: Record<
   Exclude<StepId, "review">,
   FieldPath<RegistrationValues>[]
 > = {
-  team: ["teamName", "universityId", "otherUniversityName", "teamSize"],
+  team: [
+    "country",
+    "teamName",
+    "universityId",
+    "otherUniversityName",
+    "teamSize",
+  ],
   leader: ["leader.fullName", "leader.email", "leader.whatsappNumber"],
   member1: ["member1.fullName", "member1.email", "member1.whatsappNumber"],
   member2: ["member2.fullName", "member2.email", "member2.whatsappNumber"],
