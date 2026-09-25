@@ -1,0 +1,349 @@
+/* ── Section ── */
+        .section {
+          position: relative;
+          z-index: 10;
+          width: 100%;
+          padding: 4rem 2.5rem;
+          font-family: var(--font-sans, 'Inter', 'Helvetica Neue', sans-serif);
+          background: transparent;
+          scroll-margin-top: 6rem;
+        }
+
+        /* ── Glassmorphism container ── */
+        .card-bg {
+          position: relative;
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
+          border-radius: 3rem;
+          border: 1px solid rgba(255,255,255,0.07);
+          background: rgba(2,6,18,0.82);
+          box-shadow:
+            0 0 100px rgba(0,116,255,0.18),
+            inset 0 0 0 1px rgba(0,116,255,0.06);
+          backdrop-filter: blur(40px) saturate(1.4);
+          -webkit-backdrop-filter: blur(40px) saturate(1.4);
+          overflow: hidden;
+          padding: 4rem 3.5rem;
+        }
+        .card-bg::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 100%; height: 100%;
+          background: radial-gradient(ellipse at top, rgba(0,116,255,0.25) 0%, transparent 60%);
+          pointer-events: none;
+          z-index: 0;
+        }
+        .card-bg::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 75%; height: 2px;
+          background: linear-gradient(to right, transparent, #0074FF, transparent);
+          opacity: 0.55;
+          box-shadow: 0 0 20px #0074FF;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        /* ── Inner two-column grid ── */
+        .inner {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns: 280px 1fr;
+          gap: 3rem;
+          align-items: center;
+        }
+        @media (max-width: 1024px) {
+          .inner   { grid-template-columns: 1fr; gap: 2.5rem; }
+          .card-bg { padding: 3rem 2rem; }
+        }
+        @media (max-width: 640px) {
+          .card-bg { padding: 2rem 1rem; border-radius: 1.5rem; }
+          .section { padding: 2rem 1rem; }
+        }
+
+        /* ── Left editorial panel ── */
+        .left {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+        .eyebrow {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
+        }
+        .eyebrow-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: #ffffff;
+          box-shadow: 0 0 8px rgba(0, 116, 255, 0.8);
+          flex-shrink: 0;
+        }
+        .eyebrow-text {
+          font-size: 0.6rem;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          color: #ffffff;
+          text-shadow: 0 0 10px rgba(0, 116, 255, 0.8);
+          text-transform: uppercase;
+        }
+        .eyebrow-sep { 
+          font-size: 0.6rem; 
+          color: #ffffff; 
+          text-shadow: 0 0 10px rgba(0, 116, 255, 0.8);
+        }
+
+        .headline {
+          font-size: clamp(3rem, 5vw, 5rem);
+          font-weight: 900;
+          line-height: 0.88;
+          letter-spacing: -0.03em;
+          margin: 0 0 1.5rem;
+        }
+        .headline-white { 
+          display: block; 
+          color: #ffffff;
+          text-shadow: 0 0 20px rgba(0, 116, 255, 0.8);
+        }
+        .headline-blue  { 
+          display: block; 
+          color: #ffffff;
+          text-shadow: 0 0 20px rgba(0, 116, 255, 0.8);
+        }
+
+        .subtitle {
+          font-size: 0.82rem;
+          color: #ffffff;
+          text-shadow: 0 0 10px rgba(0, 116, 255, 0.8);
+          line-height: 1.8;
+          margin: 0 0 2.5rem;
+          max-width: 240px;
+        }
+
+        /* Dot indicators */
+        .controls { display: flex; align-items: center; }
+        .dots     { display: flex; gap: 0.35rem; align-items: center; }
+        .dot {
+          height: 2px;
+          border-radius: 2px;
+          background: rgba(255,255,255,0.18);
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          transition: background 0.3s ease, width 0.3s ease;
+          width: 16px;
+        }
+        .dot[data-active="true"] {
+          background: #0074FF;
+          width: 30px;
+        }
+
+        /* ── Viewport wrapper (relative so nav buttons can anchor to it) ── */
+        .viewport-wrap {
+          position: relative;
+          /* Vertical padding gives breathing room for the scaled-up centre card */
+          padding: 2rem 0;
+        }
+
+        /* ── Nav < > buttons ── */
+        .nav-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.22);
+          background: rgba(5,12,28,0.80);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          color: #FFFFFF;
+          font-size: 1.05rem;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition:
+            border-color 0.2s ease,
+            background   0.2s ease,
+            color        0.2s ease,
+            box-shadow   0.2s ease;
+        }
+        /* Left button: centred in the gap on the left of the active card */
+        .nav-btn--prev { left:  calc(50% - 155px); }
+        /* Right button: centred in the gap on the right of the active card */
+        .nav-btn--next { right: calc(50% - 155px); }
+        .nav-btn:hover {
+          border-color: #0074FF;
+          background: rgba(0,116,255,0.18);
+          color: #0074FF;
+          box-shadow: 0 0 16px rgba(0,116,255,0.45);
+        }
+
+        /* ── Viewport ── */
+        .viewport {
+          position: relative;
+          overflow: hidden;
+          height: 500px;
+        }
+        @media (max-width: 480px) {
+          .viewport {
+            height: 420px;
+          }
+        }
+
+        /* ── Track: absolute + left:50% so the left edge starts at the
+               viewport's horizontal centre.  The inline translateX then
+               shifts it left by the active card's centre offset, making
+               that card sit exactly at the centre of the viewport.         ── */
+        .track {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          display: flex;
+          gap: 20px;
+          align-items: center;
+          will-change: transform;
+        }
+        .track--animated {
+          transition: transform 0.65s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        /* ── Individual card ── */
+        .card {
+          position: relative;
+          flex-shrink: 0;
+          width: 250px;
+          border-radius: 10px;
+          overflow: hidden;
+          border: 1px solid rgba(13,37,67,0.5);
+          background: rgba(4,8,15,0.7);
+          backdrop-filter: blur(6px);
+          display: flex;
+          flex-direction: column;
+          transition:
+            transform     0.55s cubic-bezier(0.32, 0.72, 0, 1),
+            opacity       0.45s ease,
+            border-color  0.4s  ease,
+            box-shadow    0.4s  ease,
+            filter        0.4s  ease;
+        }
+
+        /* Centre card — larger, fully lit, blue border + glow */
+        .card--active {
+          transform: scale(1.13);
+          opacity: 1;
+          filter: brightness(1);
+          border-color: #0074FF;
+          box-shadow:
+            0 0 0 1px rgba(0,116,255,0.25),
+            0 0 45px rgba(0,116,255,0.25),
+            0 24px 56px rgba(0,0,0,0.65);
+          cursor: default;
+          z-index: 3;
+        }
+
+        /* Adjacent neighbours — smaller, dimmed */
+        .card--near {
+          transform: scale(0.87);
+          opacity: 0.58;
+          filter: brightness(0.70);
+          cursor: pointer;
+          z-index: 2;
+        }
+        .card--near:hover {
+          opacity: 0.78;
+          filter: brightness(0.88);
+        }
+
+        /* Everything else — invisible (still in DOM for seamless looping) */
+        .card--far {
+          transform: scale(0.72);
+          opacity: 0;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        /* Blue top bar (active only) */
+        .card-topbar {
+          position: absolute;
+          top: 0; left: 0;
+          height: 2px;
+          background: #0074FF;
+          z-index: 3;
+          width: 0;
+          transition: width 0.5s ease 0.2s;
+        }
+        .card--active .card-topbar { width: 100%; }
+
+        /* Photo */
+        .card-photo {
+          position: relative;
+          aspect-ratio: 3 / 4;
+          overflow: hidden;
+          background: #163E70;
+          flex-shrink: 0;
+        }
+        .card-photo img {
+          width: 100%; height: 100%;
+          object-fit: cover;
+          object-position: top center;
+          display: block;
+          transition: transform 0.6s ease;
+        }
+        .card--active .card-photo img { transform: scale(1.04); }
+        .card-photo-placeholder {
+          width: 100%; height: 100%;
+          background: linear-gradient(160deg, #163E70 0%, #020509 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          color: rgba(0,116,255,0.3);
+          font-weight: 900;
+        }
+        .card-photo::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          height: 45%;
+          background: linear-gradient(to top, rgba(4,8,15,0.98) 0%, transparent 100%);
+          pointer-events: none;
+        }
+
+        /* Card info */
+        .card-info {
+          padding: 0.85rem 1rem 1.1rem;
+          flex-shrink: 0;
+        }
+        .card-role {
+          font-size: 0.58rem;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          color: #0074FF;
+          text-transform: uppercase;
+          margin-bottom: 0.25rem;
+        }
+        .card-name {
+          font-size: 1.05rem;
+          font-weight: 800;
+          color: #FFFFFF;
+          line-height: 1.15;
+          margin: 0 0 0.2rem;
+          letter-spacing: -0.01em;
+        }
+        .card-org {
+          font-size: 0.62rem;
+          color: #6B7B8D;
+          line-height: 1.4;
+          margin: 0;
+        }

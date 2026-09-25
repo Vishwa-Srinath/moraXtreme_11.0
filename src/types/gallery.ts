@@ -13,7 +13,7 @@ export interface GalleryImage {
 }
 
 export interface ImageGalleryProps {
-  images: GalleryImage[];
+  images?: GalleryImage[];
   title?: string;
   subtitle?: string;
   /** Desktop column count — defaults to 3 */

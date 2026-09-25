@@ -91,7 +91,7 @@ export default function DynamicNavbar() {
               <a
                 href={`#${item}`}
                 className={cn(
-                  "relative font-black text-white transition-all duration-300 [-webkit-text-stroke:0.5px_#163E70] [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)]",
+                  "relative font-black text-white transition-all duration-300 [-webkit-text-stroke:0.5px_#163E70]",
                   activeSection === item
                     ? "opacity-100"
                     : "opacity-60 hover:opacity-100"

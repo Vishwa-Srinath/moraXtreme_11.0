@@ -240,7 +240,7 @@ export function RegistrationWizard({
           <div className="absolute top-[10%] left-[20%] z-10 h-96 w-96 rounded-full bg-[#0074FF] opacity-10 mix-blend-screen blur-[150px] filter" />
         </div>
 
-        <div className="relative z-30 space-y-6">
+        <div className="relative z-30 mt-16 space-y-6 lg:mt-0">
           <p className="text-sm font-bold tracking-[0.25em] text-[#0074FF] uppercase drop-shadow-md">
             Register your team
           </p>

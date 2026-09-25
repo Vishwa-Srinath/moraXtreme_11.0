@@ -293,9 +293,8 @@ export default function WorldAsiaScene({
         {/* Hero content: title, badges, buttons */}
         <div ref={heroRef} className={styles.heroContent}>
           <div className="flex flex-col items-center justify-center text-center">
-            {/* Main title */}
             <div className="mb-8 flex flex-col items-center justify-center gap-4">
-              <p className="font-mono text-xl font-black tracking-[0.3em] text-white uppercase [-webkit-text-stroke:1px_#163E70] [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)] md:text-2xl">
+              <p className="font-mono text-xl font-black tracking-[0.3em] text-white uppercase [-webkit-text-stroke:1px_#163E70] md:text-2xl">
                 Welcome to
               </p>
               <h1 className="flex flex-wrap justify-center gap-x-1 font-[family-name:var(--font-space)] text-5xl font-bold tracking-tighter text-white drop-shadow-2xl sm:gap-x-2 sm:text-6xl md:gap-x-4 md:text-8xl lg:text-[7rem]">
@@ -323,7 +322,7 @@ export default function WorldAsiaScene({
                       "textReveal 1.1s cubic-bezier(0.16,1,0.3,1) 0.58s forwards",
                   }}
                 >
-                  <span className="text-white [-webkit-text-stroke:2px_#163E70] [text-shadow:0_0_20px_rgba(255,255,255,0.6),_0_0_40px_rgba(0,0,0,1)]">
+                  <span className="text-white [-webkit-text-stroke:2px_#163E70]">
                     11.0
                   </span>
                 </span>
