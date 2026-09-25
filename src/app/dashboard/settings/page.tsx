@@ -1,7 +1,9 @@
 import { RegistrationSettingsForm } from "@/components/dashboard/registration-settings-form"
+import { requireAdminPage } from "@/lib/auth-guards"
 import { getRegistrationAvailability } from "@/lib/registration/settings"
 
 export default async function RegistrationSettingsPage() {
+  await requireAdminPage()
   const settings = await getRegistrationAvailability()
 
   return (

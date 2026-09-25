@@ -1,19 +1,15 @@
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
 import { Toaster } from "sonner"
 
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { ModalProvider } from "@/components/modals/modal-provider"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { auth } from "@/lib/auth"
+import { requireAdminPage } from "@/lib/auth-guards"
 
 export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await auth.api.getSession({ headers: await headers() })
-
-  if (!session) redirect("/login")
+  await requireAdminPage()
 
   return (
     <ModalProvider>

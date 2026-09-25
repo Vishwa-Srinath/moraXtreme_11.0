@@ -15,6 +15,8 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    // Admin accounts are created from the dashboard or `npm run admin:create`.
+    disableSignUp: true,
   },
   plugins: [admin(), nextCookies()],
 })
