@@ -14,14 +14,6 @@ export type RegistrationForm = UseFormReturn<
   RegistrationValues
 >
 
-export type SaveStatus =
-  | "saved_local"
-  | "syncing"
-  | "synced"
-  | "sync_failed"
-  | "existing_loaded"
-  | "submitted"
-
 export type RegistrationStep = {
   id: StepId
   title: string
@@ -71,15 +63,6 @@ export const STEP_FIELDS: Record<
   leader: ["leader.fullName", "leader.email", "leader.whatsappNumber"],
   member1: ["member1.fullName", "member1.email", "member1.whatsappNumber"],
   member2: ["member2.fullName", "member2.email", "member2.whatsappNumber"],
-}
-
-export const SAVE_STATUS_LABELS: Record<SaveStatus, string> = {
-  saved_local: "Saved locally",
-  syncing: "Syncing draft...",
-  synced: "Synced",
-  sync_failed: "Sync failed; final submit will retry",
-  existing_loaded: "Existing draft loaded",
-  submitted: "Submitted",
 }
 
 export function getRegistrationSteps(teamSize: number) {

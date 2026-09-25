@@ -39,7 +39,7 @@ Next.js 16 has breaking changes from older versions. Read `node_modules/next/dis
 **Registration domain (`src/lib/registration/`).** This folder holds the business logic. API routes are thin wrappers around it.
 - `schema.ts` defines the zod schemas and the email/WhatsApp normalization for participants.
 - `constants.ts` lists the countries and known universities, plus an "other university" sentinel.
-- `db.ts` handles the draft and submit flow. A team is stored as a `teams` row with `status` set to `draft` and later moves to submitted. Drafts are synced and resumed by looking up the leader's email (`/api/register/draft` GET/POST). `/api/register/submit` finalizes the team and assigns a `registrationCode`.
+- `db.ts` handles submission. In-progress drafts live only in the browser (`localStorage`); the server never stores or returns drafts, so there is no endpoint that reads participant data by email. `/api/register/submit` inserts a new `teams` row with `status: "submitted"` and a `registrationCode`, rejecting any email or WhatsApp number already on a submitted team. (The `draft` enum value is legacy.)
 - `settings.ts` reads the open time, close time, force-closed flag, and closed message from `app_settings` and computes registration availability on the server. `/register` shows a closed state instead of the wizard when registration is not open.
 - `admin.ts` holds the dashboard queries, such as listing and deleting registered teams.
 

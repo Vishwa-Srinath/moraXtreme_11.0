@@ -19,7 +19,6 @@ import {
 import {
   getRegistrationSteps,
   STEP_FIELDS,
-  type SaveStatus,
   type StepId,
 } from "./_components/registration-config"
 import { RegistrationStepContent } from "./_components/registration-steps"
@@ -48,13 +47,10 @@ export function RegistrationWizard({
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [highestStepIndex, setHighestStepIndex] = useState(0)
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>("saved_local")
   const [stepError, setStepError] = useState<string | null>(null)
   const [submittedRegistration, setSubmittedRegistration] =
     useState<SubmittedRegistration | null>(null)
   const [isPending, startTransition] = useTransition()
-  const serverSyncEnabled = useRef(false)
-  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hasHydrated = useRef(false)
   const resetForm = form.reset
   const subscribeToForm = form.watch
@@ -82,26 +78,14 @@ export function RegistrationWizard({
     const subscription = subscribeToForm((draft) => {
       if (!hasHydrated.current) return
 
+      // Drafts stay in this browser only; the server stores a team on submit.
       window.localStorage.setItem(
         REGISTRATION_STORAGE_KEY,
         JSON.stringify(draft)
       )
-
-      if (!serverSyncEnabled.current) {
-        setSaveStatus("saved_local")
-        return
-      }
-
-      if (syncTimer.current) clearTimeout(syncTimer.current)
-      syncTimer.current = setTimeout(() => {
-        syncDraft(draft as RegistrationValues)
-      }, 900)
     })
 
-    return () => {
-      subscription.unsubscribe()
-      if (syncTimer.current) clearTimeout(syncTimer.current)
-    }
+    return () => subscription.unsubscribe()
   }, [subscribeToForm])
 
   useEffect(() => {
@@ -109,42 +93,6 @@ export function RegistrationWizard({
       setCurrentStepIndex(steps.length - 1)
     }
   }, [currentStepIndex, steps.length])
-
-  async function syncDraft(draft: RegistrationValues) {
-    setSaveStatus("syncing")
-
-    try {
-      await readResponse<{ draft: { teamId: string } }>(
-        await fetch("/api/register/draft", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(draft),
-        })
-      )
-      setSaveStatus("synced")
-    } catch {
-      setSaveStatus("sync_failed")
-    }
-  }
-
-  async function loadExistingDraft(leaderEmail: string) {
-    const response = await fetch(
-      `/api/register/draft?leaderEmail=${encodeURIComponent(leaderEmail)}`
-    )
-    const data = await readResponse<{ draft: RegistrationValues | null }>(
-      response
-    )
-
-    if (!data.draft) return false
-
-    form.reset(data.draft)
-    window.localStorage.setItem(
-      REGISTRATION_STORAGE_KEY,
-      JSON.stringify(data.draft)
-    )
-    setSaveStatus("existing_loaded")
-    return true
-  }
 
   async function validateCurrentStep() {
     if (currentStep.id === "review") return true
@@ -156,17 +104,6 @@ export function RegistrationWizard({
   async function goNext() {
     const valid = await validateCurrentStep()
     if (!valid) return
-
-    if (currentStep.id === "leader") {
-      try {
-        const loaded = await loadExistingDraft(form.getValues("leader.email"))
-        serverSyncEnabled.current = true
-        if (!loaded) await syncDraft(form.getValues())
-      } catch {
-        serverSyncEnabled.current = true
-        setSaveStatus("sync_failed")
-      }
-    }
 
     const nextIndex = Math.min(currentStepIndex + 1, steps.length - 1)
     setCurrentStepIndex(nextIndex)
@@ -209,7 +146,6 @@ export function RegistrationWizard({
           registration: SubmittedRegistration
         }>(response)
 
-        setSaveStatus("submitted")
         setSubmittedRegistration(registration)
         window.localStorage.removeItem(REGISTRATION_STORAGE_KEY)
       })
@@ -370,7 +306,6 @@ export function RegistrationWizard({
                     <WizardFooter
                       currentStepId={currentStep.id}
                       currentStepIndex={currentStepIndex}
-                      saveStatus={saveStatus}
                       isPending={isPending}
                       onBack={goBack}
                       onNext={goNext}

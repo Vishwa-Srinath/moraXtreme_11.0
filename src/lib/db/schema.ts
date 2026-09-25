@@ -240,6 +240,17 @@ export const appSettings = pgTable(
   (table) => [index("app_settings_value_type_idx").on(table.valueType)]
 )
 
+// Fixed-window request counters for public endpoints; see src/lib/rate-limit.ts.
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    key: text("key").primaryKey(),
+    count: integer("count").notNull(),
+    windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+  },
+  (table) => [index("rate_limits_window_start_idx").on(table.windowStart)]
+).enableRLS()
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),

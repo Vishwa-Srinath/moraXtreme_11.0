@@ -48,34 +48,12 @@ function getUniversityFields(values: RegistrationValues) {
   return { universityId: values.universityId, customUniversityName: null }
 }
 
-async function findDraftTeamIdByLeaderEmail(
-  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  leaderEmail: string
-) {
-  const [draft] = await tx
-    .select({ teamId: teams.id })
-    .from(teamMembers)
-    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-    .where(
-      and(
-        eq(teams.status, "draft"),
-        eq(teamMembers.role, "leader"),
-        eq(teamMembers.email, leaderEmail)
-      )
-    )
-    .limit(1)
-
-  return draft?.teamId ?? null
-}
-
-async function writeDraftMembers(
+async function insertTeamMembers(
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   teamId: string,
   values: RegistrationValues
 ) {
   const participants = getParticipants(values)
-
-  await tx.delete(teamMembers).where(eq(teamMembers.teamId, teamId))
 
   await tx.insert(teamMembers).values(
     participants.map((participant) => ({
@@ -90,30 +68,13 @@ async function writeDraftMembers(
   )
 }
 
-async function upsertDraftTeam(
+async function insertSubmittedTeam(
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  values: RegistrationValues
+  values: RegistrationValues,
+  registrationCode: string,
+  submittedAt: Date
 ) {
   await ensureKnownUniversities(tx)
-
-  const leaderEmail = normalizeEmail(values.leader.email)
-  const existingTeamId = await findDraftTeamIdByLeaderEmail(tx, leaderEmail)
-  const universityFields = getUniversityFields(values)
-
-  if (existingTeamId) {
-    await tx
-      .update(teams)
-      .set({
-        country: values.country,
-        teamName: values.teamName.trim(),
-        teamSize: values.teamSize,
-        ...universityFields,
-      })
-      .where(eq(teams.id, existingTeamId))
-
-    await writeDraftMembers(tx, existingTeamId, values)
-    return existingTeamId
-  }
 
   const teamId = createId("team")
 
@@ -122,12 +83,13 @@ async function upsertDraftTeam(
     country: values.country,
     teamName: values.teamName.trim(),
     teamSize: values.teamSize,
-    status: "draft",
-    ...universityFields,
+    status: "submitted",
+    registrationCode,
+    submittedAt,
+    ...getUniversityFields(values),
   })
 
-  await writeDraftMembers(tx, teamId, values)
-  return teamId
+  await insertTeamMembers(tx, teamId, values)
 }
 
 async function createRegistrationCode(
@@ -189,78 +151,6 @@ async function assertNoSubmittedParticipantConflicts(
   }
 }
 
-export async function syncRegistrationDraft(input: unknown) {
-  const values = registrationSchema.parse(input)
-
-  return db.transaction(async (tx) => {
-    const teamId = await upsertDraftTeam(tx, values)
-    return { teamId }
-  })
-}
-
-export async function getDraftByLeaderEmail(leaderEmailInput: string) {
-  const leaderEmail = normalizeEmail(leaderEmailInput)
-
-  const rows = await db
-    .select({
-      teamId: teams.id,
-      country: teams.country,
-      teamName: teams.teamName,
-      universityId: teams.universityId,
-      customUniversityName: teams.customUniversityName,
-      teamSize: teams.teamSize,
-      fullName: teamMembers.fullName,
-      email: teamMembers.email,
-      whatsappNumber: teamMembers.whatsappNumber,
-      role: teamMembers.role,
-      memberOrder: teamMembers.memberOrder,
-    })
-    .from(teamMembers)
-    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-    .where(and(eq(teams.status, "draft"), eq(teamMembers.email, leaderEmail)))
-
-  const leaderRow = rows.find((row) => row.role === "leader")
-  if (!leaderRow) return null
-
-  const allRows = await db
-    .select({
-      fullName: teamMembers.fullName,
-      email: teamMembers.email,
-      whatsappNumber: teamMembers.whatsappNumber,
-      role: teamMembers.role,
-      memberOrder: teamMembers.memberOrder,
-    })
-    .from(teamMembers)
-    .where(eq(teamMembers.teamId, leaderRow.teamId))
-
-  const leader = allRows.find((row) => row.role === "leader")
-  const member1 = allRows.find((row) => row.memberOrder === 1)
-  const member2 = allRows.find((row) => row.memberOrder === 2)
-
-  return {
-    country: leaderRow.country ?? "Sri Lanka",
-    teamName: leaderRow.teamName,
-    universityId: leaderRow.universityId ?? OTHER_UNIVERSITY_ID,
-    otherUniversityName: leaderRow.customUniversityName ?? "",
-    teamSize: leaderRow.teamSize,
-    leader: {
-      fullName: leader?.fullName ?? "",
-      email: leader?.email ?? leaderEmail,
-      whatsappNumber: leader?.whatsappNumber ?? "",
-    },
-    member1: {
-      fullName: member1?.fullName ?? "",
-      email: member1?.email ?? "",
-      whatsappNumber: member1?.whatsappNumber ?? "",
-    },
-    member2: {
-      fullName: member2?.fullName ?? "",
-      email: member2?.email ?? "",
-      whatsappNumber: member2?.whatsappNumber ?? "",
-    },
-  }
-}
-
 export async function submitRegistration(
   input: unknown
 ): Promise<SubmittedRegistration> {
@@ -275,18 +165,10 @@ export async function submitRegistration(
   return db.transaction(async (tx) => {
     await assertNoSubmittedParticipantConflicts(tx, values)
 
-    const teamId = await upsertDraftTeam(tx, values)
     const registrationCode = await createRegistrationCode(tx)
     const submittedAt = new Date()
 
-    await tx
-      .update(teams)
-      .set({
-        status: "submitted",
-        submittedAt,
-        registrationCode,
-      })
-      .where(eq(teams.id, teamId))
+    await insertSubmittedTeam(tx, values, registrationCode, submittedAt)
 
     return {
       teamName: values.teamName.trim(),
