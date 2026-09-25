@@ -1,12 +1,13 @@
+import dynamic from "next/dynamic"
 import AnimatedCounter from "@/components/AnimatedCounter"
-import TeamSlider from "@/components/TeamSlider"
+const TeamSlider = dynamic(() => import("@/components/TeamSlider"))
 import { TEAM_PLACEHOLDER } from "@/data/team.placeholder"
 import Image from "next/image"
 import DynamicNavbar from "@/components/DynamicNavbar"
-import WorldAsiaScene from "@/components/landing/WorldAsiaScene"
-import HighlightsTimeline from "@/components/landing/HighlightsTimeline"
-import Timeline from "@/components/timeline/Timeline"
-import ImageGallery from "@/components/ImageGallery"
+const WorldAsiaScene = dynamic(() => import("@/components/landing/WorldAsiaScene"))
+const HighlightsTimeline = dynamic(() => import("@/components/landing/HighlightsTimeline"))
+const Timeline = dynamic(() => import("@/components/timeline/Timeline"))
+const ImageGallery = dynamic(() => import("@/components/ImageGallery"))
 import { GALLERY_PLACEHOLDER_IMAGES } from "@/data/gallery.placeholder"
 
 export default async function Home() {
