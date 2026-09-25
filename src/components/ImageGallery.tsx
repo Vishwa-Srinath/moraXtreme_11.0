@@ -518,7 +518,7 @@ export default function ImageGallery({
           <div className="ig-left">
             <div className="ig-eyebrow">
               <span className="ig-eyebrow-dot" />
-              <span className="ig-eyebrow-text">MoraXtreme 11.0</span>
+              <span className="ig-eyebrow-text">MoraXtreme 10.0</span>
               <span className="ig-eyebrow-sep">/</span>
               <span className="ig-eyebrow-text">Highlights</span>
             </div>

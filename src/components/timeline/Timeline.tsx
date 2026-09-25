@@ -171,7 +171,7 @@ export default function Timeline({
                 key={`${milestone.title}-${index}`}
                 className="timeline-entry grid grid-cols-[2.75rem_minmax(0,1fr)] items-start md:grid-cols-[11rem_4.5rem_minmax(0,1fr)]"
               >
-                <p className="col-start-2 mb-3 font-mono text-base font-bold tracking-[0.12em] text-white [text-shadow:0_0_15px_rgba(255,255,255,0.8)] uppercase md:col-start-1 md:row-start-1 md:mb-0 md:pt-4 md:pr-5 md:text-right md:text-lg">
+                <p className="col-start-2 mb-3 font-mono text-base font-bold tracking-[0.12em] text-white uppercase md:col-start-1 md:row-start-1 md:mb-0 md:pt-4 md:pr-5 md:text-right md:text-lg">
                   {milestone.date}
                 </p>
 
@@ -197,7 +197,7 @@ export default function Timeline({
                     className="absolute top-5 -left-3 hidden h-6 w-3 bg-[#090e18] [clip-path:polygon(100%_0,0_50%,100%_100%)] md:block"
                   />
 
-                  <h3 className="font-[family-name:var(--font-space)] text-2xl font-black tracking-tight text-white [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)] [-webkit-text-stroke:1px_#163E70] md:text-3xl">
+                  <h3 className="font-[family-name:var(--font-space)] text-2xl font-black tracking-tight text-white [-webkit-text-stroke:1px_#163E70] md:text-3xl">
                     {milestone.title}
                   </h3>
                   {milestone.desc && (

@@ -84,14 +84,14 @@ export default function CustomCursor() {
       {/* Center Solid Dot (Bright Blue) */}
       <div 
         ref={cursorDotRef}
-        className="pointer-events-none fixed top-0 left-0 z-[100] h-2 w-2 rounded-full bg-[#0074FF] shadow-[0_0_12px_#0074FF] transition-transform duration-200 ease-out"
+        className="pointer-events-none fixed top-0 left-0 z-[100] hidden h-2 w-2 rounded-full bg-[#0074FF] shadow-[0_0_12px_#0074FF] transition-transform duration-200 ease-out md:block"
         style={{ opacity: isVisible ? 1 : 0 }}
       />
       
       {/* Outer Rotating Dashed Ring Container */}
       <div 
         ref={cursorRingRef}
-        className="pointer-events-none fixed top-0 left-0 z-[99] flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ease-out"
+        className="pointer-events-none fixed top-0 left-0 z-[99] hidden h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ease-out md:flex"
         style={{ opacity: isVisible ? 1 : 0 }}
       >
         {/* The rotating dashed border itself */}
