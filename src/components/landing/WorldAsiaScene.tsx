@@ -367,7 +367,7 @@ export default function WorldAsiaScene({
                 <div className="absolute -inset-1 animate-pulse rounded-full bg-gradient-to-r from-[#0074FF]/40 via-white/30 to-[#0074FF]/40 opacity-60 blur-xl transition duration-500 group-hover:opacity-90 group-hover:blur-2xl"></div>
 
                 <a
-                  href="https://drive.google.com/drive/folders/12C4BZjrvIeEN1qFP5moPpWSYtvLVuVwf?usp=sharing"
+                  href="https://drive.google.com/file/d/15mhOejVRehPb6AwOkcclHVrZisyFoxjU/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="relative inline-flex items-center overflow-hidden rounded-full border border-white/40 bg-white/5 px-8 py-4 font-[family-name:var(--font-space)] text-sm font-black tracking-[0.25em] text-white uppercase shadow-[0_0_20px_rgba(255,255,255,0.2),inset_0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/70 group-hover:bg-white/15 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.5),inset_0_0_30px_rgba(255,255,255,0.3)] sm:px-12 sm:py-6 sm:text-base md:text-lg"
