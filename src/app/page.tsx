@@ -41,8 +41,8 @@ export default async function Home() {
                       MoraXtreme is Sri Lanka’s premier annual algorithmic coding
                       competition, organized by the IEEE Student Branch and the IEEE
                       Computer Society Student Branch Chapter of the University of
-                      Moratuwa. Serving as a national adaptation of the global
-                      IEEEXtreme competition, it is designed to foster competitive
+                      Moratuwa. Expanding beyond Sri Lanka, MoraXtreme 11.0 brings together
+                      talented coders from across South Asia. It is designed to foster competitive
                       programming skills and prepare participants for the
                       international stage. The challenge consists of a rigorous
                       12-hour online elimination round, followed by an intense 8-hour
