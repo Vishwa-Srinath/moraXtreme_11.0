@@ -29,7 +29,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "01",
     title: "Registrations Open",
-    date: "24 September",
+    date: "26th September",
     desc: "Sign-ups go live for MoraXtreme 11.0.",
     image:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=900&q=80",
@@ -37,7 +37,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "02",
     title: "Awareness Session",
-    date: "25 September",
+    date: "Last week of September",
     desc: "Kickoff briefing on rules, format and scoring.",
     image:
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&q=80",
@@ -45,7 +45,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "03",
     title: "Registrations Close",
-    date: "30 September",
+    date: "6th October",
     desc: "Last call — team sign-ups lock.",
     image:
       "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80",
