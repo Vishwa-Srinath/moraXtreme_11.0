@@ -14,10 +14,26 @@ export default function DynamicNavbar() {
     const handleScroll = () => {
       // 1. Background transition logic
       setScrolled(window.scrollY > 50)
-      
+
       // 2. Scroll Spy logic
-      const sections = ["home", "about", "highlights", "legacy", "timeline", "why-join", "rules","gallery", "team", "register"]
-      
+      const sections = [
+        "home",
+        "about",
+        "highlights",
+        "legacy",
+        "timeline",
+        "why-join",
+        "rules",
+        "gallery",
+        "team",
+        "register",
+      ]
+
+      if (window.scrollY < 100) {
+        setActiveSection("home")
+        return
+      }
+
       // Check from bottom to top to find the first section that is actively in view
       for (const section of sections.reverse()) {
         const el = document.getElementById(section)
@@ -38,82 +54,130 @@ export default function DynamicNavbar() {
   }, [])
 
   return (
-    <nav 
+    <nav
       className={cn(
         "fixed top-0 z-50 w-full transition-all duration-500",
-        scrolled 
-          ? "bg-[#000000]/80 backdrop-blur-xl border-b border-[#163E70] py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)]" 
+        scrolled
+          ? "border-b border-[#163E70] bg-[#000000]/80 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl"
           : "bg-transparent py-6"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between transition-all duration-300">
-        
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-300 sm:px-6">
         {/* Logo */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <Image src="/logo.png" alt="Logo" width={90} height={36} className="object-contain" unoptimized />
+        <div className="flex flex-shrink-0 items-center gap-3">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={90}
+            height={36}
+            className="object-contain"
+            unoptimized
+          />
         </div>
-        
+
         {/* Navigation Links - desktop */}
-        <ul className="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-[family-name:var(--font-space)] font-bold tracking-widest uppercase text-neutral-400">
-          {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
+        <ul className="hidden items-center gap-6 font-mono text-sm tracking-[0.2em] uppercase md:flex lg:gap-8">
+          {[
+            "home",
+            "about",
+            "highlights",
+            "legacy",
+            "timeline",
+            "why-join",
+            "gallery",
+            "team",
+          ].map((item) => (
             <li key={item}>
-              <a 
-                href={`#${item}`} 
+              <a
+                href={`#${item}`}
                 className={cn(
-                  "transition-colors duration-300 relative",
-                  activeSection === item ? "text-white" : "font-bold hover:text-[#0074FF]"
+                  "relative font-black text-white transition-all duration-300 [-webkit-text-stroke:0.5px_#163E70] [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)]",
+                  activeSection === item
+                    ? "opacity-100"
+                    : "opacity-60 hover:opacity-100"
                 )}
               >
                 {item}
                 {/* Glowing Active Indicator */}
-                <span 
+                <span
                   className={cn(
-                    "absolute -bottom-3 left-1/2 -translate-x-1/2 h-[2px] bg-[#0074FF] shadow-[0_0_10px_#0074FF] transition-all duration-300",
-                    activeSection === item ? "w-full opacity-100" : "w-0 opacity-0"
+                    "absolute -bottom-3 left-1/2 h-[2px] -translate-x-1/2 bg-[#0074FF] shadow-[0_0_10px_#0074FF] transition-all duration-300",
+                    activeSection === item
+                      ? "w-full opacity-100"
+                      : "w-0 opacity-0"
                   )}
                 ></span>
               </a>
             </li>
           ))}
         </ul>
-        
+
         {/* Right side: Register + Hamburger */}
         <div className="flex items-center gap-3">
-          <a href="/register" className={cn(
-            buttonVariants({ variant: "outline" }),
-            "font-[family-name:var(--font-space)] font-extrabold uppercase tracking-widest transition-all duration-500 text-xs px-3 sm:px-4",
-            scrolled 
-              ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
-              : "border-white/50 text-white hover:bg-white hover:text-black hover:border-white bg-white/5 backdrop-blur-sm"
-          )}>
+          <a
+            href="/register"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "px-3 font-[family-name:var(--font-space)] text-xs font-extrabold tracking-widest uppercase transition-all duration-500 sm:px-4",
+              scrolled
+                ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
+                : "border-white/50 bg-white/5 text-white backdrop-blur-sm hover:border-white hover:bg-white hover:text-black"
+            )}
+          >
             Register
           </a>
 
           {/* Mobile hamburger */}
           <button
-            className="flex md:hidden flex-col gap-1.5 p-2 rounded-md border border-white/10 bg-black/30 backdrop-blur-sm"
+            className="flex flex-col gap-1.5 rounded-md border border-white/10 bg-black/30 p-2 backdrop-blur-sm md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
           >
-            <span className={cn("block h-0.5 w-5 bg-white transition-all duration-300", mobileOpen && "rotate-45 translate-y-2")} />
-            <span className={cn("block h-0.5 w-5 bg-white transition-all duration-300", mobileOpen && "opacity-0")} />
-            <span className={cn("block h-0.5 w-5 bg-white transition-all duration-300", mobileOpen && "-rotate-45 -translate-y-2")} />
+            <span
+              className={cn(
+                "block h-0.5 w-5 bg-white transition-all duration-300",
+                mobileOpen && "translate-y-2 rotate-45"
+              )}
+            />
+            <span
+              className={cn(
+                "block h-0.5 w-5 bg-white transition-all duration-300",
+                mobileOpen && "opacity-0"
+              )}
+            />
+            <span
+              className={cn(
+                "block h-0.5 w-5 bg-white transition-all duration-300",
+                mobileOpen && "-translate-y-2 -rotate-45"
+              )}
+            />
           </button>
         </div>
       </div>
 
       {/* Mobile menu dropdown */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[#163E70]/50 bg-black/90 backdrop-blur-xl px-4 py-4">
-          <ul className="flex flex-col gap-4 font-[family-name:var(--font-space)] font-bold text-xs tracking-widest uppercase">
-            {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
+        <div className="border-t border-[#163E70]/50 bg-black/90 px-4 py-4 backdrop-blur-xl md:hidden">
+          <ul className="flex flex-col gap-4 font-[family-name:var(--font-space)] text-xs font-bold tracking-widest uppercase">
+            {[
+              "home",
+              "about",
+              "highlights",
+              "legacy",
+              "timeline",
+              "why-join",
+              "gallery",
+              "team",
+            ].map((item) => (
               <li key={item}>
                 <a
                   href={`#${item}`}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "block py-2 transition-colors duration-200",
-                    activeSection === item ? "text-[#0074FF] font-bold" : "text-neutral-300 hover:text-white"
+                    activeSection === item
+                      ? "font-bold text-[#0074FF]"
+                      : "text-neutral-300 hover:text-white"
                   )}
                 >
                   {item}

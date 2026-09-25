@@ -4,6 +4,7 @@ import { Bebas_Neue, Geist_Mono, Inter, Montserrat, Orbitron, Space_Grotesk } fr
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import ClientAppLoader from "@/components/ClientAppLoader"
 import CustomCursor from "@/components/CustomCursor"
 import { cn } from "@/lib/utils"
 
@@ -88,7 +89,9 @@ export default function RootLayout({
       <body>
         <CustomCursor />
         <ThemeProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            <ClientAppLoader>{children}</ClientAppLoader>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
