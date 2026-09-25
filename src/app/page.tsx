@@ -10,8 +10,6 @@ import ImageGallery from "@/components/ImageGallery"
 import { GALLERY_PLACEHOLDER_IMAGES } from "@/data/gallery.placeholder"
 
 export default async function Home() {
-  // Add a 2-second delay to show off the cool loading screen!
-  await new Promise((resolve) => setTimeout(resolve, 2000))
 
   return (
     <main className="relative flex flex-col items-center bg-[#000000]">
