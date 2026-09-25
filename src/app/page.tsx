@@ -22,12 +22,11 @@ export default async function Home() {
         {/* About Section */}
         <section
           id="about"
-          className="relative w-full h-[200vh]"
+          className="relative w-full py-12 md:py-24 flex flex-col justify-center"
         >
-          <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-            <div className="grid items-center gap-8 lg:gap-16 lg:grid-cols-2">
-          <div className="z-10 flex flex-col gap-12">
-            <div>
+          <div className="grid items-center gap-8 lg:gap-16 lg:grid-cols-2">
+            <div className="z-10 flex flex-col gap-12">
+              <div>
               <div className="mb-6 inline-flex items-center gap-3">
                 <div className="h-px w-10 bg-[#0074FF]"></div>
                 <span className="font-mono text-xs font-bold tracking-[0.3em] text-[#0074FF] uppercase">
@@ -68,7 +67,6 @@ export default async function Home() {
             </div>
             </div>
           </div>
-          </div>
         </section>
 
         {/* Highlights */}
@@ -77,9 +75,8 @@ export default async function Home() {
         </section>
 
         {/* Stats / Legacy */}
-        <section id="legacy" className="relative w-full h-[200vh]">
-          <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-            <div className="group relative w-full">
+        <section id="legacy" className="relative w-full py-12 md:py-24">
+          <div className="group relative w-full">
             <div className="relative z-10 flex flex-col items-center p-12 md:p-24">
               <div className="mb-16 inline-flex items-center gap-4">
                 <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
@@ -131,7 +128,6 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          </div>
         </section>
 
         <Timeline />
@@ -139,9 +135,9 @@ export default async function Home() {
         {/* Why Participate - Centered Layout */}
         <section
           id="why-join"
-          className="relative w-full h-[200vh]"
+          className="relative w-full py-12 md:py-24"
         >
-          <div className="sticky top-0 flex h-screen w-full flex-col justify-center items-center">
+          <div className="flex w-full flex-col justify-center items-center">
             {/* Centered Text Content */}
             <div className="z-10 flex w-full max-w-6xl flex-col gap-12 px-6 sm:px-10">
             <div className="flex flex-col items-center text-center gap-6">

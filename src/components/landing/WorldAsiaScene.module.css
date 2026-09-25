@@ -37,11 +37,9 @@
   user-select: none;
   z-index: 1;
   mix-blend-mode: screen;
-  filter: contrast(1.25) brightness(0.75);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   display: block;
-  background-color: #000;
 }
 
 .asia {
@@ -50,13 +48,15 @@
   top: 50%;
   width: min(110vw, 1800px);
   height: auto;
-  transform: translate(-50%, -50%) scale(0.85);
+  transform: translate3d(-50%, -50%, 0) scale(0.85);
   transform-origin: center center;
   will-change: transform, opacity;
   pointer-events: none;
   user-select: none;
   z-index: 2;
   mix-blend-mode: screen;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   opacity: 0;
   display: block;
 }
@@ -67,13 +67,15 @@
   top: 50%;
   width: min(80vw, 950px);
   height: auto;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   transform-origin: center center;
   will-change: transform, opacity;
   pointer-events: none;
   user-select: none;
   z-index: 2;
   mix-blend-mode: screen;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   opacity: 0;
   display: block;
 }

@@ -52,14 +52,15 @@ export default function LoginPage() {
 
       <div className="relative z-10 mx-auto grid min-h-dvh w-full max-w-7xl items-center gap-12 px-5 pt-28 pb-10 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(26rem,0.72fr)] lg:px-12 lg:pt-32 lg:pb-16">
         <section className="relative hidden min-h-[34rem] flex-col justify-center lg:flex">
-          <Image
-            src="/earth.gif"
-            alt=""
+          <video
+            src="/earth.webm"
             aria-hidden="true"
-            width={760}
-            height={760}
+            autoPlay
+            loop
+            muted
+            playsInline
             className="pointer-events-none absolute top-1/2 -left-40 w-[44rem] -translate-y-1/2 object-contain opacity-45 mix-blend-screen"
-            unoptimized
+            style={{ backgroundColor: '#000' }}
           />
 
           <div className="relative z-10 max-w-2xl">
