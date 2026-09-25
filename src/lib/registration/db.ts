@@ -1,4 +1,4 @@
-import { and, eq, inArray, or } from "drizzle-orm"
+import { and, eq, inArray, or, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import { appSettings, teamMembers, teams, universities } from "@/lib/db/schema"
@@ -114,6 +114,30 @@ async function createRegistrationCode(
   throw new Error("Could not generate a registration code")
 }
 
+/**
+ * Serializes submissions that share any email or WhatsApp number. The locks are
+ * held until the transaction ends, so a concurrent submission waits and then
+ * sees the committed members in its conflict check. Keys are sorted so two
+ * transactions always lock in the same order and cannot deadlock.
+ */
+async function lockParticipantIdentifiers(
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  values: RegistrationValues
+) {
+  const keys = getParticipants(values)
+    .flatMap((participant) => [
+      `email:${normalizeEmail(participant.email)}`,
+      `phone:${normalizeWhatsappNumber(participant.whatsappNumber)}`,
+    ])
+    .sort()
+
+  for (const key of keys) {
+    await tx.execute(
+      sql`select pg_advisory_xact_lock(hashtextextended(${key}, 0))`
+    )
+  }
+}
+
 async function assertNoSubmittedParticipantConflicts(
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   values: RegistrationValues
@@ -163,6 +187,7 @@ export async function submitRegistration(
   const values = registrationSchema.parse(input)
 
   return db.transaction(async (tx) => {
+    await lockParticipantIdentifiers(tx, values)
     await assertNoSubmittedParticipantConflicts(tx, values)
 
     const registrationCode = await createRegistrationCode(tx)
