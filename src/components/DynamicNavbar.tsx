@@ -59,14 +59,14 @@ export default function DynamicNavbar() {
         </div>
         
         {/* Navigation Links - desktop */}
-        <ul className="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-mono tracking-[0.2em] uppercase text-neutral-400">
+        <ul className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-mono tracking-[0.2em] uppercase">
           {["home", "about", "highlights", "legacy", "timeline", "why-join", "gallery", "team"].map((item) => (
             <li key={item}>
               <a 
                 href={`#${item}`} 
                 className={cn(
-                  "transition-colors duration-300 relative",
-                  activeSection === item ? "text-white font-bold" : "hover:text-[#0074FF]"
+                  "transition-all duration-300 relative font-black text-white [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)] [-webkit-text-stroke:0.5px_#163E70]",
+                  activeSection === item ? "opacity-100" : "opacity-60 hover:opacity-100"
                 )}
               >
                 {item}

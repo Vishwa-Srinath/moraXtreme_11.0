@@ -6,7 +6,7 @@ const HIGHLIGHTS = [
   {
     id: 1,
     title: "Award-Winning Organizers",
-    description: "Driven by the University of Moratuwa IEEE Student Branch - officially crowned the Best Student Branch in the IEEE Region 10 - Asia-Pacific (2025).",
+    description: "Driven by the IEEE Student Branch of the University of Moratuwa, officially recognized as the Most Outstanding Student Branch in IEEE Region 10 – Asia-Pacific (2025).",
     image: "/highlights/organizers.png",
     icon: (
       <svg className="h-7 w-7 text-[#0074FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
