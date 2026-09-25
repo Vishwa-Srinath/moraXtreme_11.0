@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import type { LucideIcon } from "lucide-react"
 import {
   CalendarCheck,
@@ -103,8 +106,39 @@ const MILESTONE_ICONS: LucideIcon[] = [
 export default function Timeline({
   milestones = DEFAULT_MILESTONES,
 }: FilmReelTimelineProps) {
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (
+      !section ||
+      !("IntersectionObserver" in window) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return
+    }
+
+    const entries = section.querySelectorAll<HTMLElement>(".timeline-entry")
+    const observer = new IntersectionObserver(
+      (observedEntries) => {
+        observedEntries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          entry.target.setAttribute("data-visible", "true")
+          observer.unobserve(entry.target)
+        })
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -5% 0px" }
+    )
+
+    entries.forEach((entry) => observer.observe(entry))
+    section.setAttribute("data-animated", "true")
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section
+      ref={sectionRef}
       id="timeline"
       className="relative w-full overflow-hidden px-4 py-24 sm:px-8 md:py-32"
       aria-labelledby="timeline-heading"
@@ -116,19 +150,16 @@ export default function Timeline({
 
       <div className="relative mx-auto max-w-5xl">
         <header className="relative mb-16 text-center md:mb-20">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 -top-9 font-[family-name:var(--font-space)] text-[clamp(4rem,12vw,9rem)] font-black tracking-[-0.08em] text-white/[0.025] select-none"
-          >
-            TIMELINE
-          </span>
           <h2
             id="timeline-heading"
-            className="font-[family-name:var(--font-space)] text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl"
+            className="font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-xl md:text-5xl"
           >
-            EVENT <span className="text-[#3d8dff]">TIMELINE</span>
+            Event{" "}
+            <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
+              Timeline
+            </span>
           </h2>
-          <span className="mx-auto mt-5 block h-1 w-14 rounded-full bg-[#0074FF] shadow-[0_0_18px_rgba(0,116,255,0.7)]" />
+          <span className="mx-auto mt-6 block h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent" />
         </header>
 
         <div className="space-y-8 md:space-y-10">
@@ -139,7 +170,7 @@ export default function Timeline({
             return (
               <article
                 key={`${milestone.title}-${index}`}
-                className="grid grid-cols-[2.75rem_minmax(0,1fr)] items-start md:grid-cols-[11rem_4.5rem_minmax(0,1fr)]"
+                className="timeline-entry grid grid-cols-[2.75rem_minmax(0,1fr)] items-start md:grid-cols-[11rem_4.5rem_minmax(0,1fr)]"
               >
                 <p className="col-start-2 mb-3 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbfff] uppercase md:col-start-1 md:row-start-1 md:mb-0 md:pt-4 md:pr-5 md:text-right md:text-sm">
                   {milestone.date}
@@ -188,6 +219,21 @@ export default function Timeline({
           })}
         </div>
       </div>
+
+      <style>{`
+        #timeline[data-animated="true"] .timeline-entry {
+          opacity: 0;
+          transform: translateY(3rem) scale(0.98);
+          filter: blur(6px);
+          transition: opacity 700ms ease-out, transform 700ms ease-out, filter 700ms ease-out;
+        }
+
+        #timeline[data-animated="true"] .timeline-entry[data-visible="true"] {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0);
+        }
+      `}</style>
     </section>
   )
 }
