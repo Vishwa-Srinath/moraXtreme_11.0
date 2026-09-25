@@ -13,7 +13,7 @@ import { GALLERY_PLACEHOLDER_IMAGES } from "@/data/gallery.placeholder"
 export default async function Home() {
 
   return (
-    <main className="relative flex flex-col items-center bg-[#000000]">
+    <main id="home" className="relative flex flex-col items-center bg-[#000000]">
       <DynamicNavbar />
       <WorldAsiaScene>
         {/* New Content Sections */}
