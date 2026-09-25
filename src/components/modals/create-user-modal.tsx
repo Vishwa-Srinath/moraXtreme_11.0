@@ -23,7 +23,7 @@ import { authClient } from "@/lib/auth-client"
 const createUserSchema = z.object({
   name: z.string().trim().min(1, "Enter the user's name."),
   email: z.email("Enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
+  password: z.string().min(12, "Password must be at least 12 characters."),
   role: z.enum(["user", "admin"]),
 })
 

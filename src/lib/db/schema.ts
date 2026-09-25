@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm"
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -240,15 +241,24 @@ export const appSettings = pgTable(
   (table) => [index("app_settings_value_type_idx").on(table.valueType)]
 )
 
-// Fixed-window request counters for public endpoints; see src/lib/rate-limit.ts.
-export const rateLimits = pgTable(
-  "rate_limits",
+// Login rate-limit counters, managed by Better Auth
+// (rateLimit.storage = "database" in src/lib/auth.ts).
+export const authRateLimit = pgTable("auth_rate_limits", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  count: integer("count").notNull(),
+  lastRequest: bigint("last_request", { mode: "number" }).notNull(),
+}).enableRLS()
+
+// Registration API rate-limit counters, managed by src/lib/rate-limit.ts.
+export const apiRateLimits = pgTable(
+  "api_rate_limits",
   {
     key: text("key").primaryKey(),
     count: integer("count").notNull(),
     windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
   },
-  (table) => [index("rate_limits_window_start_idx").on(table.windowStart)]
+  (table) => [index("api_rate_limits_window_start_idx").on(table.windowStart)]
 ).enableRLS()
 
 export const userRelations = relations(user, ({ many }) => ({

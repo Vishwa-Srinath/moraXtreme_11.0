@@ -1,7 +1,7 @@
 import { lt, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { rateLimits } from "@/lib/db/schema"
+import { apiRateLimits } from "@/lib/db/schema"
 
 type RateLimitOptions = {
   /** Namespace for the counter, e.g. "register-submit". */
@@ -30,25 +30,25 @@ export async function checkRateLimit(
   { name, limit, windowSeconds }: RateLimitOptions
 ) {
   const key = `${name}:${getClientIp(request)}`
-  const windowExpired = sql`${rateLimits.windowStart} <= now() - make_interval(secs => ${windowSeconds})`
+  const windowExpired = sql`${apiRateLimits.windowStart} <= now() - make_interval(secs => ${windowSeconds})`
 
   const [row] = await db
-    .insert(rateLimits)
+    .insert(apiRateLimits)
     .values({ key, count: 1, windowStart: sql`now()` })
     .onConflictDoUpdate({
-      target: rateLimits.key,
+      target: apiRateLimits.key,
       set: {
-        count: sql`case when ${windowExpired} then 1 else ${rateLimits.count} + 1 end`,
-        windowStart: sql`case when ${windowExpired} then now() else ${rateLimits.windowStart} end`,
+        count: sql`case when ${windowExpired} then 1 else ${apiRateLimits.count} + 1 end`,
+        windowStart: sql`case when ${windowExpired} then now() else ${apiRateLimits.windowStart} end`,
       },
     })
-    .returning({ count: rateLimits.count, windowStart: rateLimits.windowStart })
+    .returning({ count: apiRateLimits.count, windowStart: apiRateLimits.windowStart })
 
   // Occasionally prune stale counters so the table stays small.
   if (Math.random() < 0.01) {
     await db
-      .delete(rateLimits)
-      .where(lt(rateLimits.windowStart, sql`now() - interval '1 day'`))
+      .delete(apiRateLimits)
+      .where(lt(apiRateLimits.windowStart, sql`now() - interval '1 day'`))
   }
 
   const retryAfterSeconds = Math.max(

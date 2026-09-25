@@ -17,6 +17,18 @@ export const auth = betterAuth({
     enabled: true,
     // Admin accounts are created from the dashboard or `npm run admin:create`.
     disableSignUp: true,
+    minPasswordLength: 12,
+  },
+  // Stored in Postgres (the `auth_rate_limits` table) so limits hold across
+  // server instances. Keyed by client IP from X-Forwarded-For.
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    modelName: "authRateLimit",
+    customRules: {
+      // Default is 3 per 10s, which still allows ~26k guesses a day per IP.
+      "/sign-in/email": { window: 15 * 60, max: 10 },
+    },
   },
   plugins: [admin(), nextCookies()],
 })
