@@ -1,17 +1,16 @@
+import dynamic from "next/dynamic"
 import AnimatedCounter from "@/components/AnimatedCounter"
-import TeamSlider from "@/components/TeamSlider"
+const TeamSlider = dynamic(() => import("@/components/TeamSlider"))
 import { TEAM_PLACEHOLDER } from "@/data/team.placeholder"
 import Image from "next/image"
 import DynamicNavbar from "@/components/DynamicNavbar"
-import WorldAsiaScene from "@/components/landing/WorldAsiaScene"
-import HighlightsTimeline from "@/components/landing/HighlightsTimeline"
-import Timeline from "@/components/timeline/Timeline"
-import ImageGallery from "@/components/ImageGallery"
+const WorldAsiaScene = dynamic(() => import("@/components/landing/WorldAsiaScene"))
+const HighlightsTimeline = dynamic(() => import("@/components/landing/HighlightsTimeline"))
+const Timeline = dynamic(() => import("@/components/timeline/Timeline"))
+const ImageGallery = dynamic(() => import("@/components/ImageGallery"))
 import { GALLERY_PLACEHOLDER_IMAGES } from "@/data/gallery.placeholder"
 
 export default async function Home() {
-  // Add a 2-second delay to show off the cool loading screen!
-  await new Promise((resolve) => setTimeout(resolve, 2000))
 
   return (
     <main className="relative flex flex-col items-center bg-[#000000]">
@@ -22,50 +21,48 @@ export default async function Home() {
           {/* About Section */}
           <section
             id="about"
-            className="relative w-full h-[200vh]"
+            className="relative w-full py-12 md:py-24 flex flex-col justify-center"
           >
-            <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-              <div className="grid items-center gap-8 lg:gap-16 lg:grid-cols-2">
-                <div className="z-10 flex flex-col gap-12">
-                  <div>
-                    <div className="mb-6 inline-flex items-center gap-3">
-                      <div className="h-px w-10 bg-[#0074FF]"></div>
-                      <span className="font-mono text-xs font-bold tracking-[0.3em] text-[#0074FF] uppercase">
-                        Intelligence Briefing
-                      </span>
-                    </div>
-                    <h2 className="mb-6 font-[family-name:var(--font-space)] text-4xl font-bold text-white md:text-5xl">
-                      About MoraXtreme 11.0
-                    </h2>
-                    <p className="text-lg leading-relaxed text-neutral-300">
-                      MoraXtreme is Sri Lanka’s premier annual algorithmic coding
-                      competition, organized by the IEEE Student Branch and the IEEE
-                      Computer Society Student Branch Chapter of the University of
-                      Moratuwa. Expanding beyond Sri Lanka, MoraXtreme 11.0 brings together
-                      talented coders from across South Asia. It is designed to foster competitive
-                      programming skills and prepare participants for the
-                      international stage. The challenge consists of a rigorous
-                      12-hour online elimination round, followed by an intense 8-hour
-                      physical Grand Finale.
-                    </p>
+            <div className="grid items-center gap-8 lg:gap-16 lg:grid-cols-2">
+              <div className="z-10 flex flex-col gap-12">
+                <div>
+                  <div className="mb-6 inline-flex items-center gap-3">
+                    <div className="h-px w-10 bg-[#0074FF]"></div>
+                    <span className="font-mono text-xs font-bold tracking-[0.3em] text-[#0074FF] uppercase">
+                      Intelligence Briefing
+                    </span>
                   </div>
+                  <h2 className="mb-6 font-[family-name:var(--font-space)] text-4xl font-bold text-white md:text-5xl">
+                    About MoraXtreme 11.0
+                  </h2>
+                  <p className="text-lg leading-relaxed text-neutral-300">
+                    MoraXtreme is Sri Lanka’s premier annual algorithmic coding
+                    competition, organized by the IEEE Student Branch and the IEEE
+                    Computer Society Student Branch Chapter of the University of
+                    Moratuwa. Expanding beyond Sri Lanka, MoraXtreme 11.0 brings together
+                    talented coders from across South Asia. It is designed to foster competitive
+                    programming skills and prepare participants for the
+                    international stage. The challenge consists of a rigorous
+                    12-hour online elimination round, followed by an intense 8-hour
+                    physical Grand Finale.
+                  </p>
                 </div>
+              </div>
 
-                {/* Right Column: Who Can Participate */}
-                <div className="z-10 flex flex-col gap-12 lg:mt-12">
-                  <div className="rounded-l-2xl border-r-4 border-[#0074FF] bg-gradient-to-l from-[#163E70]/20 to-transparent p-8 shadow-[inset_0_0_20px_rgba(22,62,112,0.1)]">
-                    <h3 className="mb-4 font-[family-name:var(--font-space)] text-2xl font-bold text-white">
-                      Who Can Participate?
-                    </h3>
-                    <p className="leading-relaxed text-neutral-400">
-                      For its 11th edition, MoraXtreme expands its battlefield beyond
-                      borders, allowing participants to compete individually or form
-                      teams of up to three members. This elite open division is built
-                      specifically for undergraduate students currently enrolled in
-                      Sri Lanka, alongside university undergraduates across the entire
-                      South Asian region.
-                    </p>
-                  </div>
+              {/* Right Column: Who Can Participate */}
+              <div className="z-10 flex flex-col gap-12 lg:mt-12">
+                <div className="rounded-l-2xl border-r-4 border-[#0074FF] bg-gradient-to-l from-[#163E70]/20 to-transparent p-8 shadow-[inset_0_0_20px_rgba(22,62,112,0.1)]">
+                  <h3 className="mb-4 font-[family-name:var(--font-space)] text-2xl font-bold text-white">
+                    Who Can Participate?
+                  </h3>
+                  <p className="leading-relaxed text-neutral-400">
+                    For its 11th edition, MoraXtreme expands its battlefield beyond
+                    borders, allowing participants to compete individually or form
+                    teams of up to three members. This elite open division is built
+                    specifically for undergraduate students currently enrolled in
+                    Sri Lanka, alongside university undergraduates across the entire
+                    South Asian region.
+                  </p>
                 </div>
               </div>
             </div>
@@ -77,61 +74,59 @@ export default async function Home() {
           </section>
 
           {/* Stats / Legacy */}
-          <section id="legacy" className="relative w-full h-[200vh]">
-            <div className="sticky top-0 flex h-screen w-full flex-col justify-center">
-              <div className="group relative w-full">
-                <div className="relative z-10 flex flex-col items-center p-12 md:p-24">
-                  <div className="mb-16 flex flex-col items-center gap-3">
-                    <div className="inline-flex items-center gap-4">
-                      <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
-                      <h2 className="font-mono text-sm font-bold tracking-[0.4em] text-[#0074FF] uppercase">
-                        Our Legacy
-                      </h2>
-                      <div className="h-[2px] w-12 bg-gradient-to-l from-transparent to-[#0074FF]"></div>
+          <section id="legacy" className="relative w-full py-12 md:py-24">
+            <div className="group relative w-full">
+              <div className="relative z-10 flex flex-col items-center p-12 md:p-24">
+                <div className="mb-16 flex flex-col items-center gap-3">
+                  <div className="inline-flex items-center gap-4">
+                    <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
+                    <h2 className="font-mono text-sm font-bold tracking-[0.4em] text-[#0074FF] uppercase">
+                      Our Legacy
+                    </h2>
+                    <div className="h-[2px] w-12 bg-gradient-to-l from-transparent to-[#0074FF]"></div>
+                  </div>
+                  <span className="font-[family-name:var(--font-space)] text-2xl font-black tracking-widest text-white uppercase drop-shadow-[0_0_15px_rgba(0,116,255,0.8)] sm:text-3xl">
+                    MoraXtreme 10.0
+                  </span>
+                </div>
+
+                <div className="flex w-full flex-col items-center justify-around gap-16 divide-y divide-[#163E70]/50 md:flex-row md:gap-8 md:divide-x md:divide-y-0">
+                  {/* Stat 1 */}
+                  <div className="group/stat flex w-full flex-col items-center px-4 text-center md:px-8">
+                    <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                      <AnimatedCounter value={1500} />
+                      <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
+                        +
+                      </span>
                     </div>
-                    <span className="font-[family-name:var(--font-space)] text-2xl font-black tracking-widest text-white uppercase drop-shadow-[0_0_15px_rgba(0,116,255,0.8)] sm:text-3xl">
-                      MoraXtreme 10.0
-                    </span>
+                    <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
+                      Competitors
+                    </div>
                   </div>
 
-                  <div className="flex w-full flex-col items-center justify-around gap-16 divide-y divide-[#163E70]/50 md:flex-row md:gap-8 md:divide-x md:divide-y-0">
-                    {/* Stat 1 */}
-                    <div className="group/stat flex w-full flex-col items-center px-4 text-center md:px-8">
-                      <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
-                        <AnimatedCounter value={1500} />
-                        <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
-                          +
-                        </span>
-                      </div>
-                      <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
-                        Competitors
-                      </div>
+                  {/* Stat 2 */}
+                  <div className="group/stat flex w-full flex-col items-center px-4 pt-16 text-center md:px-8 md:pt-0">
+                    <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                      <AnimatedCounter value={450} />
+                      <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
+                        +
+                      </span>
                     </div>
-
-                    {/* Stat 2 */}
-                    <div className="group/stat flex w-full flex-col items-center px-4 pt-16 text-center md:px-8 md:pt-0">
-                      <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
-                        <AnimatedCounter value={450} />
-                        <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
-                          +
-                        </span>
-                      </div>
-                      <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
-                        Teams Battling
-                      </div>
+                    <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
+                      Teams Battling
                     </div>
+                  </div>
 
-                    {/* Stat 3 */}
-                    <div className="group/stat flex w-full flex-col items-center px-4 pt-16 text-center md:px-8 md:pt-0">
-                      <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
-                        <AnimatedCounter value={150} />
-                        <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
-                          +
-                        </span>
-                      </div>
-                      <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
-                        Active Members
-                      </div>
+                  {/* Stat 3 */}
+                  <div className="group/stat flex w-full flex-col items-center px-4 pt-16 text-center md:px-8 md:pt-0">
+                    <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                      <AnimatedCounter value={150} />
+                      <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
+                        +
+                      </span>
+                    </div>
+                    <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
+                      Active Members
                     </div>
                   </div>
                 </div>
@@ -144,9 +139,9 @@ export default async function Home() {
           {/* Why Participate - Centered Layout */}
           <section
             id="why-join"
-            className="relative w-full h-[200vh]"
+            className="relative w-full py-12 md:py-24"
           >
-            <div className="sticky top-0 flex h-screen w-full flex-col justify-center items-center">
+            <div className="flex w-full flex-col justify-center items-center">
               {/* Centered Text Content */}
               <div className="z-10 flex w-full max-w-6xl flex-col gap-12 px-6 sm:px-10">
                 <div className="flex flex-col items-center text-center gap-6">

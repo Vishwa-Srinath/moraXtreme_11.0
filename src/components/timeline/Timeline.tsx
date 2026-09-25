@@ -163,6 +163,7 @@ export default function Timeline({
   const progressBarRef = useRef<HTMLDivElement | null>(null)
   const roadBgRef = useRef<HTMLDivElement | null>(null)
   const cardRefs = useRef<Array<HTMLElement | null>>([])
+  const cardCenters = useRef<number[]>([])
   const scrollerRef = useRef<HTMLElement | Window | null>(null)
   const rafId = useRef<number | null>(null)
 
@@ -197,9 +198,15 @@ export default function Timeline({
     const lastCard = cardRefs.current[cardRefs.current.length - 1]
     if (!firstCard || !lastCard) return
 
+    // Pre-calculate card centers relative to strip to avoid layout thrashing in rAF
+    cardCenters.current = cardRefs.current.map((card) => {
+      if (!card) return 0
+      return card.offsetLeft + card.offsetWidth / 2
+    })
+
     // Center coordinates relative to strip container
-    const firstCenter = firstCard.offsetLeft + firstCard.offsetWidth / 2
-    const lastCenter = lastCard.offsetLeft + lastCard.offsetWidth / 2
+    const firstCenter = cardCenters.current[0] || 0
+    const lastCenter = cardCenters.current[cardCenters.current.length - 1] || 0
 
     // Total travel required from first card centered to last card centered
     const totalShift = lastCenter - firstCenter
@@ -312,10 +319,10 @@ export default function Timeline({
 
       // ── 3D Cylindrical Spool Curvature with Center Focus Deadzone ─────────
       const viewportCenter = window.innerWidth / 2
-      cardRefs.current.forEach((card) => {
+      cardRefs.current.forEach((card, i) => {
         if (!card) return
-        const rect = card.getBoundingClientRect()
-        const cardCenter = rect.left + rect.width / 2
+        // Use cached center to prevent layout thrashing (getBoundingClientRect)
+        const cardCenter = (cardCenters.current[i] || 0) + translateX
         const signedDist = cardCenter - viewportCenter
         const dist = Math.abs(signedDist)
 
@@ -502,7 +509,7 @@ export default function Timeline({
         {!reducedMotion && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -inset-x-1/4 -top-1/3 h-[140%] animate-[leak_22s_ease-in-out_infinite] opacity-[0.16] mix-blend-screen"
+            className="pointer-events-none absolute -inset-x-1/4 -top-1/3 h-[140%] animate-[leak_22s_ease-in-out_infinite] opacity-[0.12]"
             style={{
               background:
                 "radial-gradient(closest-side, rgba(111,211,255,0.9), transparent 70%)",
@@ -515,7 +522,7 @@ export default function Timeline({
         {GRAIN_DATA_URI && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-30 opacity-[0.05] mix-blend-overlay"
+            className="pointer-events-none absolute inset-0 z-30 opacity-[0.04]"
             style={{
               backgroundImage: `url(${GRAIN_DATA_URI})`,
               backgroundRepeat: "repeat",
@@ -548,7 +555,7 @@ export default function Timeline({
         >
           {/* ── DISTANT BACKGROUND FILM ROLL ──────────────────────────────── */}
           <div
-            className="pointer-events-none absolute inset-x-[-100%] top-1/2 h-[400px] -translate-y-1/2 border-y border-[#6fd3ff]/10 bg-[#02040a]/40 opacity-30 blur-[6px] mix-blend-screen"
+            className="pointer-events-none absolute inset-x-[-100%] top-1/2 h-[400px] -translate-y-1/2 border-y border-[#6fd3ff]/10 bg-[#02040a]/40 opacity-40 blur-[6px]"
             style={{ transform: "translateZ(-800px) rotateY(-15deg) rotateZ(-4deg)" }}
           >
             <div
