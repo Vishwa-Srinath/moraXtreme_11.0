@@ -1,4 +1,5 @@
 import { getAdminSessionOrError } from "@/lib/auth-guards"
+import { errorResponse } from "@/lib/errors"
 import { updateRegistrationSettings } from "@/lib/registration/settings"
 
 export async function PUT(request: Request) {
@@ -9,7 +10,6 @@ export async function PUT(request: Request) {
     const settings = await updateRegistrationSettings(await request.json())
     return Response.json({ settings })
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Update failed"
-    return Response.json({ error: message }, { status: 400 })
+    return errorResponse(error, "Settings could not be saved.")
   }
 }

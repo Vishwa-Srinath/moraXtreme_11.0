@@ -1,3 +1,4 @@
+import { errorResponse } from "@/lib/errors"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { submitRegistration } from "@/lib/registration/db"
 
@@ -7,11 +8,6 @@ const SUBMIT_RATE_LIMIT = {
   name: "register-submit",
   limit: 10,
   windowSeconds: 10 * 60,
-}
-
-function errorResponse(error: unknown, status = 400) {
-  const message = error instanceof Error ? error.message : "Submission failed"
-  return Response.json({ error: message }, { status })
 }
 
 export async function POST(request: Request) {
@@ -34,6 +30,9 @@ export async function POST(request: Request) {
     const registration = await submitRegistration(body)
     return Response.json({ registration })
   } catch (error) {
-    return errorResponse(error)
+    return errorResponse(
+      error,
+      "Registration could not be submitted. Please try again."
+    )
   }
 }
