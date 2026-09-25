@@ -259,20 +259,20 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
         <div ref={heroRef} className={styles.heroContent}>
           <div className="flex flex-col items-center justify-center text-center">
             {/* Live badge */}
-            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-[#163E70] bg-black/60 px-5 py-2 font-mono text-xs font-semibold tracking-widest text-[#0074FF] backdrop-blur-md">
+            <div className="mb-8 inline-flex items-center gap-3 font-mono text-sm sm:text-base font-black tracking-widest text-white [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)] [-webkit-text-stroke:0.5px_#163E70]">
               <span className="relative flex h-2 w-2">
                 <span
-                  className="absolute inline-flex h-full w-full rounded-full bg-[#0074FF] opacity-75"
+                  className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75"
                   style={{ animation: 'ping 1.5s cubic-bezier(0,0,0.2,1) infinite' }}
                 />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#0074FF]" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
               </span>
               REGISTRATIONS OPEN
             </div>
 
             {/* Main title */}
             <div className="mb-8 flex flex-col items-center justify-center gap-4">
-              <p className="font-mono text-lg font-bold tracking-[0.3em] text-white uppercase drop-shadow-[0_0_15px_rgba(0,116,255,0.8)] md:text-xl">
+              <p className="font-mono text-xl font-black tracking-[0.3em] text-white uppercase [text-shadow:0_0_15px_rgba(255,255,255,0.9),_0_0_30px_rgba(0,0,0,1)] [-webkit-text-stroke:1px_#163E70] md:text-2xl">
                 Welcome to
               </p>
               <h1
@@ -299,7 +299,7 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
                     animation: 'textReveal 1.1s cubic-bezier(0.16,1,0.3,1) 0.58s forwards',
                   }}
                 >
-                  <span className="bg-gradient-to-br from-[#0074FF] to-[#163E70] bg-clip-text text-transparent">
+                  <span className="text-white [text-shadow:0_0_20px_rgba(255,255,255,0.6),_0_0_40px_rgba(0,0,0,1)] [-webkit-text-stroke:2px_#163E70]">
                     11.0
                   </span>
                 </span>
