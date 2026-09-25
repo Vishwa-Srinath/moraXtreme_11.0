@@ -17,7 +17,7 @@ export interface TeamMember {
 }
 
 export interface TeamSliderProps {
-  members: TeamMember[];
+  members?: TeamMember[];
   /** Section headline */
   title?: string;
   /** Section subtitle */

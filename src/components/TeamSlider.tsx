@@ -7,6 +7,7 @@ import React, {
   useRef,
 } from "react";
 import type { TeamSliderProps } from "@/types/team";
+import { TEAM_PLACEHOLDER } from "@/data/team.placeholder";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COLOUR TOKENS
@@ -38,7 +39,7 @@ const NAV_OFFSET = CARD_W / 2 + CARD_GAP / 2 + 20; // 155 px from 50 %
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 export default function TeamSlider({
-  members,
+  members = TEAM_PLACEHOLDER,
   subtitle,
   autoInterval = 7000,
 }: TeamSliderProps) {
