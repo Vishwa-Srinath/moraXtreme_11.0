@@ -34,57 +34,78 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let rafId = 0
 
-    const tick = () => {
-      rafId = 0
+    // For smooth interpolation (lerp)
+    let currentScrollY = window.scrollY
+    let targetScrollY = window.scrollY
 
-      const rect = scene.getBoundingClientRect()
+    const tick = () => {
+      // Lerp the scroll position (10% closer to target each frame)
+      currentScrollY += (targetScrollY - currentScrollY) * 0.1
+
+      // If we are close enough, snap to target to stop animating
+      if (Math.abs(targetScrollY - currentScrollY) < 0.5) {
+        currentScrollY = targetScrollY
+      } else {
+        rafId = requestAnimationFrame(tick)
+      }
+
+      // Calculate rect top using the lerped scroll position
+      // We assume scene starts at the top of the page, or we offset it.
+      // Since scene is at the top, its rect.top is exactly -currentScrollY
+      const sceneTop = -currentScrollY
+      
       // We want the zoom/fade animation to complete over the first 3.5 viewports of scrolling (slower)
       const animScrollable = window.innerHeight * 3.5
       // progress: 0 = scene top at viewport top, 1 = scrolled 2.5vh
-      const progress = clamp(-rect.top / animScrollable)
+      const progress = clamp(-sceneTop / animScrollable)
 
       // ── Phase 4: Sri Lanka Zoom (triggered by Highlights section)
       let sriLankaZoom = 0
       const highlightsEl = document.getElementById('highlights')
       if (highlightsEl) {
-        const hRect = highlightsEl.getBoundingClientRect()
+        // Calculate original top relative to document, then apply lerped scroll
+        const docTop = highlightsEl.getBoundingClientRect().top + window.scrollY
+        const lerpedRectTop = docTop - currentScrollY
         // Start animation when highlights section is just about to enter the viewport (1.2vh)
         // and complete it over 1.5vh of scrolling
         const startOffset = window.innerHeight * 1.2
         const distance = window.innerHeight * 1.5
-        sriLankaZoom = smoothstep(clamp((startOffset - hRect.top) / distance))
+        sriLankaZoom = smoothstep(clamp((startOffset - lerpedRectTop) / distance))
       }
 
       // ── Phase 5: Inside Sri Lanka (triggered by Timeline section)
       let timelineZoom = 0
       const timelineEl = document.getElementById('timeline')
       if (timelineEl) {
-        const tRect = timelineEl.getBoundingClientRect()
+        const docTop = timelineEl.getBoundingClientRect().top + window.scrollY
+        const lerpedRectTop = docTop - currentScrollY
         const startOffset = window.innerHeight * 1.2
         const distance = window.innerHeight * 1.5
-        timelineZoom = smoothstep(clamp((startOffset - tRect.top) / distance))
+        timelineZoom = smoothstep(clamp((startOffset - lerpedRectTop) / distance))
       }
 
       // ── Phase 6: Zoom out to World Map (triggered by Why Participate section)
       let worldZoomOut = 0
       const whyJoinEl = document.getElementById('why-join')
       if (whyJoinEl) {
-        const wRect = whyJoinEl.getBoundingClientRect()
+        const docTop = whyJoinEl.getBoundingClientRect().top + window.scrollY
+        const lerpedRectTop = docTop - currentScrollY
         // Start transitioning as Why Participate comes into view
         const startOffset = window.innerHeight * 1.2
         const distance = window.innerHeight * 2.0
-        worldZoomOut = smoothstep(clamp((startOffset - wRect.top) / distance))
+        worldZoomOut = smoothstep(clamp((startOffset - lerpedRectTop) / distance))
       }
 
       // ── Phase 7: Deep dive into Western Province (triggered by Crew section)
       let deepZoom = 0
       const crewEl = document.getElementById('crew')
       if (crewEl) {
-        const cRect = crewEl.getBoundingClientRect()
+        const docTop = crewEl.getBoundingClientRect().top + window.scrollY
+        const lerpedRectTop = docTop - currentScrollY
         // Start as crew section approaches
         const startOffset = window.innerHeight * 1.2
         const distance = window.innerHeight * 1.5
-        deepZoom = smoothstep(clamp((startOffset - cRect.top) / distance))
+        deepZoom = smoothstep(clamp((startOffset - lerpedRectTop) / distance))
       }
 
       // ── Phase 1: World zooms in toward Asia (0% → 60%)
@@ -153,7 +174,7 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
 
       // Write directly to DOM for maximum performance (no React re-renders)
       if (worldRef.current) {
-        worldRef.current.style.transform = `translate(calc(-50% + ${worldDriftX}%), calc(-50% + ${worldDriftY}%)) scale(${worldScale}) rotate(${worldRotate}deg)`
+        worldRef.current.style.transform = `translate3d(calc(-50% + ${worldDriftX}%), calc(-50% + ${worldDriftY}%), 0) scale(${worldScale}) rotate(${worldRotate}deg)`
         worldRef.current.style.opacity = String(worldOpacity)
       }
 
@@ -166,8 +187,8 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
         // Apply a perspective wrapper via transform to get a nice 3D tilt
         sriLankaRef.current.style.transform = `perspective(1000px) translate(${slTranslateX}%, ${slTranslateY}%) rotateX(${slRotateX}deg) rotateZ(${slRotateZ}deg) scale(${slScale})`
         sriLankaRef.current.style.opacity = String(slOpacity)
-        // Make the Sri Lanka map a bit glowing white
-        sriLankaRef.current.style.filter = 'brightness(1.6) contrast(1.3) drop-shadow(0 0 15px rgba(255,255,255,0.4))'
+        // Removed drop-shadow for scroll performance
+        sriLankaRef.current.style.filter = 'brightness(1.6) contrast(1.3)'
       }
 
       if (worldVintageRef.current) {
@@ -188,6 +209,7 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
     }
 
     const scheduleRender = () => {
+      targetScrollY = window.scrollY
       if (!rafId) rafId = requestAnimationFrame(tick)
     }
 
@@ -209,14 +231,14 @@ export default function WorldAsiaScene({ children }: { children?: React.ReactNod
       <div className={styles.stickyStage}>
 
         {/* The rotating world globe */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={worldRef}
-          src="/earth.gif"
-          alt=""
-          aria-hidden="true"
+        <video
+          ref={worldRef as any}
+          src="/earth.webm"
+          autoPlay
+          loop
+          muted
+          playsInline
           className={styles.world}
-          loading="eager"
         />
 
         {/* The Asia map that zooms into view */}

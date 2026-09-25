@@ -18,6 +18,11 @@ export default function DynamicNavbar() {
       // 2. Scroll Spy logic
       const sections = ["home", "about", "highlights", "legacy", "timeline", "why-join", "rules","gallery", "team", "register"]
       
+      if (window.scrollY < 100) {
+        setActiveSection("home")
+        return
+      }
+
       // Check from bottom to top to find the first section that is actively in view
       for (const section of sections.reverse()) {
         const el = document.getElementById(section)

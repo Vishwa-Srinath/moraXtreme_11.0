@@ -30,14 +30,18 @@
   top: 50%;
   width: min(96vw, 860px);
   height: auto;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   transform-origin: center center;
   will-change: transform, opacity;
   pointer-events: none;
   user-select: none;
   z-index: 1;
   mix-blend-mode: screen;
+  filter: contrast(1.25) brightness(0.75);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   display: block;
+  background-color: #000;
 }
 
 .asia {
