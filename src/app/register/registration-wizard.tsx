@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ExternalLink, MessageCircle } from "lucide-react"
 import { useEffect, useRef, useState, useTransition } from "react"
-import { useForm, type FieldErrors } from "react-hook-form"
+import { useForm, type FieldErrors, type FieldPath } from "react-hook-form"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -27,14 +27,53 @@ import { ProgressLine, WizardFooter } from "./_components/registration-ui"
 
 const STEP_STORAGE_KEY = `${REGISTRATION_STORAGE_KEY}:step`
 
+type ServerFieldError = { path: string; message: string }
+
+/** A failed request, with per-field details when the server provides them. */
+class RequestError extends Error {
+  constructor(
+    message: string,
+    readonly fieldErrors: ServerFieldError[] = []
+  ) {
+    super(message)
+  }
+}
+
 async function readResponse<T>(response: Response): Promise<T> {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data.error || "Request failed")
+    throw new RequestError(data.error || "Request failed", data.fieldErrors)
   }
 
   return data
+}
+
+/**
+ * Early team-name check for Step 1. Returns the "taken" message, or null when
+ * the name is free or the check couldn't run (submit re-checks anyway).
+ */
+async function getTeamNameTakenMessage(teamName: string) {
+  try {
+    const response = await fetch(
+      `/api/register/team-name?name=${encodeURIComponent(teamName)}`
+    )
+    if (!response.ok) return null
+    const data = (await response.json()) as {
+      available: boolean
+      message: string | null
+    }
+    return data.available ? null : data.message
+  } catch {
+    return null
+  }
+}
+
+function stepIdForField(field: string): StepId {
+  const group = field.split(".")[0]
+  return group === "leader" || group === "member1" || group === "member2"
+    ? group
+    : "team"
 }
 
 export function RegistrationWizard() {
@@ -130,6 +169,20 @@ export function RegistrationWizard() {
     const valid = await validateCurrentStep()
     if (!valid) return
 
+    if (currentStep.id === "team") {
+      const takenMessage = await getTeamNameTakenMessage(
+        form.getValues("teamName")
+      )
+      if (takenMessage) {
+        form.setError(
+          "teamName",
+          { type: "server", message: takenMessage },
+          { shouldFocus: true }
+        )
+        return
+      }
+    }
+
     const nextIndex = Math.min(currentStepIndex + 1, steps.length - 1)
     setCurrentStepIndex(nextIndex)
     setHighestStepIndex((value) => Math.max(value, nextIndex))
@@ -152,18 +205,19 @@ export function RegistrationWizard() {
     if (stepIndex >= 0) setCurrentStepIndex(stepIndex)
   }
 
+  /** Opens the first step containing any of these fields and shows `message`. */
+  function openFirstStepWithErrors(fields: string[], message: string) {
+    const invalidStepIds = fields.map(stepIdForField)
+    const index = steps.findIndex((step) => invalidStepIds.includes(step.id))
+    if (index >= 0) setCurrentStepIndex(index)
+    setStepError(message)
+  }
+
   // Client-side validation failed on submit: the errors belong to fields on
   // other steps, so open the first of those steps instead of doing nothing.
   function showFirstInvalidStep(errors: FieldErrors<RegistrationValues>) {
-    const invalidStepIds = Object.keys(errors).map((field): StepId =>
-      field === "leader" || field === "member1" || field === "member2"
-        ? field
-        : "team"
-    )
-    const index = steps.findIndex((step) => invalidStepIds.includes(step.id))
-    if (index >= 0) setCurrentStepIndex(index)
-
-    setStepError(
+    openFirstStepWithErrors(
+      Object.keys(errors),
       "Some details need to be fixed before you can submit. Check the highlighted fields."
     )
   }
@@ -189,6 +243,22 @@ export function RegistrationWizard() {
       try {
         await handleSubmit()
       } catch (error) {
+        // Server-side conflicts (team name, email, WhatsApp number already
+        // registered) name the exact fields: highlight them and open that step.
+        if (error instanceof RequestError && error.fieldErrors.length > 0) {
+          for (const fieldError of error.fieldErrors) {
+            form.setError(fieldError.path as FieldPath<RegistrationValues>, {
+              type: "server",
+              message: fieldError.message,
+            })
+          }
+          openFirstStepWithErrors(
+            error.fieldErrors.map((fieldError) => fieldError.path),
+            error.message
+          )
+          return
+        }
+
         setStepError(
           error instanceof Error ? error.message : "Submission failed"
         )
@@ -346,7 +416,9 @@ export function RegistrationWizard() {
                       currentStepIndex={currentStepIndex}
                       isPending={isPending}
                       onBack={goBack}
-                      onNext={goNext}
+                      // In a transition so Next stays disabled (isPending)
+                      // while the Step 1 team-name check is in flight.
+                      onNext={() => startTransition(goNext)}
                       onSubmit={submit}
                     />
                   </div>

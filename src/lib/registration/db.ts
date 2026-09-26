@@ -1,7 +1,7 @@
 import { and, eq, inArray, or, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { PublicError } from "@/lib/errors"
+import { PublicError, type FieldError } from "@/lib/errors"
 import { appSettings, teamMembers, teams, universities } from "@/lib/db/schema"
 
 import {
@@ -15,6 +15,7 @@ import {
   normalizeEmail,
   normalizeWhatsappNumber,
   registrationSchema,
+  normalizeTeamName,
   TEXT_JOINERS,
   teamNameKey,
   type RegistrationValues,
@@ -150,15 +151,15 @@ async function lockParticipantIdentifiers(
   }
 }
 
+type DbExecutor =
+  typeof db | Parameters<Parameters<typeof db.transaction>[0]>[0]
+
 /**
  * Team names are unique among submitted teams, ignoring case, spacing and
  * zero-width joiners (the SQL mirrors teamNameKey).
  */
-async function assertTeamNameAvailable(
-  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  teamName: string
-) {
-  const [taken] = await tx
+async function teamNameTaken(executor: DbExecutor, teamName: string) {
+  const [taken] = await executor
     .select({ id: teams.id })
     .from(teams)
     .where(
@@ -169,25 +170,50 @@ async function assertTeamNameAvailable(
     )
     .limit(1)
 
-  if (taken) {
-    throw new PublicError(
-      `The team name "${teamName}" is already taken. Please choose a different name.`,
-      409
-    )
+  return Boolean(taken)
+}
+
+function teamNameTakenMessage(teamName: string) {
+  return `The team name "${teamName}" is already taken. Please choose a different name.`
+}
+
+/** Used by the wizard's early check on Step 1 (team names aren't personal data). */
+export async function getTeamNameAvailability(teamNameInput: string) {
+  const teamName = normalizeTeamName(teamNameInput)
+  const taken = teamName.length > 0 && (await teamNameTaken(db, teamName))
+  return {
+    available: !taken,
+    message: taken ? teamNameTakenMessage(teamName) : null,
   }
 }
 
+async function assertTeamNameAvailable(
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  teamName: string
+) {
+  if (await teamNameTaken(tx, teamName)) {
+    const message = teamNameTakenMessage(teamName)
+    throw new PublicError(message, 409, [{ path: "teamName", message }])
+  }
+}
+
+const PARTICIPANT_PREFIXES = ["leader", "member1", "member2"] as const
+
+/**
+ * Rejects emails or WhatsApp numbers already used by a submitted team, naming
+ * the exact participant and field so the wizard can highlight it. This only
+ * runs on submit; there is deliberately no endpoint to probe it earlier.
+ */
 async function assertNoSubmittedParticipantConflicts(
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   values: RegistrationValues
 ) {
-  const participants = getParticipants(values)
-  const emails = participants.map((participant) =>
-    normalizeEmail(participant.email)
-  )
-  const phones = participants.map((participant) =>
-    normalizeWhatsappNumber(participant.whatsappNumber)
-  )
+  const participants = getParticipants(values).map((participant) => ({
+    ...participant,
+    prefix: PARTICIPANT_PREFIXES[participant.memberOrder],
+    email: normalizeEmail(participant.email),
+    whatsappNumber: normalizeWhatsappNumber(participant.whatsappNumber),
+  }))
 
   const conflicts = await tx
     .select({
@@ -200,19 +226,58 @@ async function assertNoSubmittedParticipantConflicts(
       and(
         eq(teams.status, "submitted"),
         or(
-          inArray(teamMembers.email, emails),
-          inArray(teamMembers.whatsappNumber, phones)
+          inArray(
+            teamMembers.email,
+            participants.map((participant) => participant.email)
+          ),
+          inArray(
+            teamMembers.whatsappNumber,
+            participants.map((participant) => participant.whatsappNumber)
+          )
         )
       )
     )
-    .limit(1)
 
-  if (conflicts.length > 0) {
-    throw new PublicError(
-      "One or more participant emails or WhatsApp numbers are already registered.",
-      409
-    )
+  if (conflicts.length === 0) return
+
+  const takenEmails = new Set(conflicts.map((conflict) => conflict.email))
+  const takenPhones = new Set(
+    conflicts.map((conflict) => conflict.whatsappNumber)
+  )
+  const fieldErrors: FieldError[] = []
+
+  for (const participant of participants) {
+    if (takenEmails.has(participant.email)) {
+      fieldErrors.push({
+        path: `${participant.prefix}.email`,
+        message: "This email is already registered in another team.",
+      })
+    }
+    if (takenPhones.has(participant.whatsappNumber)) {
+      fieldErrors.push({
+        path: `${participant.prefix}.whatsappNumber`,
+        message: "This WhatsApp number is already registered in another team.",
+      })
+    }
   }
+
+  const names = [
+    ...new Set(
+      participants
+        .filter((participant) =>
+          fieldErrors.some((error) =>
+            error.path.startsWith(`${participant.prefix}.`)
+          )
+        )
+        .map((participant) => participant.fullName)
+    ),
+  ]
+
+  throw new PublicError(
+    `Already registered in another team: ${names.join(", ")}. Check the highlighted email or WhatsApp number.`,
+    409,
+    fieldErrors
+  )
 }
 
 export async function submitRegistration(

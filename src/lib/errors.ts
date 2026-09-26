@@ -1,10 +1,15 @@
 import { z } from "zod"
 
+/** A message tied to one form field, e.g. { path: "member1.email", ... }. */
+export type FieldError = { path: string; message: string }
+
 /** An error whose message is safe to show to the person making the request. */
 export class PublicError extends Error {
   constructor(
     message: string,
-    readonly status = 400
+    readonly status = 400,
+    /** Optional per-field details so the form can highlight the exact input. */
+    readonly fieldErrors: FieldError[] = []
   ) {
     super(message)
     this.name = "PublicError"
@@ -18,7 +23,13 @@ export class PublicError extends Error {
  */
 export function errorResponse(error: unknown, fallbackMessage: string) {
   if (error instanceof PublicError) {
-    return Response.json({ error: error.message }, { status: error.status })
+    return Response.json(
+      {
+        error: error.message,
+        ...(error.fieldErrors.length > 0 && { fieldErrors: error.fieldErrors }),
+      },
+      { status: error.status }
+    )
   }
 
   if (error instanceof z.ZodError) {

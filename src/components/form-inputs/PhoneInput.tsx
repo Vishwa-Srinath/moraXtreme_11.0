@@ -1,5 +1,7 @@
 import {
   forwardRef,
+  useLayoutEffect,
+  useRef,
   useState,
   type ChangeEvent,
   type ComponentProps,
@@ -54,6 +56,37 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       ? getCountryFromPhone(value)
       : getCountryByCode(selectedCode ?? defaultCountry)
     const nationalNumber = getNationalNumber(value, selectedCountry.dialCode)
+    const formattedNumber = formatNationalNumber(
+      nationalNumber,
+      selectedCountry.groups
+    )
+
+    // Re-formatting ("771234567" -> "77 123 4567") replaces the input's text,
+    // which moves the caret to the end. Remember how many digits were before
+    // the caret and restore it after that many digits once React re-renders.
+    const inputRef = useRef<HTMLInputElement | null>(null)
+    const pendingCaretDigits = useRef<number | null>(null)
+
+    useLayoutEffect(() => {
+      const input = inputRef.current
+      const digitsBefore = pendingCaretDigits.current
+      if (!input || digitsBefore === null) return
+      pendingCaretDigits.current = null
+
+      let position = 0
+      let seen = 0
+      while (position < formattedNumber.length && seen < digitsBefore) {
+        if (/\d/.test(formattedNumber[position])) seen++
+        position++
+      }
+      input.setSelectionRange(position, position)
+    })
+
+    function setInputRef(element: HTMLInputElement | null) {
+      inputRef.current = element
+      if (typeof ref === "function") ref(element)
+      else if (ref) ref.current = element
+    }
 
     function handleCountryChange(code: CountryCode) {
       const country = getCountryByCode(code)
@@ -63,10 +96,18 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
     function handleNumberChange(event: ChangeEvent<HTMLInputElement>) {
       const maxLength = 16 - selectedCountry.dialCode.length
-      const digits = event.target.value
-        .replace(/\D/g, "")
-        .replace(/^0/, "")
-        .slice(0, maxLength)
+      const rawDigits = event.target.value.replace(/\D/g, "")
+      const digits = rawDigits.replace(/^0/, "").slice(0, maxLength)
+
+      const caret = event.target.selectionStart ?? event.target.value.length
+      let digitsBeforeCaret = event.target.value
+        .slice(0, caret)
+        .replace(/\D/g, "").length
+      // A stripped leading 0 was before the caret, so it no longer counts.
+      if (rawDigits.startsWith("0") && digitsBeforeCaret > 0) {
+        digitsBeforeCaret--
+      }
+      pendingCaretDigits.current = Math.min(digitsBeforeCaret, digits.length)
 
       onChange?.(digits ? `${selectedCountry.dialCode}${digits}` : "")
     }
@@ -116,7 +157,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         </Select>
         <Input
           {...props}
-          ref={ref}
+          ref={setInputRef}
           id={id}
           name={name}
           type="tel"
@@ -124,7 +165,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           autoComplete="tel-national"
           disabled={disabled}
           placeholder={placeholder ?? selectedCountry.example}
-          value={formatNationalNumber(nationalNumber, selectedCountry.groups)}
+          value={formattedNumber}
           className="h-full min-w-0 flex-1 rounded-l-none border-0 shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent"
           onBlur={onBlur}
           onChange={handleNumberChange}
