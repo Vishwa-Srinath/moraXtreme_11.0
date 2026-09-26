@@ -18,7 +18,7 @@ export default function RegisterCTASection() {
           </div>
 
           <div className="mb-12 w-full text-left md:text-center">
-            <h2 className="font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
+            <h2 className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
               The Gateway to <br className="md:hidden" />
               <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
                 MoraXtreme 11.0

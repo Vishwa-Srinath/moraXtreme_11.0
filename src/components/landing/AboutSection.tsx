@@ -14,7 +14,7 @@ export default function AboutSection() {
                 Intelligence Briefing
               </span>
             </div>
-            <h2 className="mb-6 font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
+            <h2 className="mb-6 font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
               About{" "}
               <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
                 MoraXtreme 11.0
