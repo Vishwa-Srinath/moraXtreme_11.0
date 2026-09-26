@@ -22,7 +22,7 @@ export default function LegacySection() {
 
           {/* Stats Grid */}
           <div className="flex w-full flex-col items-center justify-around gap-16 divide-y divide-[#163E70]/50 md:flex-row md:gap-8 md:divide-x md:divide-y-0">
-            {LEGACY_STATS.map(({ value, label }, i) => (
+            {LEGACY_STATS.map(({ value, label, prefix, suffix }, i) => (
               <div
                 key={label}
                 className={`group/stat flex w-full flex-col items-center px-4 text-center md:px-8 ${
@@ -30,8 +30,17 @@ export default function LegacySection() {
                 }`}
               >
                 <div className="mb-6 bg-gradient-to-b from-white to-[#0074FF] bg-clip-text font-[family-name:var(--font-space)] text-5xl font-black text-transparent drop-shadow-[0_0_20px_rgba(0,116,255,0.4)] transition-transform duration-500 group-hover/stat:scale-110 md:text-7xl">
+                  {prefix && (
+                    <span className="mr-2 align-middle text-2xl md:text-4xl">
+                      {prefix}
+                    </span>
+                  )}
                   <AnimatedCounter value={value} />
-                  <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">+</span>
+                  {suffix && (
+                    <span className="text-[#0074FF] drop-shadow-[0_0_15px_#0074FF]">
+                      {suffix}
+                    </span>
+                  )}
                 </div>
                 <div className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase md:text-sm">
                   {label}

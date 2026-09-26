@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { id: "highlights", label: "Highlights" },
   { id: "legacy", label: "Legacy" },
   { id: "timeline", label: "Timeline" },
-  { id: "why-join", label: "Why Join ?" },
+  { id: "why-join", label: "Why Join?" },
   { id: "gallery", label: "Gallery" },
   { id: "team", label: "Contact Us" },
 ]
