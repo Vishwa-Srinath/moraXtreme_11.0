@@ -77,7 +77,7 @@ export default function HighlightsTimeline() {
   return (
     <div className="relative w-full max-w-6xl mx-auto py-12 z-20 overflow-hidden">
       <div className="text-left mb-12 md:text-center md:mb-24">
-        <h2 className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
+        <h2 className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white uppercase drop-shadow-xl">
           The Event <br className="hidden lg:block" />{" "}
           <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
             Highlights
