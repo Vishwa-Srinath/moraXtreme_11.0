@@ -21,6 +21,8 @@ export const TEAM_PLACEHOLDER: TeamMember[] = [
     organisation: "CS Chapter IEEE Student Branch University of Moratuwa",
     photo: "/images/people/dasun.webp",
     quote: "Championing computer science, one initiative at a time.",
+    email: "randeepa.22@cse.mrt.ac.lk",
+    phone: "+94 77 974 7489",
   },
   {
     name: "Ishakya Gamage",
