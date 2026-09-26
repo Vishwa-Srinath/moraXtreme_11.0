@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+import { Mail, Phone } from "lucide-react";
 import type { TeamSliderProps } from "@/types/team";
 import styles from "./TeamSlider.module.css";
 import { TEAM_PLACEHOLDER } from "@/data/team.placeholder";
@@ -202,6 +203,32 @@ export default function TeamSlider({
                           <p className={styles["card-name"]}>{member.name}</p>
                           {member.organisation && (
                             <p className={styles["card-org"]}>{member.organisation}</p>
+                          )}
+                          {(member.email || member.phone) && (
+                            <div className={styles["card-contact"]}>
+                              {member.email && (
+                                <a
+                                  href={`mailto:${member.email}`}
+                                  className={styles["card-contact-link"]}
+                                  title={member.email}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Mail className={styles["card-contact-icon"]} strokeWidth={2} />
+                                  <span>{member.email}</span>
+                                </a>
+                              )}
+                              {member.phone && (
+                                <a
+                                  href={`tel:${member.phone.replace(/\s+/g, "")}`}
+                                  className={styles["card-contact-link"]}
+                                  title={member.phone}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Phone className={styles["card-contact-icon"]} strokeWidth={2} />
+                                  <span>{member.phone}</span>
+                                </a>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>

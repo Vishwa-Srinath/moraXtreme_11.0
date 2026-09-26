@@ -186,13 +186,13 @@
         .viewport {
           position: relative;
           overflow: hidden;
-          height: 500px;
+          /* Active card scales to 1.13x; card-info now includes email/phone
+             lines, so it needs more headroom than before to avoid clipping. */
+          height: 560px;
         }
         @media (max-width: 480px) {
           .viewport {
-            /* The active card scales to 1.13x (~467px tall); give it room
-               so the bottom of card-info isn't clipped by overflow:hidden. */
-            height: 500px;
+            height: 560px;
           }
           /* Neighbouring cards only have room to show a sliced-off sliver of
              text on narrow screens, which reads as clipped/broken — hide the
@@ -347,4 +347,35 @@
           color: #6B7B8D;
           line-height: 1.4;
           margin: 0;
+        }
+
+        /* Contact links */
+        .card-contact {
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
+          margin-top: 0.6rem;
+          padding-top: 0.6rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .card-contact-link {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.58rem;
+          color: #8A97A8;
+          text-decoration: none;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          transition: color 0.2s ease;
+        }
+        .card-contact-link:hover {
+          color: #0074FF;
+        }
+        .card-contact-icon {
+          width: 11px;
+          height: 11px;
+          flex-shrink: 0;
+          color: #0074FF;
         }
