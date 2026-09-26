@@ -6,11 +6,19 @@ import {
 } from "react"
 
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+
+import { CountryFlag } from "./CountryFlag"
 import {
   COUNTRY_OPTIONS,
   DEFAULT_COUNTRY,
-  countryFlag,
   formatNationalNumber,
   getCountryByCode,
   getCountryFromPhone,
@@ -47,8 +55,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       : getCountryByCode(selectedCode ?? defaultCountry)
     const nationalNumber = getNationalNumber(value, selectedCountry.dialCode)
 
-    function handleCountryChange(event: ChangeEvent<HTMLSelectElement>) {
-      const country = getCountryByCode(event.target.value as CountryCode)
+    function handleCountryChange(code: CountryCode) {
+      const country = getCountryByCode(code)
       setSelectedCode(country.code)
       onChange?.(nationalNumber ? `${country.dialCode}${nationalNumber}` : "")
     }
@@ -70,19 +78,42 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           className
         )}
       >
-        <select
-          aria-label="Country code"
-          className="h-full w-24 shrink-0 rounded-l-md border-r bg-transparent px-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={disabled}
+        <Select
           value={selectedCountry.code}
-          onChange={handleCountryChange}
+          disabled={disabled}
+          onValueChange={(code) => {
+            if (code) handleCountryChange(code as CountryCode)
+          }}
         >
-          {COUNTRY_OPTIONS.map((country) => (
-            <option key={country.code} value={country.code}>
-              {countryFlag(country.code)} {country.dialCode}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger
+            aria-label="Country code"
+            className="h-full shrink-0 rounded-l-md rounded-r-none border-0 border-r bg-transparent pl-2.5 shadow-none focus-visible:ring-0 data-[size=default]:h-full dark:bg-transparent"
+          >
+            <SelectValue>
+              {(code: CountryCode) => (
+                <>
+                  <CountryFlag code={code} />
+                  {getCountryByCode(code).dialCode}
+                </>
+              )}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent
+            align="start"
+            alignItemWithTrigger={false}
+            className="w-auto min-w-64"
+          >
+            {COUNTRY_OPTIONS.map((country) => (
+              <SelectItem key={country.code} value={country.code}>
+                <CountryFlag code={country.code} />
+                <span className="flex-1">{country.name}</span>
+                <span className="text-muted-foreground">
+                  {country.dialCode}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Input
           {...props}
           ref={ref}

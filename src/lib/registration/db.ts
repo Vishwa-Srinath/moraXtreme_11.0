@@ -4,12 +4,19 @@ import { db } from "@/lib/db"
 import { PublicError } from "@/lib/errors"
 import { appSettings, teamMembers, teams, universities } from "@/lib/db/schema"
 
-import { KNOWN_UNIVERSITIES, OTHER_UNIVERSITY_ID } from "./constants"
+import {
+  KNOWN_UNIVERSITIES,
+  OTHER_UNIVERSITY_ID,
+  type Gender,
+  type YearOfStudy,
+} from "./constants"
 import {
   getParticipants,
   normalizeEmail,
   normalizeWhatsappNumber,
   registrationSchema,
+  TEXT_JOINERS,
+  teamNameKey,
   type RegistrationValues,
   type SubmittedRegistration,
 } from "./schema"
@@ -65,6 +72,9 @@ async function insertTeamMembers(
       fullName: participant.fullName,
       email: normalizeEmail(participant.email),
       whatsappNumber: normalizeWhatsappNumber(participant.whatsappNumber),
+      // Validated against the option lists by registrationSchema.
+      gender: participant.gender as Gender,
+      yearOfStudy: participant.yearOfStudy as YearOfStudy,
     }))
   )
 }
@@ -130,11 +140,39 @@ async function lockParticipantIdentifiers(
       `email:${normalizeEmail(participant.email)}`,
       `phone:${normalizeWhatsappNumber(participant.whatsappNumber)}`,
     ])
+    .concat(`team:${teamNameKey(values.teamName)}`)
     .sort()
 
   for (const key of keys) {
     await tx.execute(
       sql`select pg_advisory_xact_lock(hashtextextended(${key}, 0))`
+    )
+  }
+}
+
+/**
+ * Team names are unique among submitted teams, ignoring case, spacing and
+ * zero-width joiners (the SQL mirrors teamNameKey).
+ */
+async function assertTeamNameAvailable(
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  teamName: string
+) {
+  const [taken] = await tx
+    .select({ id: teams.id })
+    .from(teams)
+    .where(
+      and(
+        eq(teams.status, "submitted"),
+        sql`lower(translate(regexp_replace(trim(${teams.teamName}), '\\s+', ' ', 'g'), ${TEXT_JOINERS}, '')) = ${teamNameKey(teamName)}`
+      )
+    )
+    .limit(1)
+
+  if (taken) {
+    throw new PublicError(
+      `The team name "${teamName}" is already taken. Please choose a different name.`,
+      409
     )
   }
 }
@@ -199,6 +237,7 @@ export async function submitRegistration(
 
   return db.transaction(async (tx) => {
     await lockParticipantIdentifiers(tx, values)
+    await assertTeamNameAvailable(tx, values.teamName)
     await assertNoSubmittedParticipantConflicts(tx, values)
 
     const registrationCode = await createRegistrationCode(tx)

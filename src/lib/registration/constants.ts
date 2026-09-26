@@ -37,6 +37,7 @@ export const KNOWN_UNIVERSITIES = [
     name: "Rajarata University of Sri Lanka",
   },
   { id: "south-eastern-university", name: "South Eastern University" },
+  { id: "eastern-university-sri-lanka", name: "Eastern University, Sri Lanka" },
   {
     id: "open-university-of-sri-lanka",
     name: "Open University of Sri Lanka",
@@ -66,6 +67,17 @@ export const KNOWN_UNIVERSITIES = [
     name: "Sri Lanka Technological Campus (SLTC)",
   },
   {
+    id: "asia-pacific-institute-of-information-technology",
+    name: "Asia Pacific Institute of Information Technology (APIIT)",
+  },
+  { id: "icbt-campus", name: "ICBT Campus" },
+  { id: "cinec-campus", name: "CINEC Campus" },
+  { id: "horizon-campus", name: "Horizon Campus" },
+  { id: "esoft-metro-campus", name: "ESOFT Metro Campus" },
+  { id: "kiu", name: "KIU (Kaatsu International University)" },
+  { id: "saegis-campus", name: "Saegis Campus" },
+  { id: "curtin-university-colombo", name: "Curtin University Colombo" },
+  {
     id: "university-of-vocational-technology",
     name: "University of Vocational Technology",
   },
@@ -83,3 +95,38 @@ export const TEAM_SIZE_OPTIONS = [
 ] as const
 
 export const REGISTRATION_STORAGE_KEY = "moraxtreme-11-registration-draft"
+
+// "Prefer not to say" keeps gender answerable without forcing a disclosure.
+export const GENDER_OPTIONS = [
+  { value: "female", label: "Female" },
+  { value: "male", label: "Male" },
+  { value: "other", label: "Other" },
+  { value: "prefer_not_to_say", label: "Prefer not to say" },
+] as const
+
+// Undergraduates only.
+export const YEAR_OF_STUDY_OPTIONS = [
+  { value: "year_1", label: "1st year" },
+  { value: "year_2", label: "2nd year" },
+  { value: "year_3", label: "3rd year" },
+  { value: "year_4", label: "4th year" },
+  { value: "year_5_plus", label: "5th year or above" },
+] as const
+
+export type Gender = (typeof GENDER_OPTIONS)[number]["value"]
+export type YearOfStudy = (typeof YEAR_OF_STUDY_OPTIONS)[number]["value"]
+
+export const GENDER_VALUES = GENDER_OPTIONS.map((option) => option.value) as [
+  Gender,
+  ...Gender[],
+]
+export const YEAR_OF_STUDY_VALUES = YEAR_OF_STUDY_OPTIONS.map(
+  (option) => option.value
+) as [YearOfStudy, ...YearOfStudy[]]
+
+export function getOptionLabel(
+  options: readonly { value: string; label: string }[],
+  value: string
+) {
+  return options.find((option) => option.value === value)?.label ?? ""
+}

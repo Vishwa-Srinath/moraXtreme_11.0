@@ -63,9 +63,21 @@ export const STEP_FIELDS: Record<
     "otherUniversityName",
     "teamSize",
   ],
-  leader: ["leader.fullName", "leader.email", "leader.whatsappNumber"],
-  member1: ["member1.fullName", "member1.email", "member1.whatsappNumber"],
-  member2: ["member2.fullName", "member2.email", "member2.whatsappNumber"],
+  leader: participantFields("leader"),
+  member1: participantFields("member1"),
+  member2: participantFields("member2"),
+}
+
+function participantFields(
+  prefix: ParticipantPrefix
+): FieldPath<RegistrationValues>[] {
+  return [
+    `${prefix}.fullName`,
+    `${prefix}.email`,
+    `${prefix}.whatsappNumber`,
+    `${prefix}.gender`,
+    `${prefix}.yearOfStudy`,
+  ]
 }
 
 export function getRegistrationSteps(teamSize: number) {

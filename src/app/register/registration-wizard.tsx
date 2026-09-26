@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ExternalLink, MessageCircle } from "lucide-react"
 import { useEffect, useRef, useState, useTransition } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type FieldErrors } from "react-hook-form"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -66,7 +66,16 @@ export function RegistrationWizard() {
 
     if (stored) {
       try {
-        const draft = { ...defaultRegistrationValues, ...JSON.parse(stored) }
+        const saved = JSON.parse(stored)
+        // Merge participants field by field so drafts saved before a field
+        // existed (e.g. gender) still get its default instead of undefined.
+        const draft = {
+          ...defaultRegistrationValues,
+          ...saved,
+          leader: { ...defaultRegistrationValues.leader, ...saved.leader },
+          member1: { ...defaultRegistrationValues.member1, ...saved.member1 },
+          member2: { ...defaultRegistrationValues.member2, ...saved.member2 },
+        }
         resetForm(draft)
 
         const savedStepIndex = Number(
@@ -143,6 +152,22 @@ export function RegistrationWizard() {
     if (stepIndex >= 0) setCurrentStepIndex(stepIndex)
   }
 
+  // Client-side validation failed on submit: the errors belong to fields on
+  // other steps, so open the first of those steps instead of doing nothing.
+  function showFirstInvalidStep(errors: FieldErrors<RegistrationValues>) {
+    const invalidStepIds = Object.keys(errors).map((field): StepId =>
+      field === "leader" || field === "member1" || field === "member2"
+        ? field
+        : "team"
+    )
+    const index = steps.findIndex((step) => invalidStepIds.includes(step.id))
+    if (index >= 0) setCurrentStepIndex(index)
+
+    setStepError(
+      "Some details need to be fixed before you can submit. Check the highlighted fields."
+    )
+  }
+
   function submit() {
     setStepError(null)
     startTransition(async () => {
@@ -159,7 +184,7 @@ export function RegistrationWizard() {
         setSubmittedRegistration(registration)
         window.localStorage.removeItem(REGISTRATION_STORAGE_KEY)
         window.localStorage.removeItem(STEP_STORAGE_KEY)
-      })
+      }, showFirstInvalidStep)
 
       try {
         await handleSubmit()
@@ -173,7 +198,9 @@ export function RegistrationWizard() {
 
   return (
     <div className="flex min-h-dvh w-full flex-col lg:flex-row">
-      <aside className="relative flex w-full shrink-0 flex-col justify-center overflow-hidden border-r border-[#163E70]/30 bg-[#000000] p-8 text-white lg:w-[40%] lg:p-16 xl:w-[45%]">
+      {/* Desktop: one viewport tall and sticky, so the intro stays centred on
+          screen instead of drifting down as long steps stretch the row. */}
+      <aside className="relative flex w-full shrink-0 flex-col justify-center overflow-hidden border-r border-[#163E70]/30 bg-[#000000] p-8 text-white lg:sticky lg:top-0 lg:h-dvh lg:w-[40%] lg:self-start lg:p-16 xl:w-[45%]">
         <div className="absolute top-6 left-6 z-40">
           <Link
             href="/"

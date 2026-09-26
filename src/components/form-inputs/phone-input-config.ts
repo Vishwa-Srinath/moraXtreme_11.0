@@ -231,12 +231,6 @@ export function getNationalNumber(value: string, dialCode: string) {
     : value.replace(/\D/g, "")
 }
 
-export function countryFlag(code: string) {
-  return String.fromCodePoint(
-    ...code.split("").map((character) => 127397 + character.charCodeAt(0))
-  )
-}
-
 export function formatNationalNumber(value: string, groups: readonly number[]) {
   const parts: string[] = []
   let offset = 0
