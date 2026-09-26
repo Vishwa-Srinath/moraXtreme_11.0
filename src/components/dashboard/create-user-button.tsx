@@ -11,7 +11,7 @@ export function CreateUserButton() {
   return (
     <Button onClick={() => openModal("createUser", {})}>
       <UserPlusIcon />
-      Create user
+      Create admin
     </Button>
   )
 }

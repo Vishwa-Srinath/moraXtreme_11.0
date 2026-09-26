@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
+  KeyRoundIcon,
   LayoutDashboardIcon,
   LoaderCircleIcon,
   LogOutIcon,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
+import { useModal } from "@/components/modals/useModal"
 import {
   Sidebar,
   SidebarContent,
@@ -38,6 +40,7 @@ const navigation = [
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { openModal } = useModal()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   async function signOut() {
@@ -113,6 +116,15 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border p-3">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Change password"
+              onClick={() => openModal("changePassword", {})}
+            >
+              <KeyRoundIcon />
+              <span>Change password</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               disabled={isSigningOut}
