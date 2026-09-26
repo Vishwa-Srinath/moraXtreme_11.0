@@ -58,13 +58,17 @@ function parseTimestamp(value: string | null) {
 export async function getRegistrationAvailability(): Promise<RegistrationAvailability> {
   await connection()
 
-  const defaults: RegistrationAvailability = {
-    isOpen: true,
+  // Used only when the settings cannot be read: fail closed so a database
+  // hiccup can never reopen registration after it has been closed.
+  const unavailable: RegistrationAvailability = {
+    isOpen: false,
     openAt: null,
     closeAt: null,
     forceClosed: false,
-    message: "Registration is currently closed.",
+    message:
+      "Registration is temporarily unavailable. Please try again in a few minutes.",
   }
+  const defaultClosedMessage = "Registration is currently closed."
 
   try {
     const rows = await db
@@ -84,7 +88,7 @@ export async function getRegistrationAvailability(): Promise<RegistrationAvailab
     )
     const message =
       readSettingValue(settings, REGISTRATION_SETTING_KEYS.closedMessage) ??
-      defaults.message
+      defaultClosedMessage
 
     const now = Date.now()
     const openTime = parseTimestamp(openAt)
@@ -99,8 +103,9 @@ export async function getRegistrationAvailability(): Promise<RegistrationAvailab
       forceClosed,
       message,
     }
-  } catch {
-    return defaults
+  } catch (error) {
+    console.error("Could not read registration settings", error)
+    return unavailable
   }
 }
 

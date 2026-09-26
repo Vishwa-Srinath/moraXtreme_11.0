@@ -24,8 +24,15 @@ export function normalizeWhatsappNumber(value: string) {
   return value.replace(/[\s().-]/g, "").trim()
 }
 
+// Upper bounds keep oversized payloads out of the database.
+const MAX_NAME_LENGTH = 100
+const MAX_TEAM_NAME_LENGTH = 60
+const MAX_UNIVERSITY_NAME_LENGTH = 150
+const MAX_EMAIL_LENGTH = 254
+
 const emailSchema = z
   .email("Enter a valid email address")
+  .max(MAX_EMAIL_LENGTH, "Email address is too long")
   .transform(normalizeEmail)
 
 const whatsappSchema = z
@@ -40,22 +47,44 @@ const whatsappSchema = z
   )
 
 export const participantSchema = z.object({
-  fullName: z.string().trim().min(2, "Full name must be at least 2 characters"),
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Full name must be at least 2 characters")
+    .max(
+      MAX_NAME_LENGTH,
+      `Full name must be at most ${MAX_NAME_LENGTH} characters`
+    ),
   email: emailSchema,
   whatsappNumber: whatsappSchema,
 })
 
+// Unused member slots are not validated in detail, but are still bounded.
 const looseParticipantSchema = z.object({
-  fullName: z.string(),
-  email: z.string(),
-  whatsappNumber: z.string(),
+  fullName: z.string().max(MAX_NAME_LENGTH * 2),
+  email: z.string().max(MAX_EMAIL_LENGTH * 2),
+  whatsappNumber: z.string().max(64),
 })
 
 const baseRegistrationSchema = z.object({
   country: z.enum(COUNTRY_OPTIONS, "Select a country"),
-  teamName: z.string().trim().min(2, "Team name is required"),
-  universityId: z.string().min(1, "Select a university"),
-  otherUniversityName: z.string().trim().optional(),
+  teamName: z
+    .string()
+    .trim()
+    .min(2, "Team name is required")
+    .max(
+      MAX_TEAM_NAME_LENGTH,
+      `Team name must be at most ${MAX_TEAM_NAME_LENGTH} characters`
+    ),
+  universityId: z.string().min(1, "Select a university").max(100),
+  otherUniversityName: z
+    .string()
+    .trim()
+    .max(
+      MAX_UNIVERSITY_NAME_LENGTH,
+      `University name must be at most ${MAX_UNIVERSITY_NAME_LENGTH} characters`
+    )
+    .optional(),
   teamSize: z.number().int().min(1).max(3),
   leader: participantSchema,
   member1: looseParticipantSchema,
@@ -167,14 +196,12 @@ export const registrationSchema = baseRegistrationSchema.superRefine(
   }
 )
 
-export const draftRegistrationSchema = baseRegistrationSchema
-
 export type RegistrationValues = z.infer<typeof registrationSchema>
-
-export type DraftRegistrationValues = z.infer<typeof draftRegistrationSchema>
 
 export type SubmittedRegistration = {
   teamName: string
+  /** Only ever sent to a team that has just registered successfully. */
+  whatsappGroupUrl: string
   registrationCode: string
   submittedAt: string
   members: string[]

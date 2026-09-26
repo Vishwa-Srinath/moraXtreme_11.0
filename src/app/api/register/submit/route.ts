@@ -11,6 +11,15 @@ const SUBMIT_RATE_LIMIT = {
 }
 
 export async function POST(request: Request) {
+  // Browsers can only send JSON cross-site after a CORS preflight, which this
+  // route does not allow, so requiring it blocks form-based CSRF submissions.
+  if (!request.headers.get("content-type")?.includes("application/json")) {
+    return Response.json(
+      { error: "Content-Type must be application/json" },
+      { status: 415 }
+    )
+  }
+
   try {
     const { allowed, retryAfterSeconds } = await checkRateLimit(
       request,

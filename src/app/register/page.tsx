@@ -10,12 +10,11 @@ export default async function RegisterPage() {
   await connection()
 
   const availability = await getRegistrationAvailability()
-  const whatsappGroupUrl = process.env.WHATSAPP_GROUP_URL ?? ""
 
   return (
     <main className="flex min-h-dvh w-full flex-col bg-background text-foreground">
       {availability.isOpen ? (
-        <RegistrationWizard whatsappGroupUrl={whatsappGroupUrl} />
+        <RegistrationWizard />
       ) : (
         <div className="mx-auto mt-12 mb-12 max-w-2xl rounded-2xl border bg-card p-[clamp(1.5rem,4vw,3rem)] text-card-foreground shadow-sm">
           <p className="text-sm font-medium tracking-[0.2em] text-muted-foreground uppercase">

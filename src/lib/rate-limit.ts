@@ -11,8 +11,10 @@ type RateLimitOptions = {
 }
 
 /**
- * The client IP as reported by the hosting proxy. Only trustworthy when the app
- * runs behind a proxy that overwrites these headers (Vercel, Cloudflare, nginx).
+ * The client IP as reported by the hosting proxy. This relies on Vercel, which
+ * overwrites X-Forwarded-For with the real client IP. Behind a proxy that
+ * appends to the header instead (e.g. a default nginx setup), the first entry
+ * is client-controlled and the rate limits could be bypassed.
  */
 export function getClientIp(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]
@@ -42,7 +44,10 @@ export async function checkRateLimit(
         windowStart: sql`case when ${windowExpired} then now() else ${apiRateLimits.windowStart} end`,
       },
     })
-    .returning({ count: apiRateLimits.count, windowStart: apiRateLimits.windowStart })
+    .returning({
+      count: apiRateLimits.count,
+      windowStart: apiRateLimits.windowStart,
+    })
 
   // Occasionally prune stale counters so the table stays small.
   if (Math.random() < 0.01) {

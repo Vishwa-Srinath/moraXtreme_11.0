@@ -34,11 +34,7 @@ async function readResponse<T>(response: Response): Promise<T> {
   return data
 }
 
-export function RegistrationWizard({
-  whatsappGroupUrl,
-}: {
-  whatsappGroupUrl: string
-}) {
+export function RegistrationWizard() {
   const form = useForm<RegistrationValues, unknown, RegistrationValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: defaultRegistrationValues,
@@ -131,12 +127,6 @@ export function RegistrationWizard({
     setStepError(null)
     startTransition(async () => {
       const handleSubmit = form.handleSubmit(async (data) => {
-        if (!whatsappGroupUrl) {
-          throw new Error(
-            "Registration is temporarily unavailable. The WhatsApp group has not been configured."
-          )
-        }
-
         const response = await fetch("/api/register/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -228,7 +218,7 @@ export function RegistrationWizard({
                 </div>
 
                 <a
-                  href={whatsappGroupUrl}
+                  href={submittedRegistration.whatsappGroupUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#0074FF] px-6 text-sm font-bold text-white shadow-[0_0_24px_rgba(0,116,255,0.28)] transition-colors hover:bg-[#1680ff] focus-visible:ring-2 focus-visible:ring-[#0074FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030710] focus-visible:outline-none sm:w-auto"

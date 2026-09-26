@@ -1,6 +1,7 @@
 import { and, eq, inArray, or, sql } from "drizzle-orm"
 
 import { db } from "@/lib/db"
+import { PublicError } from "@/lib/errors"
 import { appSettings, teamMembers, teams, universities } from "@/lib/db/schema"
 
 import { KNOWN_UNIVERSITIES, OTHER_UNIVERSITY_ID } from "./constants"
@@ -169,8 +170,9 @@ async function assertNoSubmittedParticipantConflicts(
     .limit(1)
 
   if (conflicts.length > 0) {
-    throw new Error(
-      "One or more participant emails or WhatsApp numbers are already registered."
+    throw new PublicError(
+      "One or more participant emails or WhatsApp numbers are already registered.",
+      409
     )
   }
 }
@@ -181,7 +183,16 @@ export async function submitRegistration(
   const availability = await getRegistrationAvailability()
 
   if (!availability.isOpen) {
-    throw new Error(availability.message)
+    throw new PublicError(availability.message, 403)
+  }
+
+  const whatsappGroupUrl = process.env.WHATSAPP_GROUP_URL
+  if (!whatsappGroupUrl) {
+    console.error("WHATSAPP_GROUP_URL is not set")
+    throw new PublicError(
+      "Registration is temporarily unavailable. Please try again later.",
+      503
+    )
   }
 
   const values = registrationSchema.parse(input)
@@ -197,6 +208,7 @@ export async function submitRegistration(
 
     return {
       teamName: values.teamName.trim(),
+      whatsappGroupUrl,
       registrationCode,
       submittedAt: submittedAt.toISOString(),
       members: getParticipants(values).map(

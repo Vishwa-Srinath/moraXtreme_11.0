@@ -19,6 +19,12 @@ export const auth = betterAuth({
     disableSignUp: true,
     minPasswordLength: 12,
   },
+  // Only admins sign in, so keep sessions short: an idle session expires after
+  // 12 hours (default 7 days). Active use renews it at most once an hour.
+  session: {
+    expiresIn: 60 * 60 * 12,
+    updateAge: 60 * 60,
+  },
   // Stored in Postgres (the `auth_rate_limits` table) so limits hold across
   // server instances. Keyed by client IP from X-Forwarded-For.
   rateLimit: {
