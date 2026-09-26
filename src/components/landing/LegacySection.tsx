@@ -7,15 +7,15 @@ export default function LegacySection() {
       <div className="group relative w-full">
         <div className="relative z-10 flex flex-col items-center p-12 md:p-24">
           {/* Heading */}
-          <div className="mb-16 flex flex-col items-center gap-3">
-            <div className="inline-flex items-center gap-4">
-              <div className="h-[2px] w-12 bg-gradient-to-r from-transparent to-[#0074FF]"></div>
-              <h2 className="font-mono text-sm font-bold tracking-[0.4em] text-[#0074FF] uppercase">
-                Our Legacy
-              </h2>
-              <div className="h-[2px] w-12 bg-gradient-to-l from-transparent to-[#0074FF]"></div>
-            </div>
-            <span className="font-[family-name:var(--font-space)] text-2xl font-black tracking-widest text-white uppercase drop-shadow-[0_0_15px_rgba(0,116,255,0.8)] sm:text-3xl">
+          <div className="mb-8 flex w-full flex-col items-start gap-3 text-left md:mb-16 md:items-center md:text-center">
+            <h2 className="font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
+              Our{" "}
+              <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
+                Legacy
+              </span>
+            </h2>
+            <div className="h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
+            <span className="mt-2 font-mono text-xs font-bold tracking-[0.3em] text-neutral-400 uppercase">
               MoraXtreme 10.0
             </span>
           </div>

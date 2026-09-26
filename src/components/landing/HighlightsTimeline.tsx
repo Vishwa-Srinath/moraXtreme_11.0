@@ -76,15 +76,15 @@ export default function HighlightsTimeline() {
 
   return (
     <div className="relative w-full max-w-6xl mx-auto py-12 z-20 overflow-hidden">
-      <div className="text-center mb-24">
-        <h2 className="font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-xl md:text-5xl">
+      <div className="text-left mb-12 md:text-center md:mb-24">
+        <h2 className="font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
           The Event <br className="hidden lg:block" />{" "}
           <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
             Highlights
           </span>
         </h2>
-        <div className="mt-6 mx-auto h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
-        <p className="mt-6 mx-auto max-w-2xl text-lg leading-relaxed font-light text-neutral-400">
+        <div className="mt-6 h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent md:mx-auto"></div>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed font-light text-neutral-400 md:mx-auto">
           Discover what makes MoraXtreme the ultimate algorithmic proving ground in the South Asian region.
         </p>
       </div>

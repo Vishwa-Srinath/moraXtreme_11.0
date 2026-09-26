@@ -101,22 +101,15 @@
         }
 
         .headline {
-          font-size: clamp(3rem, 5vw, 5rem);
+          font-size: clamp(2.8rem, 4vw, 3.8rem);
           font-weight: 900;
           line-height: 0.88;
           letter-spacing: -0.03em;
           margin: 0 0 1.5rem;
+          max-width: 100%;
         }
-        .headline-white { 
-          display: block; 
-          color: #ffffff;
-          text-shadow: 0 0 20px rgba(0, 116, 255, 0.8);
-        }
-        .headline-blue  { 
-          display: block; 
-          color: #ffffff;
-          text-shadow: 0 0 20px rgba(0, 116, 255, 0.8);
-        }
+        .headline-white { display: block; color: #ffffff; }
+        .headline-blue  { display: block; color: #0074FF; }
 
         .subtitle {
           font-size: 0.82rem;
@@ -197,7 +190,15 @@
         }
         @media (max-width: 480px) {
           .viewport {
-            height: 420px;
+            /* The active card scales to 1.13x (~467px tall); give it room
+               so the bottom of card-info isn't clipped by overflow:hidden. */
+            height: 500px;
+          }
+          /* Neighbouring cards only have room to show a sliced-off sliver of
+             text on narrow screens, which reads as clipped/broken — hide the
+             peek and keep just the active card in frame. */
+          .card--near {
+            opacity: 0;
           }
         }
 

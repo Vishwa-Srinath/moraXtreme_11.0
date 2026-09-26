@@ -132,7 +132,7 @@ export default function ImageGallery({
           <div className={styles.left}>
             <div className={styles.eyebrow}>
               <span className={styles["eyebrow-dot"]} />
-              <span className={styles["eyebrow-text"]}>MoraXtreme 11.0</span>
+              <span className={styles["eyebrow-text"]}>MoraXtreme 10.0</span>
               <span className={styles["eyebrow-sep"]}>/</span>
               <span className={styles["eyebrow-text"]}>Highlights</span>
             </div>

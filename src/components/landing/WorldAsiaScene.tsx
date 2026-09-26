@@ -333,14 +333,14 @@ export default function WorldAsiaScene({
             <div className="mt-8 flex flex-col gap-5 sm:flex-row">
               {/* Register Button with Dynamic Pulsing Aura */}
               <div className="group relative">
-                {/* Glowing pulsing aura behind the button */}
-                <div className="absolute -inset-1 animate-pulse rounded-full bg-gradient-to-r from-white/60 via-[#0074FF]/80 to-white/60 opacity-80 blur-xl transition duration-500 group-hover:opacity-100 group-hover:blur-2xl"></div>
+                {/* Glowing aura behind the button */}
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-white/25 via-[#0074FF]/40 to-white/25 opacity-60 blur-md transition duration-500 group-hover:opacity-80 group-hover:blur-lg"></div>
 
                 <a
                   href="/register"
-                  className="relative inline-flex items-center overflow-hidden rounded-full border border-white/60 bg-[#0074FF]/20 px-8 py-4 font-[family-name:var(--font-space)] text-sm font-black tracking-[0.25em] text-white uppercase shadow-[0_0_20px_rgba(255,255,255,0.4),inset_0_0_20px_rgba(255,255,255,0.3)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white group-hover:bg-[#0074FF]/40 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.8),inset_0_0_30px_rgba(255,255,255,0.6)] sm:px-12 sm:py-6 sm:text-base md:text-lg"
+                  className="relative inline-flex items-center overflow-hidden rounded-full border border-white/60 bg-[#0074FF]/20 px-8 py-4 font-[family-name:var(--font-space)] text-sm font-black tracking-[0.25em] text-white uppercase shadow-[0_0_12px_rgba(0,116,255,0.35)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white group-hover:bg-[#0074FF]/40 group-hover:shadow-[0_0_24px_rgba(0,116,255,0.55)] sm:px-12 sm:py-6 sm:text-base md:text-lg"
                 >
-                  <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_15px_rgba(255,255,255,1)] transition-all duration-500 group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]">
+                  <span className="relative z-10 flex items-center gap-4 transition-all duration-500">
                     Register Now
                     <svg
                       className="h-6 w-6 transition-transform duration-500 group-hover:translate-x-2"
@@ -362,16 +362,16 @@ export default function WorldAsiaScene({
 
               {/* Delegate Booklet Button — same premium weight as Register Now */}
               <div className="group relative">
-                {/* Glowing pulsing aura behind the button */}
-                <div className="absolute -inset-1 animate-pulse rounded-full bg-gradient-to-r from-[#0074FF]/40 via-white/30 to-[#0074FF]/40 opacity-60 blur-xl transition duration-500 group-hover:opacity-90 group-hover:blur-2xl"></div>
+                {/* Glowing aura behind the button */}
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-[#0074FF]/25 via-white/15 to-[#0074FF]/25 opacity-40 blur-md transition duration-500 group-hover:opacity-60 group-hover:blur-lg"></div>
 
                 <a
                   href="https://drive.google.com/file/d/1fcevOIbL9cJAg1jOY3Hgah9lsvpqwdry/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative inline-flex items-center overflow-hidden rounded-full border border-white/40 bg-white/5 px-8 py-4 font-[family-name:var(--font-space)] text-sm font-black tracking-[0.25em] text-white uppercase shadow-[0_0_20px_rgba(255,255,255,0.2),inset_0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/70 group-hover:bg-white/15 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.5),inset_0_0_30px_rgba(255,255,255,0.3)] sm:px-12 sm:py-6 sm:text-base md:text-lg"
+                  className="relative inline-flex items-center overflow-hidden rounded-full border border-white/40 bg-white/5 px-8 py-4 font-[family-name:var(--font-space)] text-sm font-black tracking-[0.25em] text-white uppercase shadow-[0_0_10px_rgba(255,255,255,0.12)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/70 group-hover:bg-white/15 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.25)] sm:px-12 sm:py-6 sm:text-base md:text-lg"
                 >
-                  <span className="relative z-10 flex items-center gap-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] transition-all duration-500 group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,1)]">
+                  <span className="relative z-10 flex items-center gap-4 transition-all duration-500">
                     {/* Book / Document icon */}
                     <svg
                       className="h-6 w-6 shrink-0"

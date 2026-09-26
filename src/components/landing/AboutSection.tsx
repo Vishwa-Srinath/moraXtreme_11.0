@@ -14,9 +14,13 @@ export default function AboutSection() {
                 Intelligence Briefing
               </span>
             </div>
-            <h2 className="mb-6 font-[family-name:var(--font-space)] text-4xl font-bold text-white md:text-5xl">
-              About MoraXtreme 11.0
+            <h2 className="mb-6 font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
+              About{" "}
+              <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
+                MoraXtreme 11.0
+              </span>
             </h2>
+            <div className="mb-6 h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
             <p className="text-lg leading-relaxed text-neutral-300">
               MoraXtreme is Sri Lanka&apos;s premier annual algorithmic coding
               competition, organized by the IEEE Student Branch and the IEEE
@@ -33,7 +37,7 @@ export default function AboutSection() {
 
         {/* Right Column: Who Can Participate */}
         <div className="z-10 flex flex-col gap-12 lg:mt-12">
-          <div className="rounded-l-2xl border-r-4 border-[#0074FF] bg-gradient-to-l from-[#163E70]/20 to-transparent p-8 shadow-[inset_0_0_20px_rgba(22,62,112,0.1)]">
+          <div className="rounded-l-2xl border-r-4 border-[#0074FF] bg-gradient-to-l from-[#163E70]/20 to-transparent p-8 text-left shadow-[inset_0_0_20px_rgba(22,62,112,0.1)]">
             <h3 className="mb-4 font-[family-name:var(--font-space)] text-2xl font-bold text-white">
               Who Can Participate?
             </h3>

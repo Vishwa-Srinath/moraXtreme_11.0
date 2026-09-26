@@ -133,10 +133,6 @@
 }
 
 @media (max-width: 700px) {
-  .scene {
-    /* Give enough scroll distance for the full animation to play on mobile */
-    min-height: 380vh;
-  }
   .world {
     width: 180vw;
     /* mix-blend-mode:screen makes the globe invisible on many Android browsers —
