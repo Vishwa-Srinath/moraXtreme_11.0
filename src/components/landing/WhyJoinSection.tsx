@@ -17,10 +17,10 @@ export default function WhyJoinSection() {
   return (
     <section id="why-join" className="relative w-full py-12 md:py-24">
       <div className="flex w-full flex-col justify-center items-center">
-        <div className="z-10 flex w-full max-w-6xl flex-col gap-12 px-6 sm:px-10">
+        <div className="z-10 flex w-full max-w-6xl flex-col gap-12 md:px-10">
           {/* Heading */}
           <div className="flex w-full flex-col items-start text-left gap-6 md:items-center md:text-center">
-            <h2 className="font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl">
+            <h2 className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white uppercase drop-shadow-xl">
               Why{" "}
               <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
                 Participate?

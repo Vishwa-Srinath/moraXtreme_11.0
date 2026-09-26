@@ -140,7 +140,7 @@ export default function Timeline({
     <section
       ref={sectionRef}
       id="timeline"
-      className="relative w-full overflow-hidden px-4 py-24 sm:px-8 md:py-32"
+      className="relative w-full overflow-hidden py-24 md:px-8 md:py-32"
       aria-labelledby="timeline-heading"
     >
       <div
@@ -152,7 +152,7 @@ export default function Timeline({
         <header className="relative mb-16 text-left md:mb-20 md:text-center">
           <h2
             id="timeline-heading"
-            className="font-[family-name:var(--font-space)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white drop-shadow-xl"
+            className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white uppercase drop-shadow-xl"
           >
             Event{" "}
             <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
