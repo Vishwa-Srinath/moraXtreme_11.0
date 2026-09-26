@@ -5,6 +5,17 @@ import Image from "next/image"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
+const NAV_ITEMS = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "highlights", label: "Highlights" },
+  { id: "legacy", label: "Legacy" },
+  { id: "timeline", label: "Timeline" },
+  { id: "why-join", label: "Why Join ?" },
+  { id: "gallery", label: "Gallery" },
+  { id: "team", label: "Contact Us" },
+]
+
 export default function DynamicNavbar() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
@@ -77,32 +88,23 @@ export default function DynamicNavbar() {
 
         {/* Navigation Links - desktop */}
         <ul className="hidden items-center gap-6 font-mono text-sm tracking-[0.2em] uppercase md:flex lg:gap-8">
-          {[
-            "home",
-            "about",
-            "highlights",
-            "legacy",
-            "timeline",
-            "why-join",
-            "gallery",
-            "team",
-          ].map((item) => (
-            <li key={item}>
+          {NAV_ITEMS.map((item) => (
+            <li key={item.id}>
               <a
-                href={`#${item}`}
+                href={`#${item.id}`}
                 className={cn(
                   "relative font-black text-white transition-all duration-300 [-webkit-text-stroke:0.5px_#163E70]",
-                  activeSection === item
+                  activeSection === item.id
                     ? "opacity-100"
                     : "opacity-60 hover:opacity-100"
                 )}
               >
-                {item}
+                {item.label}
                 {/* Glowing Active Indicator */}
                 <span
                   className={cn(
                     "absolute -bottom-3 left-1/2 h-[2px] -translate-x-1/2 bg-[#0074FF] shadow-[0_0_10px_#0074FF] transition-all duration-300",
-                    activeSection === item
+                    activeSection === item.id
                       ? "w-full opacity-100"
                       : "w-0 opacity-0"
                   )}
@@ -159,28 +161,19 @@ export default function DynamicNavbar() {
       {mobileOpen && (
         <div className="border-t border-[#163E70]/50 bg-black/90 px-4 py-4 backdrop-blur-xl md:hidden">
           <ul className="flex flex-col gap-4 font-[family-name:var(--font-space)] text-xs font-bold tracking-widest uppercase">
-            {[
-              "home",
-              "about",
-              "highlights",
-              "legacy",
-              "timeline",
-              "why-join",
-              "gallery",
-              "team",
-            ].map((item) => (
-              <li key={item}>
+            {NAV_ITEMS.map((item) => (
+              <li key={item.id}>
                 <a
-                  href={`#${item}`}
+                  href={`#${item.id}`}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "block py-2 transition-colors duration-200",
-                    activeSection === item
+                    activeSection === item.id
                       ? "font-bold text-[#0074FF]"
                       : "text-neutral-300 hover:text-white"
                   )}
                 >
-                  {item}
+                  {item.label}
                 </a>
               </li>
             ))}

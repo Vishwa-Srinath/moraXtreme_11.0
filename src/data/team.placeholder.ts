@@ -16,6 +16,13 @@ export const TEAM_PLACEHOLDER: TeamMember[] = [
     phone: "+94 71 760 7248",
   },
   {
+    name: "Dasun Randeepa",
+    role: "Chairperson",
+    organisation: "CS Chapter IEEE Student Branch University of Moratuwa",
+    photo: "/images/people/dasun.webp",
+    quote: "Championing computer science, one initiative at a time.",
+  },
+  {
     name: "Ishakya Gamage",
     role: "Chairperson",
     organisation: "MoraXtreme 11.0",
@@ -50,23 +57,5 @@ export const TEAM_PLACEHOLDER: TeamMember[] = [
     quote: "Turning plans into real moments.",
     email: "nidulasathsara@gmail.com",
     phone: "+94 74 360 7098",
-  },
-  {
-    name: "Sadil Ephraims",
-    role: "IEEEXtreme Ambassador",
-    organisation: "MoraXtreme 11.0",
-    photo: "/images/people/ieee-ambassdor.webp",
-    quote: "Connecting the world, one challenge at a time.",
-    email: "sadil.ephraims2004@gmail.com",
-    phone: "+94 70 717 0688",
-  },
-  {
-    name: "Binura Yeshan",
-    role: "Delegates Handling Lead",
-    organisation: "MoraXtreme 11.0",
-    photo: "/images/people/binura.webp",
-    quote: "Every delegate matters, every detail counts.",
-    email: "binurayeshanrcg2021@gmail.com",
-    phone: "+94 78 382 3754",
   },
 ];
