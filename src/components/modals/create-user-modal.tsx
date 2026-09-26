@@ -23,8 +23,7 @@ import { authClient } from "@/lib/auth-client"
 const createUserSchema = z.object({
   name: z.string().trim().min(1, "Enter the user's name."),
   email: z.email("Enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
-  role: z.enum(["user", "admin"]),
+  password: z.string().min(12, "Password must be at least 12 characters."),
 })
 
 type CreateUserValues = z.infer<typeof createUserSchema>
@@ -35,14 +34,18 @@ export function CreateUserModal({
   const router = useRouter()
   const form = useForm<CreateUserValues>({
     resolver: zodResolver(createUserSchema),
-    defaultValues: { name: "", email: "", password: "", role: "user" },
+    defaultValues: { name: "", email: "", password: "" },
   })
 
+  // Only admins can use the dashboard, so every account created here is one.
   async function createUser(values: CreateUserValues) {
-    const { error } = await authClient.admin.createUser(values)
+    const { error } = await authClient.admin.createUser({
+      ...values,
+      role: "admin",
+    })
     if (error) throw new Error(error.message)
 
-    toast.success("User created")
+    toast.success("Admin created")
     closeModal()
     startTransition(() => router.refresh())
   }
@@ -50,9 +53,11 @@ export function CreateUserModal({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Create user</DialogTitle>
+        <DialogTitle>Create admin</DialogTitle>
         <DialogDescription>
-          Add a user with password credentials and an initial role.
+          Add an admin with a temporary password. Share it privately; they can
+          replace it from &quot;Change password&quot; in the sidebar after
+          logging in.
         </DialogDescription>
       </DialogHeader>
 
@@ -62,9 +67,9 @@ export function CreateUserModal({
         className="space-y-4"
         onFinish={(values) =>
           void toast.promise(createUser(values as CreateUserValues), {
-            loading: "Creating user...",
+            loading: "Creating admin...",
             error: (error) =>
-              error instanceof Error ? error.message : "Could not create user",
+              error instanceof Error ? error.message : "Could not create admin",
           })
         }
       >
@@ -81,12 +86,6 @@ export function CreateUserModal({
         <Form.Item name="password" label="Temporary password">
           <Input type="password" autoComplete="new-password" />
         </Form.Item>
-        <Form.Item name="role" label="Role">
-          <select className="h-9 w-full rounded-md border border-input bg-background px-2.5 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </Form.Item>
       </Form>
 
       <DialogFooter>
@@ -98,7 +97,7 @@ export function CreateUserModal({
           form="create-user-form"
           disabled={form.formState.isSubmitting}
         >
-          {form.formState.isSubmitting ? "Creating..." : "Create user"}
+          {form.formState.isSubmitting ? "Creating..." : "Create admin"}
         </Button>
       </DialogFooter>
     </DialogContent>

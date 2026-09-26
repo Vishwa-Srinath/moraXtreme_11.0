@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { requireAdminPage } from "@/lib/auth-guards"
 import { getRegisteredTeams } from "@/lib/registration/admin"
 
 function formatSubmittedAt(value: string | null) {
@@ -19,6 +20,7 @@ function formatSubmittedAt(value: string | null) {
 }
 
 export default async function RegisteredTeamsPage() {
+  await requireAdminPage()
   const teams = await getRegisteredTeams()
 
   return (

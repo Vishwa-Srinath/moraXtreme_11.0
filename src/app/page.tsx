@@ -18,10 +18,10 @@ export default async function Home() {
       <DynamicNavbar />
       <WorldAsiaScene>
         {/* Scrollable content sections */}
-        <div className="relative z-10 flex w-full max-w-6xl flex-col gap-32 px-6 py-24 text-white">
+        <div className="relative z-10 flex w-full max-w-6xl flex-col gap-16 px-4 py-24 text-white md:gap-32 md:px-6">
           <AboutSection />
 
-          <section id="highlights" className="relative w-full py-24 min-h-[150vh] flex flex-col justify-center">
+          <section id="highlights" className="relative w-full py-12 min-h-0 flex flex-col justify-center md:py-24 md:min-h-[150vh]">
             <HighlightsTimeline />
           </section>
 

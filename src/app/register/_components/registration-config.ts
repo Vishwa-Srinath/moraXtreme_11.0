@@ -4,7 +4,10 @@ import {
   OTHER_UNIVERSITY_ID,
   UNIVERSITY_OPTIONS,
 } from "@/lib/registration/constants"
-import type { RegistrationValues } from "@/lib/registration/schema"
+import {
+  registrationSchema,
+  type RegistrationValues,
+} from "@/lib/registration/schema"
 
 export type StepId = "team" | "leader" | "member1" | "member2" | "review"
 export type ParticipantPrefix = "leader" | "member1" | "member2"
@@ -13,14 +16,6 @@ export type RegistrationForm = UseFormReturn<
   unknown,
   RegistrationValues
 >
-
-export type SaveStatus =
-  | "saved_local"
-  | "syncing"
-  | "synced"
-  | "sync_failed"
-  | "existing_loaded"
-  | "submitted"
 
 export type RegistrationStep = {
   id: StepId
@@ -68,18 +63,21 @@ export const STEP_FIELDS: Record<
     "otherUniversityName",
     "teamSize",
   ],
-  leader: ["leader.fullName", "leader.email", "leader.whatsappNumber"],
-  member1: ["member1.fullName", "member1.email", "member1.whatsappNumber"],
-  member2: ["member2.fullName", "member2.email", "member2.whatsappNumber"],
+  leader: participantFields("leader"),
+  member1: participantFields("member1"),
+  member2: participantFields("member2"),
 }
 
-export const SAVE_STATUS_LABELS: Record<SaveStatus, string> = {
-  saved_local: "Saved locally",
-  syncing: "Syncing draft...",
-  synced: "Synced",
-  sync_failed: "Sync failed; final submit will retry",
-  existing_loaded: "Existing draft loaded",
-  submitted: "Submitted",
+function participantFields(
+  prefix: ParticipantPrefix
+): FieldPath<RegistrationValues>[] {
+  return [
+    `${prefix}.fullName`,
+    `${prefix}.email`,
+    `${prefix}.whatsappNumber`,
+    `${prefix}.gender`,
+    `${prefix}.yearOfStudy`,
+  ]
 }
 
 export function getRegistrationSteps(teamSize: number) {
@@ -88,6 +86,33 @@ export function getRegistrationSteps(teamSize: number) {
     if (step.id === "member2") return teamSize >= 3
     return true
   })
+}
+
+/**
+ * The step to reopen a restored draft on: the step the person was last on,
+ * but never past the first step whose saved data no longer validates.
+ */
+export function getResumeStepIndex(
+  values: RegistrationValues,
+  savedStepIndex: number
+) {
+  const steps = getRegistrationSteps(Number(values.teamSize) || 1)
+  let resumeIndex = Math.min(savedStepIndex, steps.length - 1)
+
+  const result = registrationSchema.safeParse(values)
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      const field = String(issue.path[0])
+      const stepId =
+        field === "leader" || field === "member1" || field === "member2"
+          ? field
+          : "team"
+      const stepIndex = steps.findIndex((step) => step.id === stepId)
+      if (stepIndex >= 0) resumeIndex = Math.min(resumeIndex, stepIndex)
+    }
+  }
+
+  return Math.max(resumeIndex, 0)
 }
 
 export function getUniversityLabel(values: RegistrationValues) {

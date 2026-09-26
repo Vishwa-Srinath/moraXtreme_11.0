@@ -20,12 +20,18 @@ const columns = [
   "leader_name",
   "leader_email",
   "leader_whatsapp",
+  "leader_gender",
+  "leader_year_of_study",
   "member_1_name",
   "member_1_email",
   "member_1_whatsapp",
+  "member_1_gender",
+  "member_1_year_of_study",
   "member_2_name",
   "member_2_email",
   "member_2_whatsapp",
+  "member_2_gender",
+  "member_2_year_of_study",
 ] as const
 
 function memberFields(member?: RegisteredTeamMember) {
@@ -33,6 +39,8 @@ function memberFields(member?: RegisteredTeamMember) {
     member?.fullName ?? "",
     member?.email ?? "",
     member?.whatsappNumber ?? "",
+    member?.gender ?? "",
+    member?.yearOfStudy ?? "",
   ]
 }
 

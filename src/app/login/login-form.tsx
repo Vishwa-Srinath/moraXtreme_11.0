@@ -44,7 +44,7 @@ export function LoginForm() {
   async function signInWithPassword(values: LoginValues) {
     setErrorMessage(null)
 
-    const { error } = await authClient.signIn.email({
+    const { data, error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
       rememberMe: values.rememberMe,
@@ -52,6 +52,13 @@ export function LoginForm() {
 
     if (error) {
       setErrorMessage(error.message || "Unable to sign in. Please try again.")
+      return
+    }
+
+    const roles = (data.user as { role?: string | null }).role?.split(",") ?? []
+    if (!roles.includes("admin")) {
+      await authClient.signOut()
+      setErrorMessage("This account does not have administrator access.")
       return
     }
 

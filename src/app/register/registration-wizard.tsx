@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ExternalLink, MessageCircle } from "lucide-react"
 import { useEffect, useRef, useState, useTransition } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type FieldErrors, type FieldPath } from "react-hook-form"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -18,28 +18,65 @@ import {
 
 import {
   getRegistrationSteps,
+  getResumeStepIndex,
   STEP_FIELDS,
-  type SaveStatus,
   type StepId,
 } from "./_components/registration-config"
 import { RegistrationStepContent } from "./_components/registration-steps"
 import { ProgressLine, WizardFooter } from "./_components/registration-ui"
 
+const STEP_STORAGE_KEY = `${REGISTRATION_STORAGE_KEY}:step`
+
+type ServerFieldError = { path: string; message: string }
+
+/** A failed request, with per-field details when the server provides them. */
+class RequestError extends Error {
+  constructor(
+    message: string,
+    readonly fieldErrors: ServerFieldError[] = []
+  ) {
+    super(message)
+  }
+}
+
 async function readResponse<T>(response: Response): Promise<T> {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data.error || "Request failed")
+    throw new RequestError(data.error || "Request failed", data.fieldErrors)
   }
 
   return data
 }
 
-export function RegistrationWizard({
-  whatsappGroupUrl,
-}: {
-  whatsappGroupUrl: string
-}) {
+/**
+ * Early team-name check for Step 1. Returns the "taken" message, or null when
+ * the name is free or the check couldn't run (submit re-checks anyway).
+ */
+async function getTeamNameTakenMessage(teamName: string) {
+  try {
+    const response = await fetch(
+      `/api/register/team-name?name=${encodeURIComponent(teamName)}`
+    )
+    if (!response.ok) return null
+    const data = (await response.json()) as {
+      available: boolean
+      message: string | null
+    }
+    return data.available ? null : data.message
+  } catch {
+    return null
+  }
+}
+
+function stepIdForField(field: string): StepId {
+  const group = field.split(".")[0]
+  return group === "leader" || group === "member1" || group === "member2"
+    ? group
+    : "team"
+}
+
+export function RegistrationWizard() {
   const form = useForm<RegistrationValues, unknown, RegistrationValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: defaultRegistrationValues,
@@ -48,13 +85,10 @@ export function RegistrationWizard({
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [highestStepIndex, setHighestStepIndex] = useState(0)
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>("saved_local")
   const [stepError, setStepError] = useState<string | null>(null)
   const [submittedRegistration, setSubmittedRegistration] =
     useState<SubmittedRegistration | null>(null)
   const [isPending, startTransition] = useTransition()
-  const serverSyncEnabled = useRef(false)
-  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hasHydrated = useRef(false)
   const resetForm = form.reset
   const subscribeToForm = form.watch
@@ -71,37 +105,51 @@ export function RegistrationWizard({
 
     if (stored) {
       try {
-        resetForm({ ...defaultRegistrationValues, ...JSON.parse(stored) })
+        const saved = JSON.parse(stored)
+        // Merge participants field by field so drafts saved before a field
+        // existed (e.g. gender) still get its default instead of undefined.
+        const draft = {
+          ...defaultRegistrationValues,
+          ...saved,
+          leader: { ...defaultRegistrationValues.leader, ...saved.leader },
+          member1: { ...defaultRegistrationValues.member1, ...saved.member1 },
+          member2: { ...defaultRegistrationValues.member2, ...saved.member2 },
+        }
+        resetForm(draft)
+
+        const savedStepIndex = Number(
+          window.localStorage.getItem(STEP_STORAGE_KEY)
+        )
+        if (savedStepIndex > 0) {
+          const resumeIndex = getResumeStepIndex(draft, savedStepIndex)
+          setCurrentStepIndex(resumeIndex)
+          setHighestStepIndex(resumeIndex)
+        }
       } catch {
         window.localStorage.removeItem(REGISTRATION_STORAGE_KEY)
+        window.localStorage.removeItem(STEP_STORAGE_KEY)
       }
     }
   }, [resetForm])
+
+  // Must stay after the hydration effect so the saved step is read first.
+  useEffect(() => {
+    if (!hasHydrated.current || submittedRegistration) return
+    window.localStorage.setItem(STEP_STORAGE_KEY, String(currentStepIndex))
+  }, [currentStepIndex, submittedRegistration])
 
   useEffect(() => {
     const subscription = subscribeToForm((draft) => {
       if (!hasHydrated.current) return
 
+      // Drafts stay in this browser only; the server stores a team on submit.
       window.localStorage.setItem(
         REGISTRATION_STORAGE_KEY,
         JSON.stringify(draft)
       )
-
-      if (!serverSyncEnabled.current) {
-        setSaveStatus("saved_local")
-        return
-      }
-
-      if (syncTimer.current) clearTimeout(syncTimer.current)
-      syncTimer.current = setTimeout(() => {
-        syncDraft(draft as RegistrationValues)
-      }, 900)
     })
 
-    return () => {
-      subscription.unsubscribe()
-      if (syncTimer.current) clearTimeout(syncTimer.current)
-    }
+    return () => subscription.unsubscribe()
   }, [subscribeToForm])
 
   useEffect(() => {
@@ -109,42 +157,6 @@ export function RegistrationWizard({
       setCurrentStepIndex(steps.length - 1)
     }
   }, [currentStepIndex, steps.length])
-
-  async function syncDraft(draft: RegistrationValues) {
-    setSaveStatus("syncing")
-
-    try {
-      await readResponse<{ draft: { teamId: string } }>(
-        await fetch("/api/register/draft", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(draft),
-        })
-      )
-      setSaveStatus("synced")
-    } catch {
-      setSaveStatus("sync_failed")
-    }
-  }
-
-  async function loadExistingDraft(leaderEmail: string) {
-    const response = await fetch(
-      `/api/register/draft?leaderEmail=${encodeURIComponent(leaderEmail)}`
-    )
-    const data = await readResponse<{ draft: RegistrationValues | null }>(
-      response
-    )
-
-    if (!data.draft) return false
-
-    form.reset(data.draft)
-    window.localStorage.setItem(
-      REGISTRATION_STORAGE_KEY,
-      JSON.stringify(data.draft)
-    )
-    setSaveStatus("existing_loaded")
-    return true
-  }
 
   async function validateCurrentStep() {
     if (currentStep.id === "review") return true
@@ -157,14 +169,17 @@ export function RegistrationWizard({
     const valid = await validateCurrentStep()
     if (!valid) return
 
-    if (currentStep.id === "leader") {
-      try {
-        const loaded = await loadExistingDraft(form.getValues("leader.email"))
-        serverSyncEnabled.current = true
-        if (!loaded) await syncDraft(form.getValues())
-      } catch {
-        serverSyncEnabled.current = true
-        setSaveStatus("sync_failed")
+    if (currentStep.id === "team") {
+      const takenMessage = await getTeamNameTakenMessage(
+        form.getValues("teamName")
+      )
+      if (takenMessage) {
+        form.setError(
+          "teamName",
+          { type: "server", message: takenMessage },
+          { shouldFocus: true }
+        )
+        return
       }
     }
 
@@ -190,16 +205,27 @@ export function RegistrationWizard({
     if (stepIndex >= 0) setCurrentStepIndex(stepIndex)
   }
 
+  /** Opens the first step containing any of these fields and shows `message`. */
+  function openFirstStepWithErrors(fields: string[], message: string) {
+    const invalidStepIds = fields.map(stepIdForField)
+    const index = steps.findIndex((step) => invalidStepIds.includes(step.id))
+    if (index >= 0) setCurrentStepIndex(index)
+    setStepError(message)
+  }
+
+  // Client-side validation failed on submit: the errors belong to fields on
+  // other steps, so open the first of those steps instead of doing nothing.
+  function showFirstInvalidStep(errors: FieldErrors<RegistrationValues>) {
+    openFirstStepWithErrors(
+      Object.keys(errors),
+      "Some details need to be fixed before you can submit. Check the highlighted fields."
+    )
+  }
+
   function submit() {
     setStepError(null)
     startTransition(async () => {
       const handleSubmit = form.handleSubmit(async (data) => {
-        if (!whatsappGroupUrl) {
-          throw new Error(
-            "Registration is temporarily unavailable. The WhatsApp group has not been configured."
-          )
-        }
-
         const response = await fetch("/api/register/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -209,14 +235,30 @@ export function RegistrationWizard({
           registration: SubmittedRegistration
         }>(response)
 
-        setSaveStatus("submitted")
         setSubmittedRegistration(registration)
         window.localStorage.removeItem(REGISTRATION_STORAGE_KEY)
-      })
+        window.localStorage.removeItem(STEP_STORAGE_KEY)
+      }, showFirstInvalidStep)
 
       try {
         await handleSubmit()
       } catch (error) {
+        // Server-side conflicts (team name, email, WhatsApp number already
+        // registered) name the exact fields: highlight them and open that step.
+        if (error instanceof RequestError && error.fieldErrors.length > 0) {
+          for (const fieldError of error.fieldErrors) {
+            form.setError(fieldError.path as FieldPath<RegistrationValues>, {
+              type: "server",
+              message: fieldError.message,
+            })
+          }
+          openFirstStepWithErrors(
+            error.fieldErrors.map((fieldError) => fieldError.path),
+            error.message
+          )
+          return
+        }
+
         setStepError(
           error instanceof Error ? error.message : "Submission failed"
         )
@@ -226,7 +268,9 @@ export function RegistrationWizard({
 
   return (
     <div className="flex min-h-dvh w-full flex-col lg:flex-row">
-      <aside className="relative flex w-full shrink-0 flex-col justify-center overflow-hidden border-r border-[#163E70]/30 bg-[#000000] p-8 text-white lg:w-[40%] lg:p-16 xl:w-[45%]">
+      {/* Desktop: one viewport tall and sticky, so the intro stays centred on
+          screen instead of drifting down as long steps stretch the row. */}
+      <aside className="relative flex w-full shrink-0 flex-col justify-center overflow-hidden border-r border-[#163E70]/30 bg-[#000000] p-8 text-white lg:sticky lg:top-0 lg:h-dvh lg:w-[40%] lg:self-start lg:p-16 xl:w-[45%]">
         <div className="absolute top-6 left-6 z-40">
           <Link
             href="/"
@@ -292,7 +336,7 @@ export function RegistrationWizard({
                 </div>
 
                 <a
-                  href={whatsappGroupUrl}
+                  href={submittedRegistration.whatsappGroupUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#0074FF] px-6 text-sm font-bold text-white shadow-[0_0_24px_rgba(0,116,255,0.28)] transition-colors hover:bg-[#1680ff] focus-visible:ring-2 focus-visible:ring-[#0074FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030710] focus-visible:outline-none sm:w-auto"
@@ -370,10 +414,11 @@ export function RegistrationWizard({
                     <WizardFooter
                       currentStepId={currentStep.id}
                       currentStepIndex={currentStepIndex}
-                      saveStatus={saveStatus}
                       isPending={isPending}
                       onBack={goBack}
-                      onNext={goNext}
+                      // In a transition so Next stays disabled (isPending)
+                      // while the Step 1 team-name check is in flight.
+                      onNext={() => startTransition(goNext)}
                       onSubmit={submit}
                     />
                   </div>

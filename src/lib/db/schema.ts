@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm"
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -11,6 +12,9 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core"
 
+// Relative import: drizzle-kit loads this file without the "@/" path alias.
+import { GENDER_VALUES, YEAR_OF_STUDY_VALUES } from "../registration/constants"
+
 export const teamStatus = pgEnum("team_status", [
   "draft",
   "submitted",
@@ -18,6 +22,10 @@ export const teamStatus = pgEnum("team_status", [
 ])
 
 export const teamMemberRole = pgEnum("team_member_role", ["leader", "member"])
+
+export const participantGender = pgEnum("participant_gender", GENDER_VALUES)
+
+export const yearOfStudy = pgEnum("year_of_study", YEAR_OF_STUDY_VALUES)
 
 export const universityType = pgEnum("university_type", [
   "public",
@@ -201,6 +209,10 @@ export const teamMembers = pgTable(
     fullName: text("full_name").notNull(),
     email: text("email").notNull(),
     whatsappNumber: text("whatsapp_number").notNull(),
+    // Nullable only for teams registered before these fields existed; the
+    // registration schema requires both for every new participant.
+    gender: participantGender("gender"),
+    yearOfStudy: yearOfStudy("year_of_study"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -239,6 +251,26 @@ export const appSettings = pgTable(
   },
   (table) => [index("app_settings_value_type_idx").on(table.valueType)]
 )
+
+// Login rate-limit counters, managed by Better Auth
+// (rateLimit.storage = "database" in src/lib/auth.ts).
+export const authRateLimit = pgTable("auth_rate_limits", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  count: integer("count").notNull(),
+  lastRequest: bigint("last_request", { mode: "number" }).notNull(),
+}).enableRLS()
+
+// Registration API rate-limit counters, managed by src/lib/rate-limit.ts.
+export const apiRateLimits = pgTable(
+  "api_rate_limits",
+  {
+    key: text("key").primaryKey(),
+    count: integer("count").notNull(),
+    windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+  },
+  (table) => [index("api_rate_limits_window_start_idx").on(table.windowStart)]
+).enableRLS()
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),

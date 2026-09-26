@@ -17,13 +17,16 @@ export default function WhyJoinSection() {
   return (
     <section id="why-join" className="relative w-full py-12 md:py-24">
       <div className="flex w-full flex-col justify-center items-center">
-        <div className="z-10 flex w-full max-w-6xl flex-col gap-12 px-6 sm:px-10">
+        <div className="z-10 flex w-full max-w-6xl flex-col gap-12 md:px-10">
           {/* Heading */}
-          <div className="flex flex-col items-center text-center gap-6">
-            <h2 className="font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-md md:text-5xl">
-              Why <span className="text-[#0074FF]">Participate?</span>
+          <div className="flex w-full flex-col items-start text-left gap-6 md:items-center md:text-center">
+            <h2 className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white uppercase drop-shadow-xl">
+              Why{" "}
+              <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
+                Participate?
+              </span>
             </h2>
-            <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
+            <div className="h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
           </div>
 
           {/* Cards */}

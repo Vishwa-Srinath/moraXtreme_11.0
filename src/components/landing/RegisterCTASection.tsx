@@ -8,21 +8,23 @@ export default function RegisterCTASection() {
         {/* Top glowing edge */}
         <div className="absolute top-0 left-1/2 h-[2px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent opacity-50 shadow-[0_0_20px_#0074FF]"></div>
 
-        <div className="relative z-10 flex flex-col items-center px-8 py-16 text-center md:py-24">
+        <div className="relative z-10 flex flex-col items-center py-16 text-center md:px-8 md:py-24">
           {/* Status Badge */}
-          <div className="mb-10 inline-flex items-center gap-3 rounded-full border border-[#0074FF]/40 bg-[#0074FF]/10 px-5 py-2.5 shadow-[0_0_15px_rgba(0,116,255,0.2)] backdrop-blur-md">
-            <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></div>
-            <span className="font-mono text-[11px] font-bold tracking-[0.3em] text-white uppercase">
-              Registration Gateway Open
+          <div className="mb-10 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-4 py-2">
+            <div className="h-2 w-2 rounded-full bg-emerald-400"></div>
+            <span className="font-mono text-[11px] font-semibold tracking-[0.25em] text-neutral-200 uppercase">
+              Registrations Are Open
             </span>
           </div>
 
-          <h2 className="mb-12 font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] md:text-6xl">
-            The Gateway to <br className="md:hidden" />
-            <span className="bg-gradient-to-r from-[#0074FF] to-white bg-clip-text text-transparent">
-              MoraXtreme 11.0
-            </span>
-          </h2>
+          <div className="mb-12 w-full text-center">
+            <h2 className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-bold leading-[0.88] tracking-[-0.03em] text-white uppercase drop-shadow-xl">
+              The Gateway to <br className="md:hidden" />
+              <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
+                MoraXtreme 11.0
+              </span>
+            </h2>
+          </div>
 
           {/* CTA Button */}
           <a

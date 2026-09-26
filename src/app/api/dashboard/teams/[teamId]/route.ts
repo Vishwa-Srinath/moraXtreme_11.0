@@ -1,15 +1,12 @@
-import { auth } from "@/lib/auth"
+import { getAdminSessionOrError } from "@/lib/auth-guards"
 import { deleteRegisteredTeam } from "@/lib/registration/admin"
 
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ teamId: string }> }
 ) {
-  const session = await auth.api.getSession({ headers: request.headers })
-
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
-  }
+  const { error } = await getAdminSessionOrError(request)
+  if (error) return error
 
   const { teamId } = await params
   const deleted = await deleteRegisteredTeam(teamId)

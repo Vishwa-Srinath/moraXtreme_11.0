@@ -3,6 +3,11 @@ import { connection } from "next/server"
 
 import { db } from "@/lib/db"
 import { teamMembers, teams, universities } from "@/lib/db/schema"
+import {
+  GENDER_OPTIONS,
+  getOptionLabel,
+  YEAR_OF_STUDY_OPTIONS,
+} from "@/lib/registration/constants"
 
 export type RegisteredTeamMember = {
   id: string
@@ -11,6 +16,9 @@ export type RegisteredTeamMember = {
   fullName: string
   email: string
   whatsappNumber: string
+  /** Display labels; "Not provided" for teams registered before these fields. */
+  gender: string
+  yearOfStudy: string
 }
 
 export type RegisteredTeam = {
@@ -43,6 +51,8 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
       fullName: teamMembers.fullName,
       email: teamMembers.email,
       whatsappNumber: teamMembers.whatsappNumber,
+      gender: teamMembers.gender,
+      yearOfStudy: teamMembers.yearOfStudy,
     })
     .from(teams)
     .leftJoin(universities, eq(teams.universityId, universities.id))
@@ -72,6 +82,13 @@ export async function getRegisteredTeams(): Promise<RegisteredTeam[]> {
       fullName: row.fullName,
       email: row.email,
       whatsappNumber: row.whatsappNumber,
+      gender:
+        (row.gender && getOptionLabel(GENDER_OPTIONS, row.gender)) ||
+        "Not provided",
+      yearOfStudy:
+        (row.yearOfStudy &&
+          getOptionLabel(YEAR_OF_STUDY_OPTIONS, row.yearOfStudy)) ||
+        "Not provided",
     })
     registeredTeams.set(row.id, team)
   }

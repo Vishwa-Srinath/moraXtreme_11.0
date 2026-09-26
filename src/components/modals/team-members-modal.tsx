@@ -38,6 +38,8 @@ export function TeamMembersModal({
               <TableHead>Role</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>WhatsApp</TableHead>
+              <TableHead>Gender</TableHead>
+              <TableHead>Year of study</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -47,6 +49,8 @@ export function TeamMembersModal({
                 <TableCell className="capitalize">{member.role}</TableCell>
                 <TableCell>{member.email}</TableCell>
                 <TableCell>{member.whatsappNumber}</TableCell>
+                <TableCell>{member.gender}</TableCell>
+                <TableCell>{member.yearOfStudy}</TableCell>
               </TableRow>
             ))}
           </TableBody>

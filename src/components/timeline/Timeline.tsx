@@ -140,7 +140,7 @@ export default function Timeline({
     <section
       ref={sectionRef}
       id="timeline"
-      className="relative w-full overflow-hidden px-4 py-24 sm:px-8 md:py-32"
+      className="relative w-full overflow-hidden py-24 md:px-8 md:py-32"
       aria-labelledby="timeline-heading"
     >
       <div
@@ -149,17 +149,17 @@ export default function Timeline({
       />
 
       <div className="relative mx-auto max-w-5xl">
-        <header className="relative mb-16 text-center md:mb-20">
+        <header className="relative mb-16 text-left md:mb-20 md:text-center">
           <h2
             id="timeline-heading"
-            className="font-[family-name:var(--font-space)] text-4xl font-bold text-white drop-shadow-xl md:text-5xl"
+            className="font-[family-name:var(--font-sans)] text-[clamp(2.8rem,4vw,3.8rem)] font-black leading-[0.88] tracking-[-0.03em] text-white uppercase drop-shadow-xl"
           >
             Event{" "}
             <span className="bg-gradient-to-r from-[#0074FF] to-[#005BD6] bg-clip-text text-transparent">
               Timeline
             </span>
           </h2>
-          <span className="mx-auto mt-6 block h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent" />
+          <span className="mt-6 block h-1 w-20 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent md:mx-auto" />
         </header>
 
         <div className="space-y-8 md:space-y-10">
@@ -169,7 +169,7 @@ export default function Timeline({
             return (
               <article
                 key={`${milestone.title}-${index}`}
-                className="timeline-entry grid grid-cols-[2.75rem_minmax(0,1fr)] items-start md:grid-cols-[11rem_4.5rem_minmax(0,1fr)]"
+                className="timeline-entry grid grid-cols-[2.75rem_minmax(0,1fr)] items-start gap-x-4 md:grid-cols-[11rem_4.5rem_minmax(0,1fr)] md:gap-x-0"
               >
                 <p className="col-start-2 mb-3 font-mono text-base font-bold tracking-[0.12em] text-white uppercase md:col-start-1 md:row-start-1 md:mb-0 md:pt-4 md:pr-5 md:text-right md:text-lg">
                   {milestone.date}

@@ -6,12 +6,7 @@ import { Button } from "@/components/ui/button"
 import type { RegistrationAvailability } from "@/lib/registration/settings"
 import { cn } from "@/lib/utils"
 
-import {
-  SAVE_STATUS_LABELS,
-  type RegistrationStep,
-  type SaveStatus,
-  type StepId,
-} from "./registration-config"
+import { type RegistrationStep, type StepId } from "./registration-config"
 
 export function EventFacts({
   availability,
@@ -97,7 +92,6 @@ export function ProgressLine({
 export function WizardFooter({
   currentStepId,
   currentStepIndex,
-  saveStatus,
   isPending,
   onBack,
   onNext,
@@ -105,14 +99,13 @@ export function WizardFooter({
 }: {
   currentStepId: StepId
   currentStepIndex: number
-  saveStatus: SaveStatus
   isPending: boolean
   onBack: () => void
   onNext: () => void
   onSubmit: () => void
 }) {
   return (
-    <div className="sticky bottom-0 flex items-center justify-end gap-3 border-t bg-card/95 p-4 backdrop-blur sm:static sm:p-[clamp(1rem,3vw,2rem)]">
+    <div className="sticky bottom-0 flex items-center justify-end gap-3 sm:static">
       <div className="flex gap-2">
         <Button
           type="button"

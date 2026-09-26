@@ -30,7 +30,11 @@ function isTypingTarget(target: EventTarget | null) {
     target.isContentEditable ||
     target.tagName === "INPUT" ||
     target.tagName === "TEXTAREA" ||
-    target.tagName === "SELECT"
+    target.tagName === "SELECT" ||
+    // Custom dropdowns use letter keys to jump to an option (e.g. "D" for
+    // Germany), which must not also toggle the theme.
+    target.closest('[role="combobox"], [role="listbox"], [role="option"]') !==
+      null
   )
 }
 
@@ -47,7 +51,8 @@ function ThemeHotkey() {
         return
       }
 
-      if (event.key.toLowerCase() !== "d") {
+      // Chrome autofill dispatches keydown events without a `key`.
+      if (event.key?.toLowerCase() !== "d") {
         return
       }
 

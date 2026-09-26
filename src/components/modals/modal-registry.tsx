@@ -1,10 +1,12 @@
 import { BanUserModal } from "./ban-user-modal"
+import { ChangePasswordModal } from "./change-password-modal"
 import { ConfirmModal } from "./confirm-modal"
 import { CreateUserModal } from "./create-user-modal"
 import { TeamMembersModal } from "./team-members-modal"
 
 export const modalRegistry = {
   banUser: BanUserModal,
+  changePassword: ChangePasswordModal,
   confirm: ConfirmModal,
   createUser: CreateUserModal,
   teamMembers: TeamMembersModal,
