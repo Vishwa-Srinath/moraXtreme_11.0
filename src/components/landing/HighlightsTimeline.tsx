@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
+import { Award, GraduationCap, Trophy, Users } from 'lucide-react'
 
 const HIGHLIGHTS = [
   {
@@ -8,44 +9,28 @@ const HIGHLIGHTS = [
     title: "Award-Winning Organizers",
     description: "Driven by the IEEE Student Branch of the University of Moratuwa, officially recognized as the Most Outstanding Student Branch in IEEE Region 10 – Asia-Pacific (2025).",
     image: "/highlights/organizers.png",
-    icon: (
-      <svg className="h-7 w-7 text-[#0074FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      </svg>
-    )
+    icon: <Award className="h-7 w-7 text-[#0074FF]" strokeWidth={1.5} />
   },
   {
     id: 2,
     title: "Massive Scale",
     description: "Operating on a monumental scale, with previous iterations engaging over 450 teams and 1,500+ elite competitors.",
     image: "/highlights/scale.png",
-    icon: (
-      <svg className="h-7 w-7 text-[#0074FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    )
+    icon: <Users className="h-7 w-7 text-[#0074FF]" strokeWidth={1.5} />
   },
   {
     id: 3,
     title: "Comprehensive Training",
     description: "Equipping competitors through dedicated awareness sessions and rigorous skill-building workshops prior to the arena.",
     image: "/highlights/training.png",
-    icon: (
-      <svg className="h-7 w-7 text-[#0074FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-    )
+    icon: <GraduationCap className="h-7 w-7 text-[#0074FF]" strokeWidth={1.5} />
   },
   {
     id: 4,
     title: "Proven Legacy",
     description: "Maintaining a dominant track record of elevating regional talent directly into the IEEEXtreme Global Top 500.",
     image: "/highlights/legacy.png",
-    icon: (
-      <svg className="h-7 w-7 text-[#0074FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    )
+    icon: <Trophy className="h-7 w-7 text-[#0074FF]" strokeWidth={1.5} />
   }
 ]
 
