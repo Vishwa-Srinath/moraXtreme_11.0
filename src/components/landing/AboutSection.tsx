@@ -37,7 +37,7 @@ export default function AboutSection() {
 
         {/* Right Column: Who Can Participate */}
         <div className="z-10 flex flex-col gap-12 lg:mt-12">
-          <div className="rounded-l-2xl border-r-4 border-[#0074FF] bg-gradient-to-l from-[#163E70]/20 to-transparent p-8 text-left shadow-[inset_0_0_20px_rgba(22,62,112,0.1)]">
+          <div className="rounded-l-2xl border-r-4 border-[#0074FF] bg-gradient-to-l from-[#163E70]/20 to-transparent p-8 text-right shadow-[inset_0_0_20px_rgba(22,62,112,0.1)] md:text-left">
             <h3 className="mb-4 font-[family-name:var(--font-space)] text-2xl font-bold text-white">
               Who Can Participate?
             </h3>
