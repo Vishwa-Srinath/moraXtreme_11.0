@@ -21,22 +21,31 @@ import {
 type PhoneInputProps = Omit<ComponentProps<"input">, "onChange" | "value"> & {
   value?: string
   onChange?: (value: string) => void
+  /** Country code shown while the field is empty and none has been picked. */
+  defaultCountry?: CountryCode
 }
 
 export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   function PhoneInput(
-    { className, disabled, id, name, onBlur, onChange, value = "", ...props },
+    {
+      className,
+      defaultCountry = DEFAULT_COUNTRY.code,
+      disabled,
+      id,
+      name,
+      onBlur,
+      onChange,
+      placeholder,
+      value = "",
+      ...props
+    },
     ref
   ) {
-    const [selectedCode, setSelectedCode] =
-      useState<CountryCode>(DEFAULT_COUNTRY.code)
+    const [selectedCode, setSelectedCode] = useState<CountryCode | null>(null)
     const selectedCountry = value
       ? getCountryFromPhone(value)
-      : getCountryByCode(selectedCode)
-    const nationalNumber = getNationalNumber(
-      value,
-      selectedCountry.dialCode
-    )
+      : getCountryByCode(selectedCode ?? defaultCountry)
+    const nationalNumber = getNationalNumber(value, selectedCountry.dialCode)
 
     function handleCountryChange(event: ChangeEvent<HTMLSelectElement>) {
       const country = getCountryByCode(event.target.value as CountryCode)
@@ -83,6 +92,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           inputMode="tel"
           autoComplete="tel-national"
           disabled={disabled}
+          placeholder={placeholder ?? selectedCountry.example}
           value={formatNationalNumber(nationalNumber, selectedCountry.groups)}
           className="h-full min-w-0 flex-1 rounded-l-none border-0 shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent"
           onBlur={onBlur}

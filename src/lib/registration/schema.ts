@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { getPhoneNumberError } from "@/components/form-inputs/phone-input-config"
+
 import {
   COUNTRY_OPTIONS,
   KNOWN_UNIVERSITIES,
@@ -40,11 +42,10 @@ const whatsappSchema = z
   .trim()
   .min(1, "WhatsApp number is required")
   .transform(normalizeWhatsappNumber)
-  .pipe(
-    z
-      .string()
-      .regex(/^\+[1-9]\d{7,14}$/, "Use international format, e.g. +94771234567")
-  )
+  .superRefine((value, ctx) => {
+    const message = getPhoneNumberError(value)
+    if (message) ctx.addIssue({ code: "custom", message })
+  })
 
 export const participantSchema = z.object({
   fullName: z

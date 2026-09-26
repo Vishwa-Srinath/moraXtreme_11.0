@@ -18,11 +18,14 @@ import {
 
 import {
   getRegistrationSteps,
+  getResumeStepIndex,
   STEP_FIELDS,
   type StepId,
 } from "./_components/registration-config"
 import { RegistrationStepContent } from "./_components/registration-steps"
 import { ProgressLine, WizardFooter } from "./_components/registration-ui"
+
+const STEP_STORAGE_KEY = `${REGISTRATION_STORAGE_KEY}:step`
 
 async function readResponse<T>(response: Response): Promise<T> {
   const data = await response.json()
@@ -63,12 +66,29 @@ export function RegistrationWizard() {
 
     if (stored) {
       try {
-        resetForm({ ...defaultRegistrationValues, ...JSON.parse(stored) })
+        const draft = { ...defaultRegistrationValues, ...JSON.parse(stored) }
+        resetForm(draft)
+
+        const savedStepIndex = Number(
+          window.localStorage.getItem(STEP_STORAGE_KEY)
+        )
+        if (savedStepIndex > 0) {
+          const resumeIndex = getResumeStepIndex(draft, savedStepIndex)
+          setCurrentStepIndex(resumeIndex)
+          setHighestStepIndex(resumeIndex)
+        }
       } catch {
         window.localStorage.removeItem(REGISTRATION_STORAGE_KEY)
+        window.localStorage.removeItem(STEP_STORAGE_KEY)
       }
     }
   }, [resetForm])
+
+  // Must stay after the hydration effect so the saved step is read first.
+  useEffect(() => {
+    if (!hasHydrated.current || submittedRegistration) return
+    window.localStorage.setItem(STEP_STORAGE_KEY, String(currentStepIndex))
+  }, [currentStepIndex, submittedRegistration])
 
   useEffect(() => {
     const subscription = subscribeToForm((draft) => {
@@ -138,6 +158,7 @@ export function RegistrationWizard() {
 
         setSubmittedRegistration(registration)
         window.localStorage.removeItem(REGISTRATION_STORAGE_KEY)
+        window.localStorage.removeItem(STEP_STORAGE_KEY)
       })
 
       try {

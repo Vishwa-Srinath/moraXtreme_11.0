@@ -8,6 +8,7 @@ export const COUNTRY_OPTIONS = [
   "Nepal",
   "Bhutan",
   "Maldives",
+  "Afghanistan",
 ] as const
 
 export const KNOWN_UNIVERSITIES = [

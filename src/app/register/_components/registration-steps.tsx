@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Controller } from "react-hook-form"
+import { Controller, useWatch } from "react-hook-form"
 
 import { PhoneInput } from "@/components/form-inputs/PhoneInput"
+import type { CountryCode } from "@/components/form-inputs/phone-input-config"
 import Form from "@/components/form/Form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -122,7 +123,11 @@ function TeamDetailsStep({ form }: { form: RegistrationForm }) {
             <UniversityCombobox
               value={controller.field.value}
               disabled={!isSriLanka}
-              onChange={controller.field.onChange}
+              onChange={(universityId) => {
+                controller.field.onChange(universityId)
+                // Clear a "Select a university" error left by an earlier Next.
+                void form.trigger("universityId")
+              }}
             />
           </Form.CustomController>
         )}
@@ -169,6 +174,17 @@ function TeamDetailsStep({ form }: { form: RegistrationForm }) {
   )
 }
 
+const COUNTRY_DIAL_CODES: Record<RegistrationValues["country"], CountryCode> = {
+  "Sri Lanka": "LK",
+  India: "IN",
+  Bangladesh: "BD",
+  Pakistan: "PK",
+  Nepal: "NP",
+  Bhutan: "BT",
+  Maldives: "MV",
+  Afghanistan: "AF",
+}
+
 function ParticipantStep({
   prefix,
   roleLabel,
@@ -176,11 +192,13 @@ function ParticipantStep({
   prefix: ParticipantPrefix
   roleLabel: string
 }) {
+  const country = useWatch<RegistrationValues, "country">({ name: "country" })
+
   return (
     <div className="space-y-5">
       <div className="rounded-lg border bg-muted/35 p-4 text-sm text-muted-foreground">
         Enter the participant details exactly as they should appear on the
-        certificate. Select the country before entering the WhatsApp number.
+        certificate. Check the WhatsApp country code before entering the number.
       </div>
       <div className="grid gap-4 @2xl:grid-cols-2">
         <Form.Item
@@ -196,9 +214,9 @@ function ParticipantStep({
         <Form.Item
           name={`${prefix}.whatsappNumber`}
           label="WhatsApp Number"
-          helperText="Enter the number without the country code."
+          helperText="Choose the country code, then enter the rest of the number."
         >
-          <PhoneInput placeholder="77 123 4567" />
+          <PhoneInput defaultCountry={COUNTRY_DIAL_CODES[country]} />
         </Form.Item>
       </div>
     </div>

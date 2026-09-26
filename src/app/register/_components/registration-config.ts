@@ -4,7 +4,10 @@ import {
   OTHER_UNIVERSITY_ID,
   UNIVERSITY_OPTIONS,
 } from "@/lib/registration/constants"
-import type { RegistrationValues } from "@/lib/registration/schema"
+import {
+  registrationSchema,
+  type RegistrationValues,
+} from "@/lib/registration/schema"
 
 export type StepId = "team" | "leader" | "member1" | "member2" | "review"
 export type ParticipantPrefix = "leader" | "member1" | "member2"
@@ -71,6 +74,33 @@ export function getRegistrationSteps(teamSize: number) {
     if (step.id === "member2") return teamSize >= 3
     return true
   })
+}
+
+/**
+ * The step to reopen a restored draft on: the step the person was last on,
+ * but never past the first step whose saved data no longer validates.
+ */
+export function getResumeStepIndex(
+  values: RegistrationValues,
+  savedStepIndex: number
+) {
+  const steps = getRegistrationSteps(Number(values.teamSize) || 1)
+  let resumeIndex = Math.min(savedStepIndex, steps.length - 1)
+
+  const result = registrationSchema.safeParse(values)
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      const field = String(issue.path[0])
+      const stepId =
+        field === "leader" || field === "member1" || field === "member2"
+          ? field
+          : "team"
+      const stepIndex = steps.findIndex((step) => step.id === stepId)
+      if (stepIndex >= 0) resumeIndex = Math.min(resumeIndex, stepIndex)
+    }
+  }
+
+  return Math.max(resumeIndex, 0)
 }
 
 export function getUniversityLabel(values: RegistrationValues) {
