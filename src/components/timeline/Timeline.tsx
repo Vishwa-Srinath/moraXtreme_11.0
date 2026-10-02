@@ -19,6 +19,13 @@ export interface Milestone {
   date: string
   desc?: string
   image?: string
+  badge?: string
+  speakers?: {
+    name: string
+    avatar: string
+    role: string
+    company: string
+  }[]
 }
 
 export interface FilmReelTimelineProps {
@@ -37,10 +44,25 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "02",
     title: "Awareness Session",
-    date: "Last week of September",
+    date: "3rd October",
     desc: "Kickoff briefing on rules, format and scoring.",
     image:
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&q=80",
+    badge: "Oct 3 • 7:00 PM • Zoom",
+    speakers: [
+      { 
+        name: "Mr. Sandil Ranasinghe", 
+        avatar: "/speakers/sandil.png",
+        role: "Senior Software Engineer",
+        company: "HeyMilo AI"
+      },
+      { 
+        name: "Mr. Shaveen Silva", 
+        avatar: "/speakers/shaveen.png",
+        role: "CSE Undergraduate",
+        company: "University of Moratuwa"
+      },
+    ],
   },
   {
     reel: "03",
@@ -204,6 +226,62 @@ export default function Timeline({
                     <p className="mt-2 text-sm leading-6 text-neutral-400 md:text-base">
                       {milestone.desc}
                     </p>
+                  )}
+
+                  {(milestone.badge || milestone.speakers) && (
+                    <div className="mt-8 flex flex-col gap-6 border-t border-white/5 pt-6">
+                      {milestone.speakers && milestone.speakers.length > 0 && (
+                        <div className="flex flex-wrap items-stretch gap-5">
+                          {milestone.speakers.map((speaker, idx) => (
+                            <div
+                              key={idx}
+                              className="group relative flex w-[170px] flex-col overflow-hidden rounded-xl bg-[#162947] p-[1px] shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_0_30px_rgba(0,116,255,0.2)]"
+                            >
+                              {/* Animated glowing snake border */}
+                              <div 
+                                className="pointer-events-none absolute -inset-[100%] animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_70%,#3d8dff_100%)] opacity-75 transition-opacity duration-300 group-hover:opacity-100"
+                                style={{ animationDuration: '4s' }}
+                              ></div>
+                              
+                              {/* Inner card */}
+                              <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[11px] bg-[#060d18] transition-colors duration-300 group-hover:bg-[#081220]">
+                                <div className="relative flex h-40 w-full items-end justify-center overflow-hidden pt-4">
+                                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,116,255,0.15)_0%,_transparent_70%)]"></div>
+                                  <img
+                                    src={speaker.avatar}
+                                    alt={speaker.name}
+                                    className="relative z-10 h-full w-full object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
+                                    style={{ maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)" }}
+                                  />
+                                </div>
+                                <div className="relative z-20 -mt-2 flex flex-col items-center justify-start px-3 pb-5 text-center">
+                                  <h4 className="text-[12px] font-black uppercase tracking-wide text-white drop-shadow-sm">
+                                    {speaker.name}
+                                  </h4>
+                                  <span className="mt-1 text-[9px] font-bold uppercase tracking-[0.05em] text-[#8ba3c7]">
+                                    {speaker.role}
+                                  </span>
+                                  <span className="mt-0.5 text-[8.5px] font-black uppercase tracking-[0.05em] text-[#0074FF]">
+                                    {speaker.company}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {milestone.badge && (
+                        <div className="flex items-center">
+                          <div className="inline-flex items-center gap-2.5 rounded-full border border-[#162947] bg-[#060d18] px-4 py-1.5 text-[11px] font-bold tracking-wider text-blue-100 shadow-[0_0_15px_rgba(0,116,255,0.05)] transition-colors hover:border-[#3d8dff]/40 hover:bg-[#081220]">
+                            <span className="relative flex h-2.5 w-2.5">
+                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#0074FF] opacity-75"></span>
+                              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#3d8dff]"></span>
+                            </span>
+                            {milestone.badge}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
 
                 </div>
