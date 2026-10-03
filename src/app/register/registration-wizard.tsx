@@ -296,13 +296,13 @@ export function RegistrationWizard() {
             className="mt-6 mb-4 h-auto w-[240px] sm:w-[280px] xl:w-[340px] transition-all duration-500 hover:scale-105 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
           />
 
-          <div className="mt-12 hidden lg:block group perspective-[1000px] w-full flex justify-center">
+          <div className="mt-12 hidden perspective-[1000px] group lg:block">
             <Image
               src="/flyer.jpg"
               alt="MoraXtreme Awareness Session"
-              width={340}
-              height={340}
-              className="rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(0,116,255,0.2)] h-auto w-full max-w-[280px] xl:max-w-[360px] transition-all duration-700 ease-out group-hover:-translate-y-4 group-hover:scale-105 group-hover:shadow-[0_25px_60px_rgba(0,116,255,0.4)] group-hover:border-[#0074FF]/50"
+              width={420}
+              height={420}
+              className="h-auto w-full max-w-[320px] rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(0,116,255,0.2)] transition-all duration-700 ease-out group-hover:-translate-y-4 group-hover:scale-105 group-hover:border-[#0074FF]/50 group-hover:shadow-[0_25px_60px_rgba(0,116,255,0.4)] xl:max-w-[420px]"
             />
           </div>
         </div>
