@@ -296,14 +296,22 @@ export function RegistrationWizard() {
             className="mt-6 mb-4 h-auto w-[240px] sm:w-[280px] xl:w-[340px] transition-all duration-500 hover:scale-105 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
           />
 
-          <div className="mt-12 hidden perspective-[1000px] group lg:block">
-            <Image
-              src="/flyer.jpg"
-              alt="MoraXtreme Awareness Session"
-              width={420}
-              height={420}
-              className="h-auto w-full max-w-[320px] rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(0,116,255,0.2)] transition-all duration-700 ease-out group-hover:-translate-y-4 group-hover:scale-105 group-hover:border-[#0074FF]/50 group-hover:shadow-[0_25px_60px_rgba(0,116,255,0.4)] xl:max-w-[420px]"
-            />
+          <div className="mt-8 hidden perspective-[1000px] group lg:block">
+            <div className="relative overflow-hidden rounded-2xl p-[2px] transition-all duration-700 ease-out group-hover:-translate-y-4 group-hover:scale-105 group-hover:shadow-[0_25px_60px_rgba(0,116,255,0.4)] shadow-[0_0_40px_rgba(0,116,255,0.2)]">
+              {/* Spinning animated border */}
+              <div className="absolute -left-[50%] -top-[50%] z-0 h-[200%] w-[200%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_120deg,#0074FF_180deg,transparent_180deg_300deg,#0074FF_360deg)]" />
+              
+              {/* Inner wrapper to mask the middle */}
+              <div className="relative z-10 overflow-hidden rounded-[14px] bg-[#030710]">
+                <Image
+                  src="/flyer.jpg"
+                  alt="MoraXtreme Awareness Session"
+                  width={420}
+                  height={420}
+                  className="h-auto w-full max-w-[320px] xl:max-w-[420px]"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </aside>
