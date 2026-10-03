@@ -284,25 +284,27 @@ export function RegistrationWizard() {
           <div className="absolute top-[10%] left-[20%] z-10 h-96 w-96 rounded-full bg-[#0074FF] opacity-10 mix-blend-screen blur-[150px] filter" />
         </div>
 
-        <div className="relative z-30 mt-16 space-y-6 lg:mt-0">
+        <div className="relative z-30 mt-16 flex flex-col items-center text-center lg:mt-0">
           <p className="text-sm font-bold tracking-[0.25em] text-[#0074FF] uppercase drop-shadow-md">
             Register your team
           </p>
           <Image
             src="/logo.png"
             alt="MoraXtreme 11 Logo"
-            width={420}
-            height={150}
-            className="mb-4"
+            width={320}
+            height={115}
+            className="mt-6 mb-4 h-auto w-[240px] sm:w-[280px] xl:w-[340px] transition-all duration-500 hover:scale-105 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
           />
-          <p className="mt-4 font-mono text-xl tracking-widest text-white/90 uppercase">
-            while seats are available !
-          </p>
-          <div className="my-10 h-[2px] w-24 bg-[#0074FF] shadow-[0_0_15px_#0074FF]"></div>
-          <p className="max-w-xl text-lg leading-relaxed text-neutral-300 drop-shadow-sm">
-            A focused registration flow for the 12-hour online competition. The
-            group leader should complete this form for the full team.
-          </p>
+
+          <div className="mt-12 hidden lg:block group perspective-[1000px] w-full flex justify-center">
+            <Image
+              src="/flyer.jpg"
+              alt="MoraXtreme Awareness Session"
+              width={340}
+              height={340}
+              className="rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(0,116,255,0.2)] h-auto w-full max-w-[280px] xl:max-w-[360px] transition-all duration-700 ease-out group-hover:-translate-y-4 group-hover:scale-105 group-hover:shadow-[0_25px_60px_rgba(0,116,255,0.4)] group-hover:border-[#0074FF]/50"
+            />
+          </div>
         </div>
       </aside>
 
