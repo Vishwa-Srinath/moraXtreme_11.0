@@ -7,7 +7,7 @@ export const FINALIST_TEAMS = [
   "Hehe",
   "Ayyo Exception",
   "SheSaaS",
-  "Zybots",
+  "Runtime_terrors",
   "Syntax Samurai",
   "WeBall",
   "Knurdz.exe",
