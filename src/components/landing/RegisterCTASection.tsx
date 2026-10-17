@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 export default function RegisterCTASection() {
   return (
     <section id="register" className="relative mb-20 w-full scroll-mt-32 py-16">
@@ -20,8 +22,48 @@ export default function RegisterCTASection() {
         {/* Top glowing edge */}
         <div className="absolute top-0 left-1/2 h-[2px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent opacity-50 shadow-[0_0_20px_#0074FF]"></div>
 
-        <div className="relative z-10 flex min-h-[300px] flex-col items-center justify-center py-16 text-center md:px-8 md:py-24">
-          {/* Partner images container - ready for partner logos */}
+        <div className="relative z-10 flex min-h-[340px] w-full flex-col items-center justify-center py-12 px-6 sm:py-16 md:px-12 md:py-20">
+          <div className="flex w-full flex-col items-center justify-center gap-12 sm:flex-row sm:gap-16 md:gap-24">
+            {/* Title Partner: CIO Education */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative flex h-44 w-44 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-52 md:h-60 md:w-60">
+                <Image
+                  src="/partners/cio-education.png"
+                  alt="CIO Education"
+                  fill
+                  className="object-contain drop-shadow-[0_0_30px_rgba(0,116,255,0.35)]"
+                  sizes="(max-width: 640px) 176px, (max-width: 768px) 208px, 240px"
+                  unoptimized
+                />
+              </div>
+              <div className="mt-5 flex flex-col items-center gap-2">
+                <span className="font-[family-name:var(--font-space)] text-sm sm:text-base font-bold tracking-[0.22em] text-white uppercase drop-shadow-[0_0_10px_rgba(0,116,255,0.6)]">
+                  Title Partner
+                </span>
+                <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
+              </div>
+            </div>
+
+            {/* Banner Partner: QACERT */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative flex h-44 w-28 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-32 md:h-60 md:w-36">
+                <Image
+                  src="/partners/qacert.jpg"
+                  alt="QACERT"
+                  fill
+                  className="rounded-2xl object-cover shadow-[0_0_30px_rgba(0,116,255,0.3)]"
+                  sizes="(max-width: 640px) 112px, (max-width: 768px) 128px, 144px"
+                  unoptimized
+                />
+              </div>
+              <div className="mt-5 flex flex-col items-center gap-2">
+                <span className="font-[family-name:var(--font-space)] text-sm sm:text-base font-bold tracking-[0.22em] text-white uppercase drop-shadow-[0_0_10px_rgba(0,116,255,0.6)]">
+                  Banner Partner
+                </span>
+                <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
