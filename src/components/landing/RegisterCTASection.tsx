@@ -22,8 +22,8 @@ export default function RegisterCTASection() {
         {/* Top glowing edge */}
         <div className="absolute top-0 left-1/2 h-[2px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent opacity-50 shadow-[0_0_20px_#0074FF]"></div>
 
-        <div className="relative z-10 flex min-h-[340px] w-full flex-col items-center justify-center py-12 px-6 sm:py-16 md:px-12 md:py-20">
-          <div className="flex w-full flex-col items-center justify-center gap-12 sm:flex-row sm:gap-16 md:gap-24">
+        <div className="relative z-10 flex min-h-[340px] w-full flex-col items-start justify-center py-12 px-8 sm:py-16 sm:px-12 md:px-16 md:py-20">
+          <div className="flex w-full flex-col items-center sm:items-start sm:flex-row sm:flex-wrap justify-start gap-12 sm:gap-16 md:gap-20">
             {/* Title Partner: CIO Education */}
             <div className="flex flex-col items-center text-center">
               <div className="relative flex h-44 w-44 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-52 md:h-60 md:w-60">
