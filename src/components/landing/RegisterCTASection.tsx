@@ -46,13 +46,13 @@ export default function RegisterCTASection() {
 
             {/* Banner Partner: QACERT */}
             <div className="flex flex-col items-center text-center">
-              <div className="relative flex h-44 w-28 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-32 md:h-60 md:w-36">
+              <div className="relative flex h-44 w-24 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-28 md:h-60 md:w-32">
                 <Image
                   src="/partners/qacert.jpg"
                   alt="QACERT"
                   fill
-                  className="rounded-2xl object-cover shadow-[0_0_30px_rgba(0,116,255,0.3)]"
-                  sizes="(max-width: 640px) 112px, (max-width: 768px) 128px, 144px"
+                  className="rounded-xl object-contain drop-shadow-[0_0_30px_rgba(0,116,255,0.35)]"
+                  sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 128px"
                   unoptimized
                 />
               </div>
