@@ -44,6 +44,26 @@ export default function RegisterCTASection() {
               </div>
             </div>
 
+            {/* Silver Partner: Asia Pacific Technology Systems */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative flex h-44 w-44 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-52 md:h-60 md:w-60">
+                <Image
+                  src="/partners/apts.png"
+                  alt="Asia Pacific Technology Systems"
+                  fill
+                  className="object-contain drop-shadow-[0_0_30px_rgba(0,116,255,0.3)]"
+                  sizes="(max-width: 640px) 176px, (max-width: 768px) 208px, 240px"
+                  unoptimized
+                />
+              </div>
+              <div className="mt-5 flex flex-col items-center gap-2">
+                <span className="font-[family-name:var(--font-space)] text-sm sm:text-base font-bold tracking-[0.22em] text-white uppercase drop-shadow-[0_0_10px_rgba(0,116,255,0.6)]">
+                  Silver Partner
+                </span>
+                <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
+              </div>
+            </div>
+
             {/* Banner Partner: QACERT */}
             <div className="flex flex-col items-center text-center">
               <div className="relative flex h-44 w-24 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-28 md:h-60 md:w-32">
