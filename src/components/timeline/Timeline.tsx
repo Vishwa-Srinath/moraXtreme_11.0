@@ -37,7 +37,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "02",
     title: "Awareness Session",
-    date: "Last week of September",
+    date: "3rd October",
     desc: "Kickoff briefing on rules, format and scoring.",
     image:
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&q=80",
@@ -85,7 +85,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "08",
     title: "Final Round",
-    date: "Second week of November",
+    date: "22nd November",
     desc: "The top teams face off for the title.",
     image:
       "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&q=80",
@@ -205,6 +205,7 @@ export default function Timeline({
                       {milestone.desc}
                     </p>
                   )}
+
 
                 </div>
               </article>

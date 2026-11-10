@@ -284,25 +284,100 @@ export function RegistrationWizard() {
           <div className="absolute top-[10%] left-[20%] z-10 h-96 w-96 rounded-full bg-[#0074FF] opacity-10 mix-blend-screen blur-[150px] filter" />
         </div>
 
-        <div className="relative z-30 mt-16 space-y-6 lg:mt-0">
-          <p className="text-sm font-bold tracking-[0.25em] text-[#0074FF] uppercase drop-shadow-md">
+        <div className="relative z-30 mt-12 flex flex-col items-center text-center lg:mt-0">
+          <p className="text-[10px] font-bold tracking-[0.25em] text-[#0074FF] uppercase drop-shadow-md md:text-xs">
             Register your team
           </p>
           <Image
             src="/logo.png"
             alt="MoraXtreme 11 Logo"
-            width={420}
-            height={150}
-            className="mb-4"
+            width={300}
+            height={90}
+            className="mt-1 mb-2 w-full max-w-[280px] object-contain"
           />
-          <p className="mt-4 font-mono text-xl tracking-widest text-white/90 uppercase">
-            while seats are available !
-          </p>
-          <div className="my-10 h-[2px] w-24 bg-[#0074FF] shadow-[0_0_15px_#0074FF]"></div>
-          <p className="max-w-xl text-lg leading-relaxed text-neutral-300 drop-shadow-sm">
+          <h2 className="text-sm font-semibold tracking-wide text-white/90">
+            While Seats Are Available!
+          </h2>
+          <div className="my-3 h-[1px] w-full max-w-[160px] bg-gradient-to-r from-transparent via-[#0074FF] to-transparent opacity-70"></div>
+          <p className="max-w-sm text-[13px] leading-relaxed text-neutral-400 drop-shadow-sm">
             A focused registration flow for the 12-hour online competition. The
             group leader should complete this form for the full team.
           </p>
+
+          <div className="mt-5 flex w-full flex-col items-center gap-4 border-t border-white/10 pt-5">
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-[9px] font-bold tracking-[0.25em] text-neutral-500 uppercase">
+                Awareness Session
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#0074FF]/30 bg-[#0074FF]/10 px-3 py-1 text-[10px] font-bold tracking-wider text-blue-200 shadow-[0_0_15px_rgba(0,116,255,0.15)]">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#0074FF] opacity-75"></span>
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#3d8dff]"></span>
+                </span>
+                OCT 3 • 7:00 PM • ZOOM
+              </span>
+            </div>
+            
+            <div className="flex flex-wrap items-stretch justify-center gap-5 sm:gap-6">
+              {[
+                {
+                  name: "Mr. Sandil Ranasinghe",
+                  avatar: "/speakers/sandil.png",
+                  role: "Senior Software Engineer",
+                  company: "HeyMilo AI",
+                },
+                {
+                  name: "Mr. Shaveen Silva",
+                  avatar: "/speakers/shaveen.png",
+                  role: "CSE Undergraduate",
+                  company: "University of Moratuwa",
+                },
+              ].map((speaker, idx) => (
+                <div
+                  key={idx}
+                  className="group relative flex w-[170px] flex-col overflow-hidden rounded-2xl p-[1.5px] shadow-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,116,255,0.2)] sm:w-[180px]"
+                >
+                  {/* Animated glowing border background */}
+                  <div 
+                    className="absolute inset-[-150%] z-0 animate-spin bg-[conic-gradient(from_90deg_at_50%_50%,#162947_0%,#162947_70%,#0074FF_90%,#ffffff_100%)] opacity-60 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{ animationDuration: '4s' }}
+                  />
+                  
+                  {/* Inner card container that acts as a mask */}
+                  <div className="relative z-10 flex h-full w-full flex-col overflow-hidden rounded-[14.5px] bg-gradient-to-b from-[#0a1426] to-[#030710]">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,116,255,0.15)_0%,_transparent_60%)] opacity-30 transition-opacity duration-500 group-hover:opacity-100"></div>
+                    
+                    <div className="relative flex h-36 w-full shrink-0 items-end justify-center overflow-hidden pt-3 sm:h-40">
+                      <img
+                        src={speaker.avatar}
+                        alt={speaker.name}
+                        className="relative z-10 h-full w-full object-contain object-bottom opacity-90 transition-all duration-500 group-hover:scale-110 group-hover:opacity-100"
+                        style={{
+                          maskImage:
+                            "linear-gradient(to bottom, black 70%, transparent 100%)",
+                          WebkitMaskImage:
+                            "linear-gradient(to bottom, black 70%, transparent 100%)",
+                        }}
+                      />
+                    </div>
+                    <div className="relative z-20 flex h-full flex-col items-center justify-start px-3 pb-5 pt-2 text-center">
+                      <span className="text-[11px] font-black tracking-wider text-white uppercase drop-shadow-md sm:text-xs">
+                        {speaker.name}
+                      </span>
+                      <span className="mt-1.5 text-[8px] font-bold tracking-widest text-[#8ba3c7] uppercase sm:text-[9px]">
+                        {speaker.role}
+                      </span>
+                      <div className="mt-auto pt-3">
+                        <span className="text-[7.5px] font-black tracking-widest text-[#0074FF] uppercase sm:text-[8px]">
+                          {speaker.company}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </aside>
 

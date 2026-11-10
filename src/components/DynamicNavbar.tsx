@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import FinalistsOverlay from "@/components/landing/FinalistsOverlay"
 
 const NAV_ITEMS = [
   { id: "home", label: "Home" },
@@ -114,20 +115,9 @@ export default function DynamicNavbar() {
           ))}
         </ul>
 
-        {/* Right side: Register + Hamburger */}
+        {/* Right side: Finalists + Hamburger */}
         <div className="flex items-center gap-3">
-          <a
-            href="/register"
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "px-3 font-[family-name:var(--font-space)] text-xs font-extrabold tracking-widest uppercase transition-all duration-500 sm:px-4",
-              scrolled
-                ? "border-[#0074FF] text-[#0074FF] hover:bg-[#0074FF] hover:text-white"
-                : "border-white/50 bg-white/5 text-white backdrop-blur-sm hover:border-white hover:bg-white hover:text-black"
-            )}
-          >
-            Register
-          </a>
+          <FinalistsOverlay />
 
           {/* Mobile hamburger */}
           <button

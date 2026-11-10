@@ -331,33 +331,16 @@ export default function WorldAsiaScene({
 
             {/* CTA Buttons - Row 1: Register + Delegate Booklet */}
             <div className="mt-8 flex flex-col gap-5 sm:flex-row">
-              {/* Register Button with Dynamic Pulsing Aura */}
-              <div className="group relative">
-                {/* Glowing aura behind the button */}
-                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-white/25 via-[#0074FF]/40 to-white/25 opacity-60 blur-md transition duration-500 group-hover:opacity-80 group-hover:blur-lg"></div>
-
-                <a
-                  href="/register"
-                  className="relative inline-flex items-center overflow-hidden rounded-full border border-white/60 bg-[#0074FF]/20 px-8 py-4 font-[family-name:var(--font-space)] text-sm font-black tracking-[0.25em] text-white uppercase shadow-[0_0_12px_rgba(0,116,255,0.35)] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white group-hover:bg-[#0074FF]/40 group-hover:shadow-[0_0_24px_rgba(0,116,255,0.55)] sm:px-12 sm:py-6 sm:text-base md:text-lg"
+              {/* Registration Closed Badge (Isolated, non-clickable) */}
+              <div className="relative">
+                <div
+                  aria-disabled="true"
+                  className="relative inline-flex items-center justify-center rounded-full border border-white/20 bg-white/[0.04] px-8 py-4 font-[family-name:var(--font-space)] text-sm font-semibold tracking-[0.25em] text-neutral-400 uppercase shadow-none backdrop-blur-xl select-none cursor-not-allowed sm:px-12 sm:py-6 sm:text-base md:text-lg"
                 >
-                  <span className="relative z-10 flex items-center gap-4 transition-all duration-500">
-                    Register Now
-                    <svg
-                      className="h-6 w-6 transition-transform duration-500 group-hover:translate-x-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      />
-                    </svg>
+                  <span className="relative z-10 flex items-center">
+                    Registration closed
                   </span>
-                  <div className="absolute inset-0 z-0 -translate-x-full bg-white/20 transition-transform duration-500 ease-out group-hover:translate-x-0" />
-                </a>
+                </div>
               </div>
 
               {/* Delegate Booklet Button — same premium weight as Register Now */}
