@@ -15,7 +15,7 @@ export default function RegisterCTASection() {
       </div>
 
       {/* Box for Partner Images */}
-      <div className="group relative w-full overflow-hidden rounded-[3rem] border border-white/5 bg-[#000000]/60 shadow-[0_0_80px_rgba(0,116,255,0.15)] backdrop-blur-2xl">
+      <div className="group relative w-full overflow-hidden rounded-[3rem] border border-white/5 bg-[#000000]/20 shadow-[0_0_80px_rgba(0,116,255,0.15)]">
         {/* Background radial glow */}
         <div className="absolute top-0 left-1/2 h-full w-full -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,_rgba(0,116,255,0.25)_0%,_transparent_60%)]"></div>
 
@@ -70,6 +70,26 @@ export default function RegisterCTASection() {
                 <Image
                   src="/partners/qacert.jpg"
                   alt="QACERT"
+                  fill
+                  className="rounded-xl object-contain drop-shadow-[0_0_30px_rgba(0,116,255,0.35)]"
+                  sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 128px"
+                  unoptimized
+                />
+              </div>
+              <div className="mt-5 flex flex-col items-center gap-2">
+                <span className="font-[family-name:var(--font-space)] text-sm sm:text-base font-bold tracking-[0.22em] text-white uppercase drop-shadow-[0_0_10px_rgba(0,116,255,0.6)]">
+                  Banner Partner
+                </span>
+                <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#0074FF] to-transparent"></div>
+              </div>
+            </div>
+
+            {/* Banner Partner: Attached Partner */}
+            <div className="flex flex-col items-center text-center">
+              <div className="relative flex h-44 w-24 items-center justify-center transition-transform duration-300 hover:scale-105 sm:h-52 sm:w-28 md:h-60 md:w-32">
+                <Image
+                  src="/partners/banner-partner.png"
+                  alt="Banner Partner"
                   fill
                   className="rounded-xl object-contain drop-shadow-[0_0_30px_rgba(0,116,255,0.35)]"
                   sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 128px"
