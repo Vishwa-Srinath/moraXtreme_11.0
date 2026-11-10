@@ -85,7 +85,7 @@ const DEFAULT_MILESTONES: Milestone[] = [
   {
     reel: "08",
     title: "Final Round",
-    date: "21st November",
+    date: "22st November",
     desc: "The top teams face off for the title.",
     image:
       "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&q=80",
